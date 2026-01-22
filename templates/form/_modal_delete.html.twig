@@ -1,0 +1,41 @@
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-sm">
+		<div class="modal-content border-0 shadow-lg" style="border-radius: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+			<div
+				class="modal-body text-center p-4">
+				<!-- Icono de advertencia -->
+				<div class="mb-3">
+					<i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+				</div>
+
+				<!-- Título más elegante -->
+				<h5 class="text-white fw-bold mb-3" style="font-size: 1.3rem;">
+					Eliminar Formulario
+				</h5>
+
+				<!-- Texto más conciso -->
+				<p class="text-white-50 mb-2" style="font-size: 0.95rem;">
+					¿Está seguro de eliminar este formulario?
+				</p>
+				<p
+					class="text-white fw-semibold mb-4" style="font-size: 1rem;" id="deleteModalItemName"><!-- Item Name via JS -->
+				</p>
+
+				<!-- Botones más modernos -->
+				<div class="d-flex gap-2 justify-content-center">
+					<button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal" style="border-radius: 25px;">
+						<i class="fas fa-times me-1"></i>
+						Cancelar
+					</button>
+					<form id="deleteForm" action="" method="post" style="display: inline;">
+						<input type="hidden" name="_token" value="{{ csrf_token('delete') }}">
+						<button type="submit" class="btn btn-danger btn-sm px-4" style="border-radius: 25px;">
+							<i class="fas fa-trash me-1"></i>
+							Eliminar
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

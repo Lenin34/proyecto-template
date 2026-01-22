@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Submission Details{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Submission Details</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">{{ submission.formTemplate.name }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>Submission Date:</strong> {{ submission.createdAt|date('F d, Y h:i A') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p>
+                        <strong>Status:</strong> 
+                        {% if submission.status.value == 'A' %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <h5 class="mb-3">Form Responses</h5>
+            
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Field</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entryValue in submission.formEntryValues %}
+                            {% if entryValue.status.value == 'A' %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ entryValue.formTemplateField.label }}</strong>
+                                        {% if entryValue.formTemplateField.help %}
+                                            <div class="text-muted small">{{ entryValue.formTemplateField.help }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if entryValue.formTemplateField.type == 'checkbox' and entryValue.formTemplateField.multiple %}
+                                            {% set values = entryValue.value|json_decode %}
+                                            {% if values is iterable %}
+                                                <ul class="mb-0">
+                                                    {% for value in values %}
+                                                        <li>{{ value }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                {{ entryValue.value }}
+                                            {% endif %}
+                                        {% else %}
+                                            {{ entryValue.value|nl2br }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{{ path('app_user_forms_my_submissions', {'dominio': dominio}) }}" class="btn btn-secondary">Back to My Submissions</a>
+        <a href="{{ path('app_user_forms_index', {'dominio': dominio}) }}" class="btn btn-primary">Back to Forms</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,185 @@
+/* Modern Table Styles - Option A: Clean & Professional */
+
+.table-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 1rem;
+    margin: 2rem 0;
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+    color: #FFFFFF;
+    background: transparent;
+    border: none;
+}
+
+/* Header Styling */
+.styled-table thead {
+    background-color: #1B283D;
+}
+
+.styled-table thead th {
+    padding: 12px 8px;
+    /* Reduced padding */
+    font-family: "League Spartan", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    /* Slightly smaller font to fit more */
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    white-space: normal;
+    /* Allow wrapping */
+    vertical-align: middle;
+    line-height: 1.2;
+    /* Tighter line height */
+}
+
+.styled-table thead th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.styled-table thead th:last-child {
+    border-top-right-radius: 12px;
+}
+
+/* Body Styling */
+.styled-table tbody tr {
+    transition: all 0.2s ease;
+    background-color: rgba(27, 40, 61, 0.6);
+    /* Base dark blue with transparency */
+}
+
+.styled-table tbody tr:nth-child(even) {
+    background-color: rgba(27, 40, 61, 0.8);
+    /* Slightly darker for zebra striping */
+}
+
+.styled-table tbody td {
+    padding: 10px 8px;
+    /* Reduced padding */
+    font-size: 13px;
+    /* Slightly smaller font */
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+
+/* Hover Effects */
+.styled-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    transform: scale(1.001);
+    /* Subtle pop */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    position: relative;
+}
+
+.styled-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.styled-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+}
+
+.styled-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+}
+
+/* Modern Icon-Only Action Buttons */
+.action-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.action-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    color: #FFFFFF;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+.action-icon:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    color: #FFFFFF;
+}
+
+.action-icon:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Icon-specific colors */
+.action-icon-view {
+    background: linear-gradient(135deg, #3D791E 0%, #4a9424 100%);
+}
+
+.action-icon-view:hover {
+    background: linear-gradient(135deg, #4a9424 0%, #5db02d 100%);
+}
+
+.action-icon-edit {
+    background: linear-gradient(135deg, #174C9C 0%, #1e5cb8 100%);
+}
+
+.action-icon-edit:hover {
+    background: linear-gradient(135deg, #1e5cb8 0%, #2670d4 100%);
+}
+
+.action-icon-delete {
+    background: linear-gradient(135deg, #9c1717 0%, #b81d1d 100%);
+}
+
+.action-icon-delete:hover {
+    background: linear-gradient(135deg, #b81d1d 0%, #d42323 100%);
+}
+
+/* Tooltip enhancement for better UX */
+.action-icon[title]:hover::after {
+    opacity: 1;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .table-container {
+        padding: 0.5rem;
+        overflow-x: auto;
+    }
+
+    .styled-table thead th,
+    .styled-table tbody td {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+
+    .action-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+}

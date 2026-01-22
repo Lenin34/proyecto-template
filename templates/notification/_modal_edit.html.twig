@@ -1,0 +1,56 @@
+{# Modal de Editar Notificación #}
+<div class="modal fade" id="modalEditNotification" tabindex="-1" aria-labelledby="modalEditNotificationLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content modal-form">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalEditNotificationLabel">
+					<i class="fas fa-edit me-2"></i>
+					Editar Notificación
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="editNotificationForm" method="post">
+					<div class="row g-3">
+						<div class="col-md-6">
+							<label class="form-label">Título *</label>
+							<input type="text" name="notification[title]" id="editNotificationTitle" required class="form-control form-control-dark">
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Mensaje *</label>
+							<textarea name="notification[message]" id="editNotificationMessage" required class="form-control form-control-dark" rows="3"></textarea>
+						</div>
+						<div class="col-12">
+							<label class="form-label">Regiones</label>
+							<select name="notification[regions][]" id="editNotificationRegions" multiple class="form-select form-control-dark select2-edit-regions">
+								{% for region in regions %}
+									<option value="{{ region.id }}">{{ region.name }}</option>
+								{% endfor %}
+							</select>
+							<div class="form-text text-muted">Si no seleccionas ninguna región, la notificación será global (todas las regiones).</div>
+						</div>
+						<div class="col-12">
+							<label class="form-label">Empresas</label>
+							<select name="notification[companies][]" id="editNotificationCompanies" multiple class="form-select form-control-dark select2-edit-companies">
+								{# Companies will be loaded dynamically via JavaScript #}
+							</select>
+							<div class="form-text text-muted">Si no seleccionas ninguna empresa, la notificación será para todas las empresas.</div>
+						</div>
+					</div>
+
+					<input type="hidden" name="notification[_token]" value="{{ csrf_token('notification') }}">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+					<i class="fas fa-times me-2"></i>
+					Cancelar
+				</button>
+				<button type="submit" form="editNotificationForm" class="btn btn-warning">
+					<i class="fas fa-save me-2"></i>
+					Actualizar
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

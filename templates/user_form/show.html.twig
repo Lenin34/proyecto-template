@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}{{ form_template.name }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">{{ form_template.name }}</h1>
+    
+    {% if form_template.description %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="card-text">{{ form_template.description|nl2br }}</p>
+            </div>
+        </div>
+    {% endif %}
+    
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+    
+    <form method="post" class="needs-validation" novalidate>
+        {% set activeFields = form_template.formTemplateFields|filter(field => field.status.value == '1') %}
+        
+        {% if activeFields|length > 0 %}
+            {% for field in activeFields %}
+                <div class="mb-3 {% if field.cols %}col-md-{{ field.cols }}{% endif %}">
+                    <label for="{{ field.name }}" class="form-label">
+                        {{ field.label }}
+                        {% if field.isRequired %}
+                            <span class="text-danger">*</span>
+                        {% endif %}
+                    </label>
+                    
+                    {% if field.help %}
+                        <div class="form-text text-muted mb-2">{{ field.help }}</div>
+                    {% endif %}
+                    
+                    {% if field.type == 'text' %}
+                        <input type="text" class="form-control" id="{{ field.name }}" name="{{ field.name }}" 
+                               {% if field.isRequired %}required{% endif %}>
+                    
+                    {% elseif field.type == 'textarea' %}
+                        <textarea class="form-control" id="{{ field.name }}" name="{{ field.name }}" 
+                                  rows="{{ field.textareaCols|default(3) }}" 
+                                  {% if field.isRequired %}required{% endif %}></textarea>
+                    
+                    {% elseif field.type == 'email' %}
+                        <input type="email" class="form-control" id="{{ field.name }}" name="{{ field.name }}" 
+                               {% if field.isRequired %}required{% endif %}>
+                    
+                    {% elseif field.type == 'number' %}
+                        <input type="number" class="form-control" id="{{ field.name }}" name="{{ field.name }}" 
+                               {% if field.isRequired %}required{% endif %}>
+                    
+                    {% elseif field.type == 'date' %}
+                        <input type="date" class="form-control" id="{{ field.name }}" name="{{ field.name }}" 
+                               {% if field.isRequired %}required{% endif %}>
+                    
+                    {% elseif field.type == 'select' %}
+                        <select class="form-select" id="{{ field.name }}" name="{{ field.name }}"
+                                {% if field.multiple %}multiple{% endif %}
+                                {% if field.isRequired %}required{% endif %}>
+                            <option value="">Select an option</option>
+                            {% if field.options %}
+                                {% set options = field.options|split("\n") %}
+                                {% for option in options %}
+                                    <option value="{{ option|trim }}">{{ option|trim }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    
+                    {% elseif field.type == 'checkbox' %}
+                        {% if field.options %}
+                            {% set options = field.options|split("\n") %}
+                            {% for option in options %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           name="{{ field.name }}[]" 
+                                           id="{{ field.name }}_{{ loop.index }}" 
+                                           value="{{ option|trim }}">
+                                    <label class="form-check-label" for="{{ field.name }}_{{ loop.index }}">
+                                        {{ option|trim }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       name="{{ field.name }}" 
+                                       id="{{ field.name }}" 
+                                       value="1">
+                                <label class="form-check-label" for="{{ field.name }}">
+                                    {{ field.label }}
+                                </label>
+                            </div>
+                        {% endif %}
+                    
+                    {% elseif field.type == 'radio' %}
+                        {% if field.options %}
+                            {% set options = field.options|split("\n") %}
+                            {% for option in options %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                           name="{{ field.name }}" 
+                                           id="{{ field.name }}_{{ loop.index }}" 
+                                           value="{{ option|trim }}"
+                                           {% if loop.first and field.isRequired %}required{% endif %}>
+                                    <label class="form-check-label" for="{{ field.name }}_{{ loop.index }}">
+                                        {{ option|trim }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    
+                    {% elseif field.type == 'file' %}
+                        <input type="file" class="form-control" id="{{ field.name }}" name="{{ field.name }}" 
+                               {% if field.multiple %}multiple{% endif %}
+                               {% if field.isRequired %}required{% endif %}>
+                    
+                    {% else %}
+                        <input type="text" class="form-control" id="{{ field.name }}" name="{{ field.name }}" 
+                               {% if field.isRequired %}required{% endif %}>
+                    {% endif %}
+                    
+                    {% if field.isRequired %}
+                        <div class="invalid-feedback">
+                            This field is required.
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div class="mt-4 mb-5">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="{{ path('app_user_forms_index', {'dominio': dominio}) }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                This form has no fields to fill out.
+            </div>
+            <a href="{{ path('app_user_forms_index', {'dominio': dominio}) }}" class="btn btn-secondary">Back to Forms</a>
+        {% endif %}
+    </form>
+</div>
+
+<script>
+// Form validation script
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    var forms = document.getElementsByClassName('needs-validation');
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
+{% endblock %}

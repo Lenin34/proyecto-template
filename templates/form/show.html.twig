@@ -1,0 +1,1132 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Gestionar Formulario:
+	{{ form_template.name }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('form-templates') }}
+{% endblock %}
+
+{% block body %}
+	<section class="header-sntiasg-b form-header-enhanced py-4">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-md-8">
+					<nav class="form-navigation mb-3">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="{{ path('app_forms_index', {'dominio': dominio}) }}">
+									<i class="fas fa-file-alt mr-1"></i>
+									Formularios
+								</a>
+							</li>
+							<li class="breadcrumb-item active">{{ form_template.name }}</li>
+						</ol>
+					</nav>
+					<h1>
+						<i class="fas fa-cog mr-3"></i>
+						Gestionar Formulario</h1>
+					<p class="subtitle">Visualiza, organiza y agrega campos al formulario "{{ form_template.name }}"</p>
+				</div>
+				<div class="col-md-4 text-md-end text-center mt-3 mt-md-0">
+					<div class="d-flex gap-2 justify-content-md-end justify-content-center">
+						<a href="{{ path('app_forms_index', {'dominio': dominio}) }}" class="btn-unified btn-nav-back">
+							<i class="fas fa-arrow-left"></i>
+							Regresar
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div
+		class="container my-4">
+		<!-- Flash messages are handled by SweetAlert2 in base template -->
+
+		<div
+			class="row">
+			<!-- Left Column: Form Details Card -->
+			<div class="col-md-6 mb-4">
+				<div class="card-dark" id="formDetailsCard">
+					<div class="card-dark-header d-flex justify-content-between align-items-center">
+						<div class="card-dark-header-icon">
+							<i class="fas fa-info-circle"></i>
+							<h5 class="card-title">Detalles del Formulario</h5>
+						</div>
+						<div class="card-header-actions">
+							<button type="button" class="card-header-action-btn" id="btnEditForm" title="Editar formulario">
+								<i class="fas fa-pencil-alt"></i>
+							</button>
+							<button type="button" class="card-header-action-btn" id="btnPreviewForm" title="Vista previa" data-bs-toggle="modal" data-bs-target="#previewModal">
+								<i class="fas fa-eye"></i>
+							</button>
+						</div>
+					</div>
+					<div class="card-dark-body p-0">
+						<table class="table-dark-modern mb-0" id="formDetailsTable">
+							<tbody>
+								<!-- View Mode -->
+								<tr data-field="name">
+									<th>Nombre</th>
+									<td>
+										<span class="field-display">{{ form_template.name }}</span>
+										<input type="text" class="form-control inline-edit-input field-edit d-none" name="name" value="{{ form_template.name }}" required>
+									</td>
+								</tr>
+								<tr data-field="description">
+									<th>Descripción</th>
+									<td>
+										<span class="field-display">{{ form_template.description }}</span>
+										<textarea class="form-control inline-edit-input field-edit d-none" name="description" rows="3">{{ form_template.description }}</textarea>
+									</td>
+								</tr>
+								<tr data-field="status">
+									<th>Estado</th>
+									<td>
+										<span class="field-display">
+											{% if form_template.status.value == '1' %}
+												<span class="badge-dark badge-dark--success">
+													<i class="fas fa-check-circle me-1"></i>Activo</span>
+											{% else %}
+												<span class="badge-dark badge-dark--danger">
+													<i class="fas fa-times-circle me-1"></i>Inactivo</span>
+											{% endif %}
+										</span>
+										<select class="form-select inline-edit-select field-edit d-none" name="status">
+											<option value="1" {% if form_template.status.value == '1' %} selected {% endif %}>Activo</option>
+											<option value="0" {% if form_template.status.value == '0' %} selected {% endif %}>Inactivo</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th>Creado</th>
+									<td>
+										<i class="fas fa-calendar-alt me-1 text-muted"></i>
+										{{ form_template.createdAt|date('d/m/Y H:i') }}</td>
+								</tr>
+								<tr>
+									<th>Actualizado</th>
+									<td>
+										<i class="fas fa-clock me-1 text-muted"></i>
+										{{ form_template.updatedAt|date('d/m/Y H:i') }}</td>
+								</tr>
+								<tr>
+									<th>Empresas Autorizadas</th>
+									<td>
+										{% if form_template.isAvailableForAllCompanies %}
+											<span class="badge-dark badge-dark--info">
+												<i class="fas fa-globe me-1"></i>
+												Todas las empresas
+											</span>
+										{% else %}
+											{% for company in form_template.companies %}
+												<span class="badge-dark badge-dark--default me-1">
+													<i class="fas fa-building me-1"></i>
+													{{ company.name }}
+												</span>
+											{% endfor %}
+										{% endif %}
+									</td>
+								</tr>
+								<tr>
+									<th>Número de campos activos</th>
+									<td>
+										<span class="badge-dark badge-dark--warning">{{ form_template.formTemplateFields|length }}</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<!-- Edit Mode Action Buttons -->
+						<div class="inline-edit-actions d-none p-3 border-top" id="editFormActions">
+							<div class="d-flex gap-2 justify-content-end">
+								<button type="button" class="btn-unified btn-danger-dark btn-sm" id="btnCancelEdit">
+									<i class="fas fa-times me-1"></i>
+									Cancelar
+								</button>
+								<button type="button" class="btn-unified btn-success-dark btn-sm" id="btnSaveEdit">
+									<i class="fas fa-save me-1"></i>
+									Guardar
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Right Column: Form Fields Card -->
+			<div class="col-md-6 mb-4">
+				<div class="card-dark">
+					<div class="card-dark-header d-flex justify-content-between align-items-center">
+						<div class="card-dark-header-icon">
+							<i class="fas fa-list-alt"></i>
+							<h5 class="card-title">Campos del Formulario</h5>
+						</div>
+						<button type="button" class="btn-unified btn-action-create btn-sm" data-bs-toggle="modal" data-bs-target="#addFieldModal">
+							<i class="fas fa-plus"></i>
+							Agregar Campo
+						</button>
+					</div>
+					<div class="card-dark-body p-0">
+						{% if form_template.formTemplateFields|length > 0 %}
+							<div class="table-responsive">
+								<table id="fieldsTable" class="table-dark-modern table-dark-modern--subtle text-center align-middle mb-0">
+									<thead>
+										<tr>
+											<th class="py-3">#</th>
+											<th class="py-3">Etiqueta</th>
+											<th class="py-3">Tipo</th>
+											<th class="py-3">Obligatorio</th>
+											<th class="py-3">Acciones</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for field in form_template.formTemplateFields %}
+											{% if field.status.value == '1' %}
+												<tr data-field-id="{{ field.id }}">
+													<td class="py-2">
+														<span class="badge-dark badge-dark--info">#{{ field.id }}</span>
+													</td>
+													<td class="py-2 fw-bold field-label">{{ field.label }}</td>
+													<td class="py-2">
+														<span class="badge-dark badge-dark--default field-type">{{ field.type|capitalize }}</span>
+													</td>
+													<td class="py-2">
+														{% if field.isRequired %}
+															<span class="badge-dark badge-dark--success">
+																<i class="fas fa-check-circle me-1"></i>Sí
+															</span>
+														{% else %}
+															<span class="badge-dark badge-dark--warning">
+																<i class="fas fa-minus-circle me-1"></i>No
+															</span>
+														{% endif %}
+													</td>
+													<td class="py-2">
+														<div class="action-btn-group justify-content-center">
+															<button type="button" class="action-btn action-btn--edit btn-edit-field" data-field-id="{{ field.id }}" data-form-id="{{ form_template.id }}" title="Editar campo">
+																<i class="fas fa-edit"></i>
+															</button>
+															<form method="post" action="{{ path('app_forms_fields_delete', {'id': form_template.id, 'fieldId': field.id, 'dominio': dominio}) }}" onsubmit="return confirmDeleteField(event, '{{ field.label }}');" class="d-inline">
+																<input type="hidden" name="_token" value="{{ csrf_token_delete }}">
+																<button class="action-btn action-btn--delete" title="Eliminar campo">
+																	<i class="fas fa-trash"></i>
+																</button>
+															</form>
+														</div>
+													</td>
+												</tr>
+											{% endif %}
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						{% else %}
+							<div class="empty-state-dark">
+								<div class="empty-icon">
+									<i class="fas fa-plus-square"></i>
+								</div>
+								<h4>¡Agrega tu primer campo!</h4>
+								<p>Los campos definen qué información recopilarás en este formulario. Puedes agregar texto, fechas, archivos y más.</p>
+								<button type="button" class="btn-unified btn-action-create" data-bs-toggle="modal" data-bs-target="#addFieldModal">
+									<i class="fas fa-plus"></i>
+									Agregar Primer Campo
+								</button>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Preview Modal -->
+	<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content modal-dark">
+				<div class="modal-header modal-dark-header modal-dark-header--info">
+					<h5 class="modal-title" id="previewModalLabel">
+						<i class="fas fa-eye me-2"></i>Vista Previa del Formulario
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body modal-dark-body form-field-enhanced">
+					{% if form_template.formTemplateFields|length > 0 %}
+						<form>
+							{% for field in form_template.formTemplateFields %}
+								{% if field.status.value == '1' %}
+									<div class="mb-3">
+										<label class="form-label fw-bold">{{ field.label }}
+											{% if field.isRequired %}
+												<span class="text-danger">*</span>
+											{% endif %}
+										</label>
+
+										{% if field.type == 'text' %}
+											<input type="text" class="form-control" placeholder="{{ field.help }}" disabled>
+										{% elseif field.type == 'textarea' %}
+											<textarea class="form-control" rows="3" placeholder="{{ field.help }}" disabled></textarea>
+										{% elseif field.type == 'select' %}
+											<select class="form-select" disabled>
+												<option>Seleccione una opción</option>
+											</select>
+										{% elseif field.type == 'date' %}
+											<input type="date" class="form-control" disabled>
+										{% elseif field.type == 'file' %}
+											<input type="file" class="form-control" disabled>
+										{% elseif field.type == 'checkbox' %}
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" disabled>
+												<label class="form-check-label">{{ field.help|default('Opción') }}</label>
+											</div>
+										{% elseif field.type == 'radio' %}
+											<div class="form-check">
+												<input class="form-check-input" type="radio" disabled>
+												<label class="form-check-label">{{ field.help|default('Opción') }}</label>
+											</div>
+										{% endif %}
+
+										{% if field.help %}
+											<div class="form-text">{{ field.help }}</div>
+										{% endif %}
+									</div>
+								{% endif %}
+							{% endfor %}
+							<button class="btn-unified btn-primary-dark w-100" disabled>
+								<i class="fas fa-paper-plane me-1"></i>
+								Enviar Formulario (Vista Previa)
+							</button>
+						</form>
+					{% else %}
+						<p class="text-center text-muted">No hay campos aún en este formulario.</p>
+					{% endif %}
+				</div>
+				<div class="modal-footer modal-dark-footer">
+					<button type="button" class="btn-unified btn-nav-back" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Field Edit Modal -->
+	<div class="modal fade" id="editFieldModal" tabindex="-1" aria-labelledby="editFieldModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content modal-dark">
+				<div class="modal-header modal-dark-header">
+					<h5 class="modal-title" id="editFieldModalLabel">
+						<i class="fas fa-edit me-2"></i>Editar Campo
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body modal-dark-body">
+					<form id="editFieldForm">
+						<input type="hidden" id="editFieldId" name="fieldId">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="mb-3">
+									<label for="editLabel" class="form-label">Etiqueta
+										<span class="text-danger">*</span>
+									</label>
+									<input type="text" id="editLabel" name="label" class="form-control" required>
+									<small class="form-text text-muted">Etiqueta que verán los usuarios</small>
+								</div>
+								<div class="mb-3">
+									<label for="editName" class="form-label">Nombre del Campo
+										<span class="text-danger">*</span>
+									</label>
+									<input type="text" id="editName" name="name" class="form-control" required pattern="^[a-zA-Z][a-zA-Z0-9_]*$">
+									<small class="form-text text-muted">
+										<i class="fas fa-info-circle me-1"></i>
+										Debe comenzar con letra. Solo letras, números y guiones bajos.
+									</small>
+								</div>
+								<div class="mb-3">
+									<label for="editType" class="form-label">Tipo de Campo
+										<span class="text-danger">*</span>
+									</label>
+									<select id="editType" name="type" class="form-select" required>
+										<option value="text">Texto</option>
+										<option value="number">Número</option>
+										<option value="textarea">Caja de Texto</option>
+										<option value="select">Selección</option>
+										<option value="checkbox">Checkbox</option>
+										<option value="radio">Radio Botones</option>
+										<option value="date">Fecha</option>
+										<option value="file">Subir Archivo</option>
+									</select>
+								</div>
+								<div class="mb-3">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="editRequired" name="required">
+										<label class="form-check-label" for="editRequired">Campo obligatorio</label>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="mb-3">
+									<label for="editHelp" class="form-label">Texto de ayuda</label>
+									<input type="text" id="editHelp" name="help" class="form-control">
+									<small class="form-text text-muted">Texto explicativo debajo del campo</small>
+								</div>
+								<div class="mb-3" id="editOptionsGroup">
+									<label for="editOptions" class="form-label">
+										Opciones
+										<span class="text-danger" id="editOptionsRequired" style="display: none;">*</span>
+									</label>
+									<textarea id="editOptions" name="options" class="form-control" rows="3" placeholder="Opción 1,Opción 2,Opción 3"></textarea>
+									<small class="form-text text-muted">
+										<i class="fas fa-info-circle me-1"></i>
+										Obligatorio para select, checkbox y radio. Separar con comas.
+									</small>
+								</div>
+								<div class="mb-3" id="editMultipleGroup">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="editMultiple" name="multiple">
+										<label class="form-check-label" for="editMultiple">Permitir selección múltiple</label>
+										<small class="form-text text-muted d-block">Para campos de tipo select o archivo</small>
+									</div>
+								</div>
+								<div class="mb-3">
+									<label for="editCols" class="form-label">Ancho de columna</label>
+									<select id="editCols" name="cols" class="form-select">
+										<option value="">Por defecto</option>
+										<option value="col-md-6">Mitad (50%)</option>
+										<option value="col-md-4">Un tercio (33%)</option>
+										<option value="col-md-3">Un cuarto (25%)</option>
+										<option value="col-md-12">Ancho completo (100%)</option>
+									</select>
+								</div>
+								<div class="mb-3" id="editTextareaColsGroup">
+									<label for="editTextareaCols" class="form-label">Filas del textarea</label>
+									<input type="number" id="editTextareaCols" name="textarea_cols" class="form-control" min="1" max="20" value="3">
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer modal-dark-footer">
+					<button type="button" class="btn-unified btn-nav-back" data-bs-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn-unified btn-action-create" id="btnSaveField">
+						<i class="fas fa-save me-1"></i>
+						Guardar Cambios
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add Field Modal -->
+	<div class="modal fade" id="addFieldModal" tabindex="-1" aria-labelledby="addFieldModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content modal-dark">
+				<div class="modal-header modal-dark-header">
+					<h5 class="modal-title" id="addFieldModalLabel">
+						<i class="fas fa-plus-circle me-2"></i>Agregar Campo
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body modal-dark-body">
+					<form id="addFieldForm">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="mb-3">
+									<label for="addLabel" class="form-label">Etiqueta
+										<span class="text-danger">*</span>
+									</label>
+									<input type="text" id="addLabel" name="label" class="form-control" required placeholder="Ej: Nombre completo">
+									<small class="form-text text-muted">Etiqueta que verán los usuarios</small>
+								</div>
+								<div class="mb-3">
+									<label for="addName" class="form-label">Nombre del Campo
+										<span class="text-danger">*</span>
+									</label>
+									<input type="text" id="addName" name="name" class="form-control" required pattern="^[a-zA-Z][a-zA-Z0-9_]*$" placeholder="Ej: nombre_completo">
+									<small class="form-text text-muted">
+										<i class="fas fa-info-circle me-1"></i>
+										Debe comenzar con letra. Solo letras, números y guiones bajos.
+									</small>
+								</div>
+								<div class="mb-3">
+									<label for="addType" class="form-label">Tipo de Campo
+										<span class="text-danger">*</span>
+									</label>
+									<select id="addType" name="type" class="form-select" required>
+										<option value="text">Texto</option>
+										<option value="number">Número</option>
+										<option value="textarea">Caja de Texto</option>
+										<option value="select">Selección</option>
+										<option value="checkbox">Checkbox</option>
+										<option value="radio">Radio Botones</option>
+										<option value="date">Fecha</option>
+										<option value="file">Subir Archivo</option>
+									</select>
+								</div>
+								<div class="mb-3">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="addRequired" name="required">
+										<label class="form-check-label" for="addRequired">Campo obligatorio</label>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="mb-3">
+									<label for="addHelp" class="form-label">Texto de ayuda</label>
+									<input type="text" id="addHelp" name="help" class="form-control" placeholder="Ej: Ingrese su nombre completo">
+									<small class="form-text text-muted">Texto explicativo debajo del campo</small>
+								</div>
+								<div class="mb-3" id="addOptionsGroup">
+									<label for="addOptions" class="form-label">
+										Opciones
+										<span class="text-danger" id="addOptionsRequired" style="display: none;">*</span>
+									</label>
+									<textarea id="addOptions" name="options" class="form-control" rows="3" placeholder="Opción 1,Opción 2,Opción 3"></textarea>
+									<small class="form-text text-muted">
+										<i class="fas fa-info-circle me-1"></i>
+										Obligatorio para select, checkbox y radio. Separar con comas.
+									</small>
+								</div>
+								<div class="mb-3" id="addMultipleGroup">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="addMultiple" name="multiple">
+										<label class="form-check-label" for="addMultiple">Permitir selección múltiple</label>
+										<small class="form-text text-muted d-block">Para campos de tipo select o archivo</small>
+									</div>
+								</div>
+								<div class="mb-3">
+									<label for="addCols" class="form-label">Ancho de columna</label>
+									<select id="addCols" name="cols" class="form-select">
+										<option value="">Por defecto</option>
+										<option value="col-md-6">Mitad (50%)</option>
+										<option value="col-md-4">Un tercio (33%)</option>
+										<option value="col-md-3">Un cuarto (25%)</option>
+										<option value="col-md-12">Ancho completo (100%)</option>
+									</select>
+								</div>
+								<div class="mb-3" id="addTextareaColsGroup">
+									<label for="addTextareaCols" class="form-label">Filas del textarea</label>
+									<input type="number" id="addTextareaCols" name="textarea_cols" class="form-control" min="1" max="20" value="3">
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer modal-dark-footer">
+					<button type="button" class="btn-unified btn-nav-back" data-bs-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn-unified btn-action-create" id="btnAddField">
+						<i class="fas fa-plus me-1"></i>
+						Agregar Campo
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () { // Form Details Edit Elements
+const btnEdit = document.getElementById('btnEditForm');
+const btnCancel = document.getElementById('btnCancelEdit');
+const btnSave = document.getElementById('btnSaveEdit');
+const editActions = document.getElementById('editFormActions');
+const formDetailsTable = document.getElementById('formDetailsTable');
+
+// Field Edit Modal Elements
+const editFieldModal = new bootstrap.Modal(document.getElementById('editFieldModal'));
+const editFieldForm = document.getElementById('editFieldForm');
+const editTypeSelect = document.getElementById('editType');
+const editOptionsGroup = document.getElementById('editOptionsGroup');
+const editOptionsRequired = document.getElementById('editOptionsRequired');
+const editMultipleGroup = document.getElementById('editMultipleGroup');
+const editTextareaColsGroup = document.getElementById('editTextareaColsGroup');
+const btnSaveField = document.getElementById('btnSaveField');
+
+// Current editing field data
+let currentFieldId = null;
+
+// Original values for cancel functionality
+let originalValues = {};
+
+// Helper function to cleanup modal backdrops
+function cleanupModalBackdrops() { // Remove any lingering modal backdrops
+document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+// Remove modal-open class from body
+document.body.classList.remove('modal-open');
+// Reset body padding/overflow that Bootstrap sets
+document.body.style.removeProperty('overflow');
+document.body.style.removeProperty('padding-right');
+}
+
+// ===== FORM DETAILS INLINE EDIT =====
+
+// Store original values
+function storeOriginalValues() {
+originalValues = {
+name: formDetailsTable.querySelector('[name="name"]').value,
+description: formDetailsTable.querySelector('[name="description"]').value,
+status: formDetailsTable.querySelector('[name="status"]').value
+};
+}
+
+// Toggle edit mode
+function toggleEditMode(enable) {
+const displayElements = formDetailsTable.querySelectorAll('.field-display');
+const editElements = formDetailsTable.querySelectorAll('.field-edit');
+
+if (enable) {
+storeOriginalValues();
+displayElements.forEach(el => el.classList.add('d-none'));
+editElements.forEach(el => el.classList.remove('d-none'));
+editActions.classList.remove('d-none');
+btnEdit.classList.add('d-none');
+} else {
+displayElements.forEach(el => el.classList.remove('d-none'));
+editElements.forEach(el => el.classList.add('d-none'));
+editActions.classList.add('d-none');
+btnEdit.classList.remove('d-none');
+}
+}
+
+// Restore original values
+function restoreOriginalValues() {
+formDetailsTable.querySelector('[name="name"]').value = originalValues.name;
+formDetailsTable.querySelector('[name="description"]').value = originalValues.description;
+formDetailsTable.querySelector('[name="status"]').value = originalValues.status;
+}
+
+// Update display values after save
+function updateDisplayValues(data) {
+const nameDisplay = formDetailsTable.querySelector('[data-field="name"] .field-display');
+nameDisplay.textContent = data.name;
+
+const descDisplay = formDetailsTable.querySelector('[data-field="description"] .field-display');
+descDisplay.textContent = data.description;
+
+const statusDisplay = formDetailsTable.querySelector('[data-field="status"] .field-display');
+if (data.status === '1' || data.status === 1) {
+statusDisplay.innerHTML = '<span class="badge-dark badge-dark--success"><i class="fas fa-check-circle me-1"></i>Activo</span>';
+} else {
+statusDisplay.innerHTML = '<span class="badge-dark badge-dark--danger"><i class="fas fa-times-circle me-1"></i>Inactivo</span>';
+}
+}
+
+// Save form changes via Fetch API
+async function saveFormChanges() {
+const name = formDetailsTable.querySelector('[name="name"]').value.trim();
+const description = formDetailsTable.querySelector('[name="description"]').value.trim();
+const status = formDetailsTable.querySelector('[name="status"]').value;
+
+if (! name) {
+showError('El nombre del formulario es requerido.', 'Error de Validación');
+return;
+}
+
+showLoading('Guardando cambios...');
+
+try {
+const response = await fetch('{{ path("app_forms_edit", {"id": form_template.id, "dominio": dominio}) }}', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'X-Requested-With': 'XMLHttpRequest'
+},
+body: JSON.stringify(
+{name, description, status}
+)
+});
+
+const data = await response.json();
+hideLoading();
+
+if (response.ok && data.status === 'success') {
+showSuccess(data.message || 'Formulario actualizado exitosamente.');
+updateDisplayValues({name, description, status});
+toggleEditMode(false);
+} else {
+if (data.errors) {
+const errorMessages = Object.values(data.errors).join('<br>');
+Swal.fire({icon: 'error', title: 'Error de Validación', html: errorMessages, confirmButtonText: 'Entendido'});
+} else {
+showError(data.message || 'Error al guardar los cambios.');
+}
+}
+} catch (error) {
+hideLoading();
+console.error('Error saving form:', error);
+showError('Error de conexión. Por favor, intenta nuevamente.');
+}
+}
+
+// Form details event listeners
+btnEdit.addEventListener('click', () => toggleEditMode(true));
+btnCancel.addEventListener('click', () => {
+restoreOriginalValues();
+toggleEditMode(false);
+});
+btnSave.addEventListener('click', saveFormChanges);
+
+// ===== FIELD EDIT MODAL =====
+
+// Update field visibility based on type
+function updateFieldEditVisibility() {
+const selectedType = editTypeSelect.value;
+const needsOptions = ['select', 'checkbox', 'radio'].includes(selectedType);
+
+// Options visibility
+if (needsOptions) {
+editOptionsGroup.style.display = 'block';
+editOptionsRequired.style.display = 'inline';
+document.getElementById('editOptions').setAttribute('required', 'required');
+} else {
+editOptionsGroup.style.display = 'none';
+editOptionsRequired.style.display = 'none';
+document.getElementById('editOptions').removeAttribute('required');
+}
+
+// Multiple selection visibility
+editMultipleGroup.style.display = ['select', 'file'].includes(selectedType) ? 'block' : 'none';
+
+// Textarea rows visibility
+editTextareaColsGroup.style.display = selectedType === 'textarea' ? 'block' : 'none';
+}
+
+// Load field data into modal
+async function loadFieldData(fieldId) {
+const formId = {{ form_template.id }};
+// Build URL manually to avoid Twig route parameter validation
+const baseUrl = '{{ path('app_forms_show', {'id': form_template.id, 'dominio': dominio}) }}';
+const url = `${baseUrl}/fields/${fieldId}/details`;
+
+showLoading('Cargando datos del campo...');
+
+try {
+const response = await fetch(url, {
+headers: {
+'X-Requested-With': 'XMLHttpRequest'
+}
+});
+
+hideLoading();
+
+if (! response.ok) {
+throw new Error('Campo no encontrado');
+}
+
+const data = await response.json();
+
+// Populate form fields
+document.getElementById('editFieldId').value = data.id;
+document.getElementById('editLabel').value = data.label || '';
+document.getElementById('editName').value = data.name || '';
+document.getElementById('editType').value = data.type || 'text';
+document.getElementById('editRequired').checked = data.isRequired || false;
+document.getElementById('editHelp').value = data.help || '';
+document.getElementById('editOptions').value = data.options || '';
+document.getElementById('editMultiple').checked = data.multiple || false;
+document.getElementById('editCols').value = data.cols || '';
+document.getElementById('editTextareaCols').value = data.textareaCols || 3;
+
+currentFieldId = data.id;
+
+// Update visibility based on type
+updateFieldEditVisibility();
+
+// Show modal
+editFieldModal.show();
+
+} catch (error) {
+hideLoading();
+console.error('Error loading field:', error);
+showError('Error al cargar los datos del campo.');
+}
+}
+
+// Save field changes
+async function saveFieldChanges() {
+const fieldId = document.getElementById('editFieldId').value;
+const formId = {{ form_template.id }};
+
+// Gather form data
+const formData = {
+label: document.getElementById('editLabel').value.trim(),
+name: document.getElementById('editName').value.trim(),
+type: document.getElementById('editType').value,
+required: document.getElementById('editRequired').checked ? '1' : '',
+help: document.getElementById('editHelp').value.trim(),
+options: document.getElementById('editOptions').value.trim(),
+multiple: document.getElementById('editMultiple').checked ? '1' : '',
+cols: document.getElementById('editCols').value,
+textarea_cols: document.getElementById('editTextareaCols').value
+};
+
+// Basic validation
+if (! formData.label) {
+showError('La etiqueta del campo es requerida.', 'Error de Validación');
+return;
+}
+if (! formData.name) {
+showError('El nombre del campo es requerido.', 'Error de Validación');
+return;
+}
+
+// Validate options for select/checkbox/radio
+const needsOptions = ['select', 'checkbox', 'radio'].includes(formData.type);
+if (needsOptions && ! formData.options) {
+showError('Las opciones son requeridas para este tipo de campo.', 'Error de Validación');
+return;
+}
+
+showLoading('Guardando campo...');
+
+try { // Build URL manually to avoid Twig route parameter validation
+const baseUrl = '{{ path('app_forms_show', {'id': form_template.id, 'dominio': dominio}) }}';
+const url = `${baseUrl}/fields/${fieldId}/edit`;
+
+const response = await fetch(url, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded',
+'X-Requested-With': 'XMLHttpRequest'
+},
+body: new URLSearchParams(formData).toString()
+});
+
+const data = await response.json();
+hideLoading();
+
+if (response.ok && data.status === 'success') {
+showSuccess(data.message || 'Campo actualizado exitosamente.');
+editFieldModal.hide();
+cleanupModalBackdrops();
+
+// Update table row
+const row = document.querySelector (`tr[data-field-id="${fieldId}"]`);
+if (row && data.field) {
+row.querySelector('.field-label').textContent = data.field.label;
+row.querySelector('.field-type').textContent = data.field.type.charAt(0).toUpperCase() + data.field.type.slice(1);
+}
+} else {
+if (data.errors) {
+const errorMessages = Object.values(data.errors).join('<br>');
+Swal.fire({icon: 'error', title: 'Error de Validación', html: errorMessages, confirmButtonText: 'Entendido'});
+} else {
+showError(data.message || 'Error al guardar el campo.');
+}
+}
+} catch (error) {
+hideLoading();
+console.error('Error saving field:', error);
+showError('Error de conexión. Por favor, intenta nuevamente.');
+}
+}
+
+// Field edit event listeners
+editTypeSelect.addEventListener('change', updateFieldEditVisibility);
+btnSaveField.addEventListener('click', saveFieldChanges);
+
+// Attach click handlers to edit buttons
+document.querySelectorAll('.btn-edit-field').forEach(btn => {
+btn.addEventListener('click', function () {
+const fieldId = this.dataset.fieldId;
+loadFieldData(fieldId);
+});
+});
+
+// Initialize field visibility on modal open
+document.getElementById('editFieldModal').addEventListener('shown.bs.modal', updateFieldEditVisibility);
+
+// ===== ADD FIELD MODAL =====
+
+const addFieldModal = new bootstrap.Modal(document.getElementById('addFieldModal'));
+const addTypeSelect = document.getElementById('addType');
+const addOptionsGroup = document.getElementById('addOptionsGroup');
+const addOptionsRequired = document.getElementById('addOptionsRequired');
+const addMultipleGroup = document.getElementById('addMultipleGroup');
+const addTextareaColsGroup = document.getElementById('addTextareaColsGroup');
+const btnAddField = document.getElementById('btnAddField');
+
+// Update add field visibility based on type
+function updateAddFieldVisibility() {
+const selectedType = addTypeSelect.value;
+const needsOptions = ['select', 'checkbox', 'radio'].includes(selectedType);
+
+// Options visibility
+if (needsOptions) {
+addOptionsGroup.style.display = 'block';
+addOptionsRequired.style.display = 'inline';
+document.getElementById('addOptions').setAttribute('required', 'required');
+} else {
+addOptionsGroup.style.display = 'none';
+addOptionsRequired.style.display = 'none';
+document.getElementById('addOptions').removeAttribute('required');
+}
+
+// Multiple selection visibility
+addMultipleGroup.style.display = ['select', 'file'].includes(selectedType) ? 'block' : 'none';
+
+// Textarea rows visibility
+addTextareaColsGroup.style.display = selectedType === 'textarea' ? 'block' : 'none';
+}
+
+// Reset add field form
+function resetAddFieldForm() {
+document.getElementById('addFieldForm').reset();
+document.getElementById('addType').value = 'text';
+updateAddFieldVisibility();
+}
+
+// Create new field via AJAX
+async function createNewField() { // Gather form data
+const formData = {
+label: document.getElementById('addLabel').value.trim(),
+name: document.getElementById('addName').value.trim(),
+type: document.getElementById('addType').value,
+required: document.getElementById('addRequired').checked ? '1' : '',
+help: document.getElementById('addHelp').value.trim(),
+options: document.getElementById('addOptions').value.trim(),
+multiple: document.getElementById('addMultiple').checked ? '1' : '',
+cols: document.getElementById('addCols').value,
+textarea_cols: document.getElementById('addTextareaCols').value
+};
+
+// Basic validation
+if (! formData.label) {
+showError('La etiqueta del campo es requerida.', 'Error de Validación');
+return;
+}
+if (! formData.name) {
+showError('El nombre del campo es requerido.', 'Error de Validación');
+return;
+}
+
+// Validate options for select/checkbox/radio
+const needsOptions = ['select', 'checkbox', 'radio'].includes(formData.type);
+if (needsOptions && ! formData.options) {
+showError('Las opciones son requeridas para este tipo de campo.', 'Error de Validación');
+return;
+}
+
+showLoading('Creando campo...');
+
+try {
+const url = '{{ path("app_forms_fields_new", {"id": form_template.id, "dominio": dominio}) }}';
+
+const response = await fetch(url, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded',
+'X-Requested-With': 'XMLHttpRequest'
+},
+body: new URLSearchParams(formData).toString()
+});
+
+const data = await response.json();
+hideLoading();
+
+if (response.ok && data.status === 'success') {
+showSuccess(data.message || 'Campo creado exitosamente.');
+addFieldModal.hide();
+cleanupModalBackdrops();
+resetAddFieldForm();
+
+// Add new row to table or reload page to show new field
+if (data.field) {
+addFieldToTable(data.field);
+} else { // Reload page to show the new field
+location.reload();
+}
+} else {
+if (data.errors) {
+const errorMessages = Object.values(data.errors).join('<br>');
+Swal.fire({icon: 'error', title: 'Error de Validación', html: errorMessages, confirmButtonText: 'Entendido'});
+} else {
+showError(data.message || 'Error al crear el campo.');
+}
+}
+} catch (error) {
+hideLoading();
+console.error('Error creating field:', error);
+showError('Error de conexión. Por favor, intenta nuevamente.');
+}
+}
+
+// Add field row to table dynamically
+function addFieldToTable(field) {
+const tbody = document.querySelector('#fieldsTable tbody');
+if (! tbody) { // If no table exists (empty state), reload to show the new table
+location.reload();
+return;
+}
+
+const requiredBadge = field.isRequired ? '<span class="badge-dark badge-dark--success"><i class="fas fa-check-circle me-1"></i>Sí</span>' : '<span class="badge-dark badge-dark--warning"><i class="fas fa-minus-circle me-1"></i>No</span>';
+
+const newRow = document.createElement('tr');
+newRow.setAttribute('data-field-id', field.id);
+newRow.innerHTML = `
+                    <td class="py-2"><span class="badge-dark badge-dark--info">#${
+field.id
+}</span></td>
+                    <td class="py-2 fw-bold field-label">${
+field.label
+}</td>
+                    <td class="py-2">
+                        <span class="badge-dark badge-dark--default field-type">${
+field.type.charAt(0).toUpperCase() + field.type.slice(1)
+}</span>
+                    </td>
+                    <td class="py-2">${requiredBadge}</td>
+                    <td class="py-2">
+                        <div class="action-btn-group justify-content-center">
+                            <button type="button" class="action-btn action-btn--edit btn-edit-field" 
+                                    data-field-id="${
+field.id
+}" 
+                                    data-form-id="{{ form_template.id }}"
+                                    title="Editar campo">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="action-btn action-btn--delete" 
+                                    onclick="location.reload()"
+                                    title="Eliminar campo (recargar para activar)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+tbody.appendChild(newRow);
+
+// Attach click handler to new edit button
+newRow.querySelector('.btn-edit-field').addEventListener('click', function () {
+const fieldId = this.dataset.fieldId;
+loadFieldData(fieldId);
+});
+}
+
+// Add field event listeners
+addTypeSelect.addEventListener('change', updateAddFieldVisibility);
+btnAddField.addEventListener('click', createNewField);
+
+// Initialize add field visibility on modal open
+document.getElementById('addFieldModal').addEventListener('shown.bs.modal', updateAddFieldVisibility);
+
+// Reset form when modal is hidden
+document.getElementById('addFieldModal').addEventListener('hidden.bs.modal', resetAddFieldForm);
+});
+
+function duplicateForm() {
+const formName = '{{ form_template.name }}';
+
+SwalHelper.prompt({
+title: 'Duplicar formulario',
+text: 'Ingrese el nombre para el formulario duplicado:',
+inputValue: formName + ' (Copia)',
+inputPlaceholder: 'Nombre del formulario...'
+}).then((result) => {
+if (result.isConfirmed && result.value.trim() !== '') {
+showInfo('Funcionalidad de duplicación será implementada próximamente.');
+}
+});
+}
+
+function confirmDeleteField(event, fieldLabel) {
+event.preventDefault();
+event.stopPropagation();
+
+// Get the form element properly (the button's parent form)
+const form = event.target.closest('form');
+if (! form) {
+console.error('No form found for delete button');
+return false;
+}
+
+const fieldId = form.querySelector('input[name="_token"]') ?. value ? form.action.split('/').pop() : null;
+
+// Get field row for later removal
+const fieldRow = form.closest('tr[data-field-id]');
+
+Swal.fire({
+title: `¿Eliminar el campo "${fieldLabel}"?`,
+text: 'Esta acción no se puede deshacer',
+icon: 'warning',
+showCancelButton: true,
+confirmButtonText: '<i class="fas fa-trash-alt me-1"></i> Sí, eliminar',
+cancelButtonText: '<i class="fas fa-times me-1"></i> Cancelar',
+confirmButtonColor: '#dc3545',
+reverseButtons: true,
+customClass: {
+popup: 'swal-dark-popup'
+}
+}).then((result) => {
+if (result.isConfirmed) { // Show loading state
+Swal.fire({
+title: 'Eliminando...',
+text: 'Por favor espere',
+allowOutsideClick: false,
+allowEscapeKey: false,
+showConfirmButton: false,
+didOpen: () => Swal.showLoading()
+});
+
+// Get token from form
+const tokenInput = form.querySelector('input[name="_token"]');
+const tokenValue = tokenInput ? tokenInput.value : '';
+
+// Prepare data using URLSearchParams
+const body = new URLSearchParams();
+body.append('_token', tokenValue);
+
+// Debug: Log token value
+console.log('Eliminando campo:', {
+action: form.action,
+token: tokenValue ? tokenValue.substring(0, 10) + '...' : 'MISSING'
+});
+
+// Perform async delete via Fetch
+fetch(form.action, {
+method: 'POST',
+body: body,
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+'X-Requested-With': 'XMLHttpRequest'
+}
+}).then(response => response.json()).then(data => {
+if (data.status === 'success') { // Success - remove the row from the table
+if (fieldRow) {
+fieldRow.remove();
+}
+
+Swal.fire({
+icon: 'success',
+title: '¡Eliminado!',
+text: data.message || `El campo "${fieldLabel}" ha sido eliminado exitosamente.`,
+showConfirmButton: false,
+timer: 1500
+}).then(() => { // Check if table is now empty
+const tbody = document.querySelector('#fieldsTable tbody');
+if (tbody && tbody.querySelectorAll('tr').length === 0) { // Reload to show empty state
+window.location.reload();
+}
+});
+} else {
+throw new Error(data.message || 'Error al eliminar el campo');
+}
+}).catch(error => {
+console.error('Error:', error);
+Swal.fire({
+icon: 'error',
+title: 'Error',
+text: error.message || 'No se pudo eliminar el campo. Por favor, intente nuevamente.',
+confirmButtonText: 'Entendido'
+});
+});
+}
+});
+
+return false;
+}
+	</script>
+
+{% endblock %}

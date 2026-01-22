@@ -1,0 +1,214 @@
+/**
+ * Bootstrap Modal Customization
+ * Personalización elegante de modales Bootstrap para mantener el diseño actual
+ */
+
+/* Modal backdrop más elegante con blur */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.modal-backdrop.show {
+    opacity: 0.7;
+}
+
+/* Animación suave del modal */
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Modal dialog centrado y responsive */
+#crud-form-modal .modal-dialog {
+    max-width: 1200px;
+    margin: 1.75rem auto;
+}
+
+#crud-form-modal .modal-dialog-centered {
+    min-height: calc(100% - 3.5rem);
+}
+
+/* Modal content con diseño moderno */
+#crud-form-modal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+/* Header personalizado con gradiente verde (por defecto) */
+#crud-form-modal .modal-header {
+    background: linear-gradient(135deg, #00A859, #008f4c);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-bottom: none;
+    position: relative;
+}
+
+/* Header rojo para casos especiales (notificaciones/eventos) */
+#crud-form-modal .modal-header.header-red {
+    background: linear-gradient(135deg, #D32F2F, #B71C1C);
+}
+
+/* Título del modal */
+#crud-form-modal .modal-title {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    color: white;
+}
+
+/* Botón cerrar blanco estilizado */
+#crud-form-modal .btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    width: 32px;
+    height: 32px;
+    background-size: 20px;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+    padding: 0;
+}
+
+#crud-form-modal .btn-close:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+#crud-form-modal .btn-close:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+    outline: none;
+}
+
+/* Body del modal con scroll elegante */
+#crud-form-modal .modal-body {
+    padding: 2.5rem 4rem 3rem;
+    background-color: #FFFFFF;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+/* Scrollbar personalizada para el modal */
+#crud-form-modal .modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+#crud-form-modal .modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#crud-form-modal .modal-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #00A859, #008f4c);
+    border-radius: 4px;
+}
+
+#crud-form-modal .modal-body::-webkit-scrollbar-thumb:hover {
+    background: #007a41;
+}
+
+/* Spinner de carga dentro del modal */
+#crud-form-modal .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 0;
+}
+
+#crud-form-modal .loading-spinner i {
+    color: #00A859;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+#crud-form-modal .loading-spinner p {
+    color: #6B7280;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+}
+
+/* Sombra suave al header */
+#crud-form-modal .modal-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), transparent);
+}
+
+/* Responsive ajustments */
+@media (max-width: 1200px) {
+    #crud-form-modal .modal-dialog {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 768px) {
+    #crud-form-modal .modal-body {
+        padding: 1.5rem 1.5rem 2rem;
+    }
+
+    #crud-form-modal .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+
+    #crud-form-modal .modal-title {
+        font-size: 20px;
+    }
+
+    #crud-form-modal .modal-header {
+        padding: 1.25rem 1.5rem;
+    }
+}
+
+/* Modal fullscreen en móvil si es necesario */
+@media (max-width: 576px) {
+    #crud-form-modal .modal-dialog {
+        margin: 0;
+        max-width: 100%;
+        min-height: 100vh;
+    }
+
+    #crud-form-modal .modal-content {
+        border-radius: 0;
+        min-height: 100vh;
+    }
+
+    #crud-form-modal .modal-body {
+        max-height: none;
+    }
+}
+
+/* Transición suave al mostrar/ocultar */
+#crud-form-modal {
+    transition: opacity 0.15s linear;
+}
+
+/* Asegurar que el modal esté por encima de DataTables */
+#crud-form-modal {
+    z-index: 1060;
+}
+
+.modal-backdrop {
+    z-index: 1050;
+}
+
+/* Error state en modal */
+#crud-form-modal .alert-danger {
+    border-radius: 8px;
+    border-left: 4px solid #D32F2F;
+}
+
+/* Success state (si se muestra feedback antes de cerrar) */
+#crud-form-modal .alert-success {
+    border-radius: 8px;
+    border-left: 4px solid #00A859;
+}

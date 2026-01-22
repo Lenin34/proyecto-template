@@ -1,0 +1,457 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+{% set form_data = preview_data.form_template %}
+{% set fields = preview_data.fields %}
+{% set validation_rules = preview_data.validation_rules %}
+
+{% block title %}Vista Previa: {{ form_data.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('form-templates') }}
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b py-3">
+        <div class="container text-center">
+            <h1 class="title-sntiasg mb-0">Vista Previa del Formulario</h1>
+            <p class="text-light">{{ form_data.name }}</p>
+        </div>
+    </section>
+
+    <div class="container my-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_forms_index', {'dominio': dominio}) }}">Formularios</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_forms_show', {'id': form_data.id, 'dominio': dominio}) }}">{{ form_data.name }}</a></li>
+                <li class="breadcrumb-item active">Vista Previa</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-eye me-2"></i> {{ form_data.name }}
+                        </h4>
+                        <div class="badge bg-light text-dark">Vista Previa Interactiva</div>
+                    </div>
+                    <div class="card-body">
+                        {% if form_data.description %}
+                            <p class="text-muted mb-4">{{ form_data.description }}</p>
+                        {% endif %}
+
+                        <div id="preview-alerts"></div>
+
+                        <!-- Formulario de Vista Previa -->
+                        <form id="previewForm" class="preview-form" novalidate>
+                            <div class="row">
+                                {% for field in fields %}
+                                    <div class="mb-3 {{ field.cols }}">
+                                        <label for="{{ field.name }}" class="form-label">
+                                            {{ field.label }}
+                                            {% if field.required %}
+                                                <span class="text-danger">*</span>
+                                            {% endif %}
+                                        </label>
+                                        
+                                        {% if field.type == 'text' %}
+                                            <input 
+                                                type="{{ field.attributes.type }}" 
+                                                id="{{ field.name }}" 
+                                                name="{{ field.name }}" 
+                                                class="{{ field.attributes.class }}"
+                                                placeholder="{{ field.attributes.placeholder }}"
+                                                {% if field.required %}required{% endif %}>
+                                        
+                                        {% elseif field.type == 'number' %}
+                                            <input 
+                                                type="number" 
+                                                id="{{ field.name }}" 
+                                                name="{{ field.name }}" 
+                                                class="{{ field.attributes.class }}"
+                                                placeholder="{{ field.attributes.placeholder }}"
+                                                {% if field.required %}required{% endif %}>
+                                        
+                                        {% elseif field.type == 'date' %}
+                                            <input 
+                                                type="date" 
+                                                id="{{ field.name }}" 
+                                                name="{{ field.name }}" 
+                                                class="{{ field.attributes.class }}"
+                                                {% if field.required %}required{% endif %}>
+                                        
+                                        {% elseif field.type == 'textarea' %}
+                                            <textarea 
+                                                id="{{ field.name }}" 
+                                                name="{{ field.name }}" 
+                                                class="{{ field.attributes.class }}"
+                                                rows="{{ field.textarea_cols }}"
+                                                placeholder="{{ field.attributes.placeholder }}"
+                                                {% if field.required %}required{% endif %}></textarea>
+                                        
+                                        {% elseif field.type == 'select' %}
+                                            <select 
+                                                id="{{ field.name }}" 
+                                                name="{{ field.name }}" 
+                                                class="form-select"
+                                                {% if field.required %}required{% endif %}>
+                                                <option value="">Seleccione una opción...</option>
+                                                {% if field.options %}
+                                                    {% for option in field.options %}
+                                                        <option value="{{ option }}">{{ option }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        
+                                        {% elseif field.type == 'radio' %}
+                                            {% if field.options %}
+                                                {% for option in field.options %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            class="form-check-input" 
+                                                            type="radio" 
+                                                            name="{{ field.name }}" 
+                                                            id="{{ field.name }}_{{ loop.index }}" 
+                                                            value="{{ option }}"
+                                                            {% if field.required %}required{% endif %}>
+                                                        <label class="form-check-label" for="{{ field.name }}_{{ loop.index }}">
+                                                            {{ option }}
+                                                        </label>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        
+                                        {% elseif field.type == 'checkbox' %}
+                                            {% if field.options %}
+                                                {% for option in field.options %}
+                                                    <div class="form-check">
+                                                        <input 
+                                                            class="form-check-input" 
+                                                            type="checkbox" 
+                                                            name="{{ field.name }}[]" 
+                                                            id="{{ field.name }}_{{ loop.index }}" 
+                                                            value="{{ option }}">
+                                                        <label class="form-check-label" for="{{ field.name }}_{{ loop.index }}">
+                                                            {{ option }}
+                                                        </label>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        
+                                        {% elseif field.type == 'file' %}
+                                            <input 
+                                                type="file" 
+                                                id="{{ field.name }}" 
+                                                name="{{ field.name }}" 
+                                                class="{{ field.attributes.class }}"
+                                                {% if field.multiple %}multiple{% endif %}
+                                                {% if field.required %}required{% endif %}>
+                                        
+                                        {% endif %}
+                                        
+                                        {% if field.help %}
+                                            <div class="form-text">{{ field.help }}</div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="mt-4 pt-3 border-top d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                                    <i class="fas fa-undo me-2"></i> Limpiar Formulario
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-2"></i> Probar Validación
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0"><i class="fas fa-cogs me-2"></i> Controles de Vista Previa</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('app_forms_edit', {'id': form_data.id, 'dominio': dominio}) }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-edit me-2"></i> Editar Formulario
+                            </a>
+                            <button type="button" class="btn btn-outline-success btn-sm" onclick="fillSampleData()">
+                                <i class="fas fa-magic me-2"></i> Llenar con Datos de Ejemplo
+                            </button>
+                            <button type="button" class="btn btn-outline-warning btn-sm" onclick="toggleValidation()">
+                                <i class="fas fa-shield-alt me-2"></i> <span id="validationToggleText">Desactivar Validación</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Información</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <strong>Total de campos:</strong><br>
+                            <span class="badge bg-secondary">{{ fields|length }} campos</span>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <strong>Campos requeridos:</strong><br>
+                            {% set required_count = 0 %}
+                            {% for field in fields %}
+                                {% if field.required %}
+                                    {% set required_count = required_count + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            <span class="badge bg-warning">{{ required_count }} requeridos</span>
+                        </div>
+
+                        <div class="mb-2">
+                            <strong>Validación:</strong><br>
+                            <span class="badge bg-success" id="validationStatus">Activa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header bg-white border-bottom">
+                        <h6 class="mb-0 text-muted"><i class="fas fa-list me-2"></i> Campos del Formulario</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            {% for field in fields %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom">
+                                    <div>
+                                        <div class="fw-bold text-dark mb-1">{{ field.label }}</div>
+                                        <small class="text-muted">
+                                            <span class="field-type-tag-preview">{{ field.type|capitalize }}</span>
+                                        </small>
+                                    </div>
+                                    {% if field.required %}
+                                        <span class="field-required-tag-preview required">
+                                            <i class="fas fa-check-circle me-1"></i>Requerido
+                                        </span>
+                                    {% else %}
+                                        <span class="field-required-tag-preview optional">
+                                            <i class="fas fa-minus-circle me-1"></i>Opcional
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let validationEnabled = true;
+        const validationRules = {{ validation_rules|json_encode|raw }};
+
+        // Generar script de validación
+        {{ preview_data.validation_rules ? 'const validationScript = ' ~ preview_data.validation_rules|json_encode|raw ~ ';' : '' }}
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('previewForm');
+            
+            // Manejar envío del formulario
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validationEnabled) {
+                    showAlert('success', 'Formulario enviado! (Validación desactivada)');
+                    return;
+                }
+
+                const formData = new FormData(form);
+                const data = {};
+                
+                // Convertir FormData a objeto
+                for (let [key, value] of formData.entries()) {
+                    if (data[key]) {
+                        if (Array.isArray(data[key])) {
+                            data[key].push(value);
+                        } else {
+                            data[key] = [data[key], value];
+                        }
+                    } else {
+                        data[key] = value;
+                    }
+                }
+
+                // Validar usando el endpoint
+                fetch('{{ path('app_forms_validate', {'id': form_data.id, 'dominio': dominio}) }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.is_valid) {
+                        SwalHelper.successWithOptions('Formulario válido! (Esta es solo una vista previa)', {
+                            title: 'Validación exitosa',
+                            confirmButtonText: 'Entendido'
+                        });
+                        clearAllErrors();
+                    } else {
+                        SwalHelper.validationErrors(result.errors, 'Errores en el formulario');
+                        showErrors(result.errors);
+                    }
+                })
+                .catch(error => {
+                    showError('Error al validar el formulario: ' + error.message);
+                });
+            });
+        });
+
+        function resetForm() {
+            document.getElementById('previewForm').reset();
+            clearAllErrors();
+            showInfo('Formulario limpiado');
+        }
+
+        function fillSampleData() {
+            // Llenar con datos de ejemplo
+            const form = document.getElementById('previewForm');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            
+            inputs.forEach(input => {
+                if (input.type === 'text' || input.type === 'email') {
+                    if (input.name.includes('email')) {
+                        input.value = 'ejemplo@correo.com';
+                    } else if (input.name.includes('name')) {
+                        input.value = 'Juan Pérez';
+                    } else if (input.name.includes('phone')) {
+                        input.value = '+1 234 567 8900';
+                    } else {
+                        input.value = 'Texto de ejemplo';
+                    }
+                } else if (input.type === 'number') {
+                    input.value = '123';
+                } else if (input.type === 'date') {
+                    input.value = '2024-01-15';
+                } else if (input.tagName === 'TEXTAREA') {
+                    input.value = 'Este es un texto de ejemplo para el área de texto.';
+                } else if (input.tagName === 'SELECT') {
+                    if (input.options.length > 1) {
+                        input.selectedIndex = 1;
+                    }
+                } else if (input.type === 'radio' || input.type === 'checkbox') {
+                    if (Math.random() > 0.5) {
+                        input.checked = true;
+                    }
+                }
+            });
+            
+            showSuccess('Formulario llenado con datos de ejemplo');
+        }
+
+        function toggleValidation() {
+            validationEnabled = !validationEnabled;
+            const toggleText = document.getElementById('validationToggleText');
+            const status = document.getElementById('validationStatus');
+            
+            if (validationEnabled) {
+                toggleText.textContent = 'Desactivar Validación';
+                status.textContent = 'Activa';
+                status.className = 'badge bg-success';
+            } else {
+                toggleText.textContent = 'Activar Validación';
+                status.textContent = 'Inactiva';
+                status.className = 'badge bg-secondary';
+            }
+            
+            clearAllErrors();
+            showInfo('Validación ' + (validationEnabled ? 'activada' : 'desactivada'));
+        }
+
+        function showAlert(type, message) {
+            // Usar SweetAlert2 en lugar de alertas Bootstrap
+            switch(type) {
+                case 'success':
+                    showSuccess(message);
+                    break;
+                case 'danger':
+                    showError(message);
+                    break;
+                case 'warning':
+                    showWarning(message);
+                    break;
+                case 'info':
+                default:
+                    showInfo(message);
+                    break;
+            }
+        }
+
+        function showErrors(errors) {
+            clearAllErrors();
+            
+            Object.keys(errors).forEach(fieldName => {
+                const field = document.querySelector(`[name="${fieldName}"], [name="${fieldName}[]"]`);
+                if (field) {
+                    field.classList.add('is-invalid');
+                    
+                    let errorDiv = field.parentNode.querySelector('.invalid-feedback');
+                    if (!errorDiv) {
+                        errorDiv = document.createElement('div');
+                        errorDiv.className = 'invalid-feedback';
+                        field.parentNode.appendChild(errorDiv);
+                    }
+                    errorDiv.textContent = errors[fieldName].join(', ');
+                }
+            });
+        }
+
+        function clearAllErrors() {
+            const form = document.getElementById('previewForm');
+            const invalidFields = form.querySelectorAll('.is-invalid');
+            const errorDivs = form.querySelectorAll('.invalid-feedback');
+            
+            invalidFields.forEach(field => field.classList.remove('is-invalid'));
+            errorDivs.forEach(div => div.remove());
+        }
+    </script>
+
+    <style>
+        .preview-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 2px dashed #dee2e6;
+        }
+        
+        .preview-form:focus-within {
+            border-color: #0d6efd;
+            background: #fff;
+        }
+        
+        .card-header .badge {
+            font-size: 0.75rem;
+        }
+        
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+        }
+        
+        .list-group-item:first-child {
+            border-top: none;
+        }
+        
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+{% endblock %}

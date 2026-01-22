@@ -1,0 +1,283 @@
+{% if event.id is defined and event.id %}
+	{{ form_start(form, { 'action': path('app_event_edit', {'id': event.id, 'dominio': dominio}), 'method': 'POST' }) }}
+{% else %}
+	{{ form_start(form, { 'action': path('app_event_new', {'dominio': dominio}), 'method': 'POST' }) }}
+{% endif %}
+
+<div class="form-row-modern">
+	<div class="col-md-12">
+		{{ form_row(form.title, {'label': 'Título del evento', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+</div>
+
+<div class="form-row-modern">
+	<div class="col-md-12">
+		{{ form_row(form.region, {'label': 'Región (opcional)', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+</div>
+
+<div class="form-row-modern">
+	<div class="form-col-modern">
+		{{ form_row(form.start_date, {'label': 'Fecha de inicio', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+	<div class="form-col-modern">
+		{{ form_row(form.end_date, {'label': 'Fecha de fin', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+</div>
+
+<div class="row mb-4">
+	<div class="col-md-12">
+		{{ form_label(form.image, 'Imagen del evento', {'label_attr': {'class': 'form-label-modern'}}) }}
+		<div class="file-upload-wrapper">
+			<i class="fas fa-camera file-upload-icon"></i>
+			<span class="file-upload-text">Sube una imagen aquí</span>
+			{{ form_widget(form.image, {'attr': {'class': 'file-upload-input'}}) }}
+		</div>
+		{{ form_errors(form.image) }}
+	</div>
+</div>
+
+<div class="form-row-modern">
+	<div class="col-md-12">
+		{{ form_row(form.description, {'label': 'Descripción', 'attr': {'class': 'form-control-modern', 'rows': '5'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+</div>
+
+<!-- Hidden input to store selected companies -->
+<input type="hidden" name="selected_companies" id="selected-companies" value="{% if event.companies is defined and event.companies|length > 0 %}{{ event.companies|map(c => c.id)|join(',') }}{% endif %}">
+
+<!-- Hidden input to store selected region -->
+<input type="hidden" name="selected_region" id="selected-region" value="{% if event.region is defined and event.region %}{{ event.region.id }}{% endif %}">
+
+<!-- Send Notification Checkbox -->
+<div class="form-row-modern">
+	<div class="col-md-12">
+		<div class="form-check d-flex align-items-center p-3 border rounded bg-light">
+			<input type="checkbox" class="form-check-input me-3" id="send_notification" name="send_notification" value="1" {% if event.id is not defined %}checked{% endif %} style="width: 20px; height: 20px; cursor: pointer;">
+			<label class="form-check-label form-label-modern mb-0" for="send_notification" style="cursor: pointer;">
+				<i class="fas fa-bell me-2 text-primary"></i>
+				<strong>Enviar notificación push al crear este evento</strong>
+				<small class="d-block text-muted mt-1">Los usuarios de las empresas seleccionadas recibirán una notificación en sus dispositivos móviles</small>
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="d-flex justify-content-center col-12 text-center mt-5">
+	<button class="btn-modern-submit">{{ button_label|default('CREAR EVENTO') }}</button>
+</div>
+
+<!-- Modal for company selection -->
+<div class="modal fade" id="companiesModal" tabindex="-1" aria-labelledby="companiesModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-a">
+		<a href="{{ path('app_event_index', {'dominio': dominio}) }}" class="btn-regresar-icon position-absolute top-0 end-0 m-3">
+			<svg width="21" height="21" viewbox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path id="Vector" d="M17.9999 17.9999L10.5 10.5M10.5 10.5L3 3M10.5 10.5L18 3M10.5 10.5L3 18" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+		</a>
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="d-flex justify-content-center align-items-center mb-3">
+					<h5 class="modal-title-sntiasg m-0" id="companiesModalLabel">Seleccionar Empresas</h5>
+				</div>
+
+				<div id="companies-container"></div>
+
+				<div class="d-flex justify-content-center align-items-center mt-5">
+					<button type="button" class="btn-y" id="save-companies">Guardar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{ form_end(form) }}
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+        // Store selected companies
+        const selectedCompanies = [];
+        let currentRegionId = null;
+        let dominio = '{{ dominio }}';
+        let allCompaniesInRegion = false;
+
+        // Get initially selected companies and region
+        const initialSelectedCompanies = document.getElementById('selected-companies').value;
+        const initialSelectedCompanyIds = initialSelectedCompanies ? initialSelectedCompanies.split(',') : [];
+        const initialRegionId = document.getElementById('selected-region').value;
+
+        // Get region select element
+        const regionSelect = document.querySelector('[name="event[region]"]');
+
+        // Initialize selected companies
+        if (initialSelectedCompanyIds.length > 0) {
+            selectedCompanies.push(...initialSelectedCompanyIds);
+        }
+
+        // Set initial region if exists
+        if (initialRegionId) {
+            currentRegionId = initialRegionId;
+            if (regionSelect) {
+                regionSelect.value = initialRegionId;
+            }
+        }
+
+        // Listen for region changes
+        if (regionSelect) {
+            regionSelect.addEventListener('change', function() {
+                const newRegionId = this.value;
+                
+                if (newRegionId) {
+                    currentRegionId = newRegionId;
+                    loadCompaniesForRegion(newRegionId);
+                } else {
+                    currentRegionId = null;
+                    loadAllCompanies();
+                }
+            });
+        }
+
+        // Load all companies
+        function loadAllCompanies() {
+            fetch(`/${dominio}/companies/all`)
+                .then(response => response.json())
+                .then(companies => {
+                    displayCompanies(companies, null);
+                })
+                .catch(error => {
+                    console.error('Error loading companies:', error);
+                    fetch('{{ path('app_region_list', {'dominio': dominio}) }}')
+                        .then(response => response.json())
+                        .then(regions => {
+                            const allCompaniesPromises = regions.map(region =>
+                                fetch(`/${dominio}/region/${region.id}/companies`).then(r => r.json())
+                            );
+                            return Promise.all(allCompaniesPromises);
+                        })
+                        .then(companiesArrays => {
+                            const allCompanies = companiesArrays.flat();
+                            const uniqueCompanies = allCompanies.filter((company, index, self) =>
+                                index === self.findIndex(c => c.id === company.id)
+                            );
+                            displayCompanies(uniqueCompanies, null);
+                        })
+                        .catch(err => {
+                            console.error('Error loading all companies:', err);
+                            alert('Error al cargar las empresas');
+                        });
+                });
+        }
+
+        // Load companies for a region
+        function loadCompaniesForRegion(regionId) {
+            fetch(`/${dominio}/region/${regionId}/companies`)
+                .then(response => response.json())
+                .then(companies => {
+                    return fetch('{{ path('app_region_list', {'dominio': dominio}) }}')
+                        .then(response => response.json())
+                        .then(regions => {
+                            const region = regions.find(r => r.id == regionId);
+                            const regionName = region ? region.name : 'esta región';
+                            displayCompanies(companies, regionName);
+                        });
+                })
+                .catch(error => {
+                    console.error('Error loading companies:', error);
+                    alert('Error al cargar las empresas');
+                });
+        }
+
+        // Display companies
+        function displayCompanies(companies, regionName) {
+            const companiesContainer = document.getElementById('companies-container');
+            companiesContainer.innerHTML = '';
+
+            if (companies.length === 0) {
+                companiesContainer.innerHTML = '<div class="alert alert-info">No hay empresas disponibles</div>';
+                const modal = new bootstrap.Modal(document.getElementById('companiesModal'));
+                modal.show();
+                return;
+            }
+
+            // Add "All companies in region" option
+            if (regionName) {
+                const allCompaniesDiv = document.createElement('div');
+                allCompaniesDiv.className = 'form-check mb-3 p-3 border rounded bg-light';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'form-check-input all-companies-checkbox';
+                checkbox.id = 'all-companies-region';
+                checkbox.value = 'all_region_' + currentRegionId;
+                checkbox.checked = allCompaniesInRegion;
+
+                const label = document.createElement('label');
+                label.className = 'form-check-label fw-bold';
+                label.htmlFor = 'all-companies-region';
+                label.innerHTML = `<i class="fas fa-building me-2"></i>Todas las empresas de ${regionName}`;
+
+                allCompaniesDiv.appendChild(checkbox);
+                allCompaniesDiv.appendChild(label);
+                companiesContainer.appendChild(allCompaniesDiv);
+
+                checkbox.addEventListener('change', function() {
+                    allCompaniesInRegion = this.checked;
+                    document.querySelectorAll('.company-checkbox').forEach(cb => {
+                        cb.checked = this.checked;
+                        cb.disabled = this.checked;
+                    });
+                });
+
+                const separator = document.createElement('hr');
+                separator.className = 'my-3';
+                companiesContainer.appendChild(separator);
+            }
+
+            // Add individual companies
+            companies.forEach(company => {
+                const companyDiv = document.createElement('div');
+                companyDiv.className = 'form-check mb-2';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'form-check-input company-checkbox';
+                checkbox.id = `company-${company.id}`;
+                checkbox.value = company.id;
+                checkbox.checked = selectedCompanies.includes(company.id.toString()) || allCompaniesInRegion;
+                checkbox.disabled = allCompaniesInRegion;
+
+                const label = document.createElement('label');
+                label.className = 'form-check-label';
+                label.htmlFor = `company-${company.id}`;
+                label.textContent = company.name;
+
+                companyDiv.appendChild(checkbox);
+                companyDiv.appendChild(label);
+                companiesContainer.appendChild(companyDiv);
+            });
+
+            const modal = new bootstrap.Modal(document.getElementById('companiesModal'));
+            modal.show();
+        }
+
+        // Save companies
+        document.getElementById('save-companies').addEventListener('click', function() {
+            selectedCompanies.length = 0;
+
+            const allCompaniesCheckbox = document.querySelector('.all-companies-checkbox');
+            if (allCompaniesCheckbox && allCompaniesCheckbox.checked) {
+                document.querySelectorAll('.company-checkbox').forEach(checkbox => {
+                    selectedCompanies.push(checkbox.value);
+                });
+            } else {
+                document.querySelectorAll('.company-checkbox:checked').forEach(checkbox => {
+                    selectedCompanies.push(checkbox.value);
+                });
+            }
+
+            document.getElementById('selected-companies').value = selectedCompanies.join(',');
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('companiesModal'));
+            modal.hide();
+        });
+});
+</script>

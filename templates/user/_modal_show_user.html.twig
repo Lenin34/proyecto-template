@@ -1,0 +1,122 @@
+{# Modal de Ver Usuario - Estilo consistente con Nuevo Usuario #}
+<div class="modal fade" id="modalShowUser" tabindex="-1" aria-labelledby="modalShowUserLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+		<div class="modal-content modal-form">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalShowUserLabel">
+					<i class="fas fa-user me-2"></i>
+					Detalles del Agremiado
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div
+					class="row g-3 align-items-start">
+
+					<!-- FOTO A LA IZQUIERDA -->
+					<div class="col-md-4">
+						<label class="form-label">Foto de perfil</label>
+						<div class="file-upload-wrapper avatar-left" style="cursor: default;">
+							<div
+								class="file-upload-display" id="showUserPhotoContainer">
+								<!-- La imagen se insertará aquí vía JS -->
+								<div class="file-upload-icon">
+									<i class="fas fa-user"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- NOMBRE Y APELLIDOS A LA DERECHA -->
+					<div class="col-md-8">
+						<div class="row g-3">
+							<div class="col-md-6">
+								<label class="form-label">Nombre</label>
+								<input type="text" id="showUserName" class="form-control form-control-dark" readonly>
+							</div>
+							<div class="col-md-6">
+								<label class="form-label">Apellidos</label>
+								<input type="text" id="showUserLastName" class="form-control form-control-dark" readonly>
+							</div>
+						</div>
+						<br>
+						<div class="row g-3">
+							<div class="col-md-6">
+								<label class="form-label">Correo Electrónico</label>
+								<input type="email" id="showUserEmail" class="form-control form-control-dark" readonly>
+							</div>
+
+							<div class="col-md-6">
+								<label class="form-label">Teléfono</label>
+								<input type="tel" id="showUserPhone" class="form-control form-control-dark" readonly>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-12 mt-4">
+					<div class="row g-4">
+						<div class="col-md-4">
+							<label class="form-label">CURP</label>
+							<input type="text" id="showUserCurp" class="form-control form-control-dark" readonly>
+						</div>
+
+						<div class="col-md-4">
+							<label class="form-label">Fecha de Nacimiento</label>
+							<input type="text" id="showUserBirthday" class="form-control form-control-dark" readonly>
+						</div>
+
+						<div class="col-md-4">
+							<label class="form-label">Género</label>
+							<input type="text" id="showUserGender" class="form-control form-control-dark" readonly>
+						</div>
+					</div>
+					<br>
+					<div class="row g-4">
+						<div class="col-md-4">
+							<label class="form-label">Nivel de Educación</label>
+							<input type="text" id="showUserEducation" class="form-control form-control-dark" readonly>
+						</div>
+
+						<div class="col-md-4">
+							<label class="form-label">N° de Empleado</label>
+							<input type="text" id="showUserEmployeeNumber" class="form-control form-control-dark" readonly>
+						</div>
+
+						<div class="col-md-4">
+							<label class="form-label">Empresa</label>
+							<input type="text" id="showUserCompany" class="form-control form-control-dark" readonly>
+						</div>
+					</div>
+
+					<br>
+					<div class="row g-4">
+						<div class="col-md-12">
+							<label class="form-label">Regiones</label>
+							<div
+								id="showUserRegions" class="d-flex flex-wrap gap-2"><!-- Regiones se insertarán aquí -->
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+
+				<h5 class="mb-3 text-white">
+					<i class="fas fa-users me-2"></i>Beneficiarios</h5>
+				<div
+					id="showUserBeneficiaries" class="row g-3">
+					<!-- Beneficiarios se insertarán aquí -->
+					<div class="col-12 text-center text-muted">Cargando beneficiarios...</div>
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+					<i class="fas fa-times me-2"></i>
+					Cerrar
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

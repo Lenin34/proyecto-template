@@ -1,0 +1,83 @@
+doctrine:
+    dbal:
+        default_connection: tenant_a
+        connections:
+            tenant_a:
+                url: '%env(resolve:DATABASE_URL_TENANT_A)%'
+            tenant_b:
+                url: '%env(resolve:DATABASE_URL_TENANT_B)%'
+            tenant_c:
+                url: '%env(resolve:DATABASE_URL_TENANT_C)%'
+            master:
+                url: '%env(resolve:DATABASE_URL_MASTER)%'
+
+    orm:
+        auto_generate_proxy_classes: true
+        enable_lazy_ghost_objects: true
+        proxy_namespace: 'Proxies'
+        default_entity_manager: tenant_a
+        entity_managers:
+            tenant_a:
+                connection: tenant_a
+                mappings:
+                    App:
+                        type: attribute
+                        is_bundle: false
+                        dir: '%kernel.project_dir%/src/Entity/App'
+                        prefix: 'App\Entity\App'
+                        alias: App
+            tenant_b:
+                connection: tenant_b
+                mappings:
+                    App:
+                        type: attribute
+                        is_bundle: false
+                        dir: '%kernel.project_dir%/src/Entity/App'
+                        prefix: 'App\Entity\App'
+                        alias: App
+            tenant_c:
+                connection: tenant_c
+                mappings:
+                    App:
+                        type: attribute
+                        is_bundle: false
+                        dir: '%kernel.project_dir%/src/Entity/App'
+                        prefix: 'App\Entity\App'
+                        alias: App
+            master:
+                connection: master
+                mappings:
+                    Master:
+                        type: attribute
+                        is_bundle: false
+                        dir: '%kernel.project_dir%/src/Entity/Master'
+                        prefix: 'App\Entity\Master'
+                        alias: Master
+
+        controller_resolver:
+            auto_mapping: false
+
+when@test:
+    doctrine:
+        dbal:
+            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+
+when@prod:
+    doctrine:
+        orm:
+            auto_generate_proxy_classes: false
+            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+
+    framework:
+        cache:
+            pools:
+                doctrine.result_cache_pool:
+                    adapter: cache.app
+                doctrine.system_cache_pool:
+                    adapter: cache.system

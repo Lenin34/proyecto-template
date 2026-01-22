@@ -1,0 +1,192 @@
+{% extends 'base-master.html.twig' %}
+
+{% block title %}Aplicaciones{% endblock %}
+
+
+{% block body %}
+    <div>
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'class': 'formulario'}}) }}
+
+
+        <div class="nav-select">
+            <div class="nav-container">
+                {{ form_row(form.dominio, {
+                    attr: {'class': 'select-drop'},
+                    label_attr: {'class': 'select-title'}
+                }) }}
+            </div>
+            <div class="nav-container">
+                {{ form_row(form.databaseName, {
+                    attr: {'class': 'select-drop'},
+                    label_attr: {'class': 'select-title'}
+                }) }}
+            </div>
+        </div>
+
+        <div class="modulos-form form">
+            <fieldset class="modulos-fieldset">
+                <legend>Módulos</legend>
+                <div class="fieldset-actions">
+                    <a href="#" id="features-select-all">Seleccionar todo</a>
+                    <a href="#" id="features-clear-all">Deseleccionar todo</a>
+                </div>
+                {% for feature in features %}
+                    <div class="fieldset-item">
+                        <div class="choice-group">
+                            <input
+                                    id="feature_{{ loop.index }}"
+                                    class="choice-input"
+                                    type="checkbox"
+                                    name="features[{{ feature }}]"
+                                    value="1"
+                                    {% if tenant.features[feature] is defined and tenant.features[feature] == '1' %}checked{% endif %}
+                            >
+                            <label class="choice-label" for="feature_{{ loop.index }}">{{ feature }}</label>
+                        </div>
+                    </div>
+                {% endfor %}
+            </fieldset>
+        </div>
+
+        <div class="form-2 form">
+            <fieldset class="fieldset-2">
+                <legend>Aviso de privacidad</legend>
+                <label class="file" for="aviso">Seleccionar archivo</label>
+                {{ form_widget(form.aviso, {
+                    attr: {
+                        'class': 'file-input',
+                        'id': 'aviso',
+                        'accept': '.pdf,.doc,.docx',
+                        'onchange': 'updateFileName(this, "aviso-filename")'
+                    }
+                }) }}
+                <small class="form-text text-muted">
+                    Formatos permitidos: PDF, DOC, DOCX. Tamaño máximo: 10MB.
+                </small>
+                <div id="aviso-filename" class="file-name-display"></div>
+            </fieldset>
+        </div>
+
+        <div class="form-2 form">
+            <fieldset class="fieldset-2">
+                <legend>Logo</legend>
+
+                {% if logoInfo and not logoInfo.is_default %}
+                    <div class="current-logo-info" style="margin-bottom: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 5px;">
+                        <h5>Logo Actual:</h5>
+                        <img src="{{ logoInfo.logo_url }}" alt="Logo actual" style="max-width: 150px; max-height: 100px; margin: 10px 0;">
+                        <div>
+                            <small class="text-muted">
+                                {% if logoInfo.is_legacy %}
+                                    🔶 Logo Legacy ({{ logoInfo.logo_url }})
+                                {% else %}
+                                    ✅ Logo Personalizado ({{ logoInfo.logo_path }})
+                                {% endif %}
+                            </small>
+                        </div>
+
+                        {% if not logoInfo.is_legacy and tenant is defined %}
+                            <form method="post" action="{{ path('app_master_delete_logo', {'dominio': 'Master', 'rtenant': tenant.id}) }}" style="margin-top: 10px;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_logo' ~ tenant.id) }}">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este logo?')">
+                                    🗑️ Eliminar Logo
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="no-logo-info" style="margin-bottom: 15px; padding: 10px; background-color: #fff3cd; border-radius: 5px;">
+                        <small class="text-warning">
+                            🔘 Usando logo por defecto. Sube un archivo para personalizar.
+                        </small>
+                    </div>
+                {% endif %}
+
+                <label class="file" for="logo">Seleccionar nuevo logo</label>
+                {{ form_widget(form.logo, {
+                    attr: {
+                        'class': 'file-input',
+                        'id': 'logo',
+                        'accept': 'image/*',
+                        'onchange': 'updateFileName(this, "logo-filename")'
+                    }
+                }) }}
+                <small class="form-text text-muted">
+                    Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 5MB.
+                </small>
+                <div id="logo-filename" class="file-name-display"></div>
+            </fieldset>
+        </div>
+
+        <div class="container-button">
+            <a class="modulos-button"
+               href="{{ path('app_master', {'dominio': 'Master'}) }}">Regresar</a>
+
+            <button class="modulos-button">Guardar</button>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function updateFileName(input, displayId) {
+            const display = document.getElementById(displayId);
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const fileName = file.name;
+                const fileSize = (file.size / 1024 / 1024).toFixed(2); // MB
+
+                display.innerHTML = `
+                    <div class="selected-file-info" style="
+                        margin-top: 10px;
+                        padding: 8px 12px;
+                        background-color: #e8f5e8;
+                        border: 1px solid #28a745;
+                        border-radius: 4px;
+                        color: #155724;
+                        font-size: 0.9em;
+                    ">
+                        <strong>📁 Archivo seleccionado:</strong><br>
+                        <span style="font-family: monospace;">${fileName}</span><br>
+                        <small>Tamaño: ${fileSize} MB</small>
+                    </div>
+                `;
+            } else {
+                display.innerHTML = '';
+            }
+        }
+
+        // Mejorar la apariencia visual de los campos de archivo
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInputs = document.querySelectorAll('.file-input');
+
+            fileInputs.forEach(function(input) {
+                // Agregar eventos para mejorar la UX
+                input.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.style.borderColor = '#007bff';
+                    this.style.backgroundColor = 'rgba(0, 123, 255, 0.1)';
+                });
+
+                input.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.style.borderColor = '#ccc';
+                    this.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+                });
+
+                input.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.style.borderColor = '#ccc';
+                    this.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+
+                    // Trigger change event para actualizar el display
+                    const changeEvent = new Event('change', { bubbles: true });
+                    this.dispatchEvent(changeEvent);
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="description" content="Somos un equipo comprometido con transformar vidas, promoviendo el bienestar y el crecimiento de los trabajadores y sus familias. Fomentamos la armonía entre empresas y empleados para un futuro laboral más justo y equitativo.">
+		<meta name="keywords" content="sindicato, transformación sindical, bienestar laboral, crecimiento de trabajadores, armonía laboral, derechos laborales, modernización sindical, conciliación empresa-trabajador, equidad laboral, formación sindical, trabajadores y familias, fortalecimiento sindical, empleo digno, relaciones laborales">
+		<meta name="author" content="Masoftcode">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Mi Credencial | transformacionsindical.mx</title>
+		<link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/keen-slider@6.8.5/keen-slider.min.css"/>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Sans+Caption:wght@400;700&display=swap" rel="stylesheet">
+
+		<style>
+
+			.body {
+				background: linear-gradient(to bottom, #1C4488 0%, #08B5B1 45%, #4BBE7E 100%);
+				box-sizing: border-box;
+				min-height: 100vh;
+				overflow-x: hidden;
+				width: 100%;
+				padding: 20px 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.cont-credential {
+				width: 100%;
+				max-width: 800px;
+				margin: 0 auto;
+			}
+			.fondo-card {
+				background-image: url('{{ asset("images/users/credencial_fondo.jpg") }}');
+				background-size: cover;
+				background-position: center;
+				background-repeat: no-repeat;
+				border-radius: 35px;
+				box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+				padding: 40px;
+				width: 95%;
+				margin: 0 auto;
+			}
+			.contenedor-info {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+				padding: 20px;
+				box-sizing: border-box;
+				text-align: center;
+			}
+			.info-text {
+				font-size: clamp(1rem, 4vw, 1.5rem);
+				font-weight: bold;
+				color: #ffffff;
+				line-height: 1.4;
+			}
+			.iso-credential {
+				width: 160px;
+				max-width: 60%;
+				height: auto;
+			}
+
+			/* Breakpoints */
+			@media(max-width: 767px) {
+				.fondo-card {
+					padding: 30px 20px;
+					background-image: url('{{ asset("images/users/credencial_fondo_mobile.png") }}');
+				}
+			}
+
+			@media(max-width: 575px) {
+				.body {
+					padding: 10px 0;
+				}
+				.fondo-card {
+					padding: 25px 15px;
+					border-radius: 20px;
+					width: 92%;
+				}
+			}
+		</style>
+	</head>
+
+	<body class="body">
+
+		<section>
+			<div class="container cont-credential rounded-5 p-1 my-5 d-flex justify-content-center fondo-card">
+
+				<div class="row w-100 align-items-center flex-column flex-md-row">
+					<div class="info-movil d-flex flex-column align-items-center justify-content-center">
+						<img src="{{ asset('images/isotipo.svg') }}" alt="Isotipo" class="iso-credential mb-3">
+					</div>
+
+					<div class="contenedor-info">
+						<div class="info-bloque">
+							<p class="info-text">{{ error }}</p>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</section>
+
+		<!-- Scripts -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script src="https://kit.fontawesome.com/9278dceefd.js" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/keen-slider@6.8.5/keen-slider.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	</body>
+</html>

@@ -1,0 +1,5 @@
+# config/packages/doctrine_migrations_Master.yaml
+doctrine_migrations:
+  migrations_paths:
+    'DoctrineMigrations\Master': '%kernel.project_dir%/migrations/Master'
+  em: Master

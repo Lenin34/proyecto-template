@@ -1,0 +1,200 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Editar Campo: {{ field.label }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('form-templates') }}
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b py-3 text-white">
+        <div class="container text-center">
+            <h1 class="h4 mb-0"><i class="fas fa-edit me-2"></i> Editar Campo: {{ field.label }}</h1>
+        </div>
+    </section>
+
+    <div class="container my-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>{{ field.label }}</h4>
+            </div>
+            <div class="card-body">
+                <!-- Flash messages are handled by SweetAlert2 in base template -->
+
+                <form method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="label" class="form-label">Etiqueta del Campo</label>
+                                <input type="text" id="label" name="label" class="form-control" value="{{ field.label }}" required>
+                                <small class="form-text text-muted">Texto que se muestra al usuario.</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nombre Interno</label>
+                                <input type="text" id="name" name="name" class="form-control" value="{{ field.name }}" required>
+                                <small class="form-text text-muted">Usado en el sistema, sin espacios.</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="type" class="form-label">Tipo de Campo</label>
+                                <select id="type" name="type" class="form-select" required>
+                                    <option value="text" {% if field.type == 'text' %}selected{% endif %}>Texto</option>
+                                    <option value="textarea" {% if field.type == 'textarea' %}selected{% endif %}>Área de Texto</option>
+                                    <option value="select" {% if field.type == 'select' %}selected{% endif %}>Lista Desplegable</option>
+                                    <option value="checkbox" {% if field.type == 'checkbox' %}selected{% endif %}>Checkbox</option>
+                                    <option value="radio" {% if field.type == 'radio' %}selected{% endif %}>Radio</option>
+                                    <option value="date" {% if field.type == 'date' %}selected{% endif %}>Fecha</option>
+                                    <option value="file" {% if field.type == 'file' %}selected{% endif %}>Archivo</option>
+                                </select>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="required" name="required" {% if field.isRequired %}checked{% endif %}>
+                                <label class="form-check-label text-dark" for="required">Campo Obligatorio</label>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="help" class="form-label">Texto de Ayuda</label>
+                                <input type="text" id="help" name="help" class="form-control" value="{{ field.help }}">
+                                <small class="form-text text-muted">Texto explicativo debajo del campo.</small>
+                            </div>
+
+                            <div class="mb-3" id="options-group">
+                                <label for="options" class="form-label">
+                                    Opciones <span class="text-danger" id="options-required" style="display: none;">*</span>
+                                </label>
+                                <textarea id="options" name="options" class="form-control" rows="3" placeholder="Ejemplo: Opción 1,Opción 2,Opción 3">{{ field.options }}</textarea>
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    <strong>Obligatorio</strong> para campos de tipo select, checkbox o radio.
+                                    Separadas por comas para listas, radios o checkboxes.
+                                </small>
+                                <div class="invalid-feedback" id="options-error" style="display: none;">
+                                    Las opciones son obligatorias para este tipo de campo.
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="multiple" name="multiple" {% if field.isMultiple %}checked{% endif %}>
+                                <label class="form-check-label" for="multiple">Permitir selección múltiple</label>
+                                <small class="form-text text-muted">Solo para listas o archivos.</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="cols" class="form-label">Ancho en Pantalla</label>
+                                <select id="cols" name="cols" class="form-select">
+                                    <option value="" {% if field.cols is empty %}selected{% endif %}>Predeterminado</option>
+                                    <option value="col-md-6" {% if field.cols == 'col-md-6' %}selected{% endif %}>Media Pantalla</option>
+                                    <option value="col-md-4" {% if field.cols == 'col-md-4' %}selected{% endif %}>Un Tercio</option>
+                                    <option value="col-md-3" {% if field.cols == 'col-md-3' %}selected{% endif %}>Un Cuarto</option>
+                                    <option value="col-md-12" {% if field.cols == 'col-md-12' %}selected{% endif %}>Completo</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="textarea_cols" class="form-label">Filas para Área de Texto</label>
+                                <input type="number" id="textarea_cols" name="textarea_cols" class="form-control" min="1" max="20" value="{{ field.textareaCols|default(3) }}">
+                                <small class="form-text text-muted">Solo para campos de tipo área de texto.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-1"></i> Guardar Cambios
+                        </button>
+                        <a href="{{ path('app_forms_edit', {'id': form_template.id, 'dominio': dominio}) }}" class="btn btn-cancel">
+                            <i class="fas fa-times me-1"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeSelect = document.getElementById('type');
+            const optionsGroup = document.getElementById('options-group');
+            const optionsField = document.getElementById('options');
+            const optionsRequired = document.getElementById('options-required');
+            const optionsError = document.getElementById('options-error');
+            const multipleGroup = document.getElementById('multiple').closest('.mb-3');
+            const textareaColsGroup = document.getElementById('textarea_cols').closest('.mb-3');
+            const form = document.querySelector('form');
+
+            function updateVisibility() {
+                const selectedType = typeSelect.value;
+                const needsOptions = ['select', 'checkbox', 'radio'].includes(selectedType);
+
+                // Mostrar/ocultar campo de opciones
+                if (needsOptions) {
+                    optionsGroup.style.display = 'block';
+                    optionsRequired.style.display = 'inline';
+                    optionsField.setAttribute('required', 'required');
+                    optionsGroup.classList.add('border-warning', 'p-3', 'rounded');
+                } else {
+                    optionsGroup.style.display = 'none';
+                    optionsRequired.style.display = 'none';
+                    optionsField.removeAttribute('required');
+                    optionsGroup.classList.remove('border-warning', 'p-3', 'rounded');
+                    clearOptionsValidation();
+                }
+
+                multipleGroup.style.display = ['select', 'file'].includes(selectedType) ? 'block' : 'none';
+                textareaColsGroup.style.display = selectedType === 'textarea' ? 'block' : 'none';
+            }
+
+            function clearOptionsValidation() {
+                optionsField.classList.remove('is-invalid');
+                optionsError.style.display = 'none';
+            }
+
+            function validateOptions() {
+                const selectedType = typeSelect.value;
+                const needsOptions = ['select', 'checkbox', 'radio'].includes(selectedType);
+
+                if (needsOptions && !optionsField.value.trim()) {
+                    optionsField.classList.add('is-invalid');
+                    optionsError.style.display = 'block';
+                    return false;
+                }
+
+                clearOptionsValidation();
+                return true;
+            }
+
+            // Validación en tiempo real
+            optionsField.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    clearOptionsValidation();
+                }
+            });
+
+            // Validación al enviar el formulario
+            form.addEventListener('submit', function(e) {
+                if (!validateOptions()) {
+                    e.preventDefault();
+                    optionsField.focus();
+
+                    // Mostrar alerta con SweetAlert si está disponible
+                    if (typeof SwalHelper !== 'undefined') {
+                        SwalHelper.error('Por favor, ingresa las opciones para el campo de tipo ' + typeSelect.value);
+                    } else {
+                        alert('Por favor, ingresa las opciones para el campo de tipo ' + typeSelect.value);
+                    }
+                }
+            });
+
+            updateVisibility();
+            typeSelect.addEventListener('change', updateVisibility);
+        });
+    </script>
+{% endblock %}

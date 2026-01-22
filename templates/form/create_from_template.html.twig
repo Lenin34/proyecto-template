@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Crear desde Plantilla: {{ template.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('form-templates') }}
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b py-3">
+        <div class="container text-center">
+            <h1 class="title-sntiasg mb-0">Crear Formulario desde Plantilla</h1>
+            <p class="text-light">{{ template.name }}</p>
+        </div>
+    </section>
+
+    <div class="container my-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_forms_index', {'dominio': dominio}) }}">Formularios</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_forms_templates', {'dominio': dominio}) }}">Plantillas</a></li>
+                <li class="breadcrumb-item active">{{ template.name }}</li>
+            </ol>
+        </nav>
+
+        <!-- Flash messages are handled by SweetAlert2 in base template -->
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="{{ template.icon }} me-2"></i> {{ template.name }}
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-4">{{ template.description }}</p>
+                        
+                        <form method="post">
+                            <div class="mb-4">
+                                <label for="custom_name" class="form-label">
+                                    <strong>Nombre del Formulario</strong>
+                                </label>
+                                <input type="text" 
+                                       id="custom_name" 
+                                       name="custom_name" 
+                                       class="form-control" 
+                                       value="{{ template.name }}" 
+                                       required>
+                                <div class="form-text">Puedes personalizar el nombre del formulario</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h6><i class="fas fa-list me-2"></i> Campos que se incluirán:</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-striped">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Campo</th>
+                                                <th>Tipo</th>
+                                                <th>Requerido</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for field in template.fields %}
+                                                <tr>
+                                                    <td>{{ loop.index }}</td>
+                                                    <td>
+                                                        <strong>{{ field.label }}</strong>
+                                                        {% if field.help %}
+                                                            <br><small class="text-muted">{{ field.help }}</small>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-secondary">{{ field.type }}</span>
+                                                    </td>
+                                                    <td>
+                                                        {% if field.required %}
+                                                            <span class="badge bg-warning">Requerido</span>
+                                                        {% else %}
+                                                            <span class="badge bg-light text-dark">Opcional</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ path('app_forms_templates', {'dominio': dominio}) }}" 
+                                   class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Volver a Plantillas
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-magic me-2"></i> Crear Formulario
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Información</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>Categoría:</strong><br>
+                            <span class="badge bg-primary">{{ template.category }}</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Campos incluidos:</strong><br>
+                            <span class="text-muted">{{ template.fields|length }} campos</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Tipos de campo:</strong><br>
+                            {% set field_types = [] %}
+                            {% for field in template.fields %}
+                                {% set field_types = field_types|merge([field.type]) %}
+                            {% endfor %}
+                            {% for type in field_types|unique %}
+                                <span class="badge bg-secondary me-1">{{ type }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <hr>
+
+                        <div class="d-grid">
+                            <a href="{{ path('app_forms_template_preview', {'dominio': dominio, 'templateKey': template_key}) }}" 
+                               class="btn btn-outline-info btn-sm" target="_blank">
+                                <i class="fas fa-eye me-2"></i> Ver Vista Previa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i> Consejo</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="small mb-0">
+                            Después de crear el formulario, podrás editarlo, agregar más campos, 
+                            modificar las validaciones y personalizar completamente su apariencia.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

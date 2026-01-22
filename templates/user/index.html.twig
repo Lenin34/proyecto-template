@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Agremiados
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/user-index.css') }}">
+{% endblock %}
+
+{% block body %}
+	{# Unified Toolbar - Clean and Professional #}
+	<section class="user-toolbar">
+		<div class="container-fluid px-5">
+			<div
+				class="toolbar-content">
+				{# Left: Title #}
+				<div class="toolbar-left">
+					<h1 class="page-title">Agremiados</h1>
+				</div>
+
+				{# Center/Right: Actions Only (DataTables provides search) #}
+				<div
+					class="toolbar-right">
+					{# Action Buttons - With Permanent Colors #}
+					<button class="btn-action btn-action-primary" data-bs-toggle="modal" data-bs-target="#modalCargaMasiva" title="Carga masiva">
+						<i class="fas fa-file-upload"></i>
+						<span>Carga Masiva</span>
+					</button>
+
+					<button class="btn-action btn-action-success" data-bs-toggle="modal" data-bs-target="#modalNuevoUsuario" title="Dar de alta">
+						<i class="fas fa-plus"></i>
+						<span>Nuevo</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	{# Main Content - DataTables Implementation #}
+	<div
+		class="container-fluid px-5 mt-4">
+		{# Clean Table with DataTables #}
+		<div class="table-wrapper">
+			<table id="users-datatable" class="data-table" style="width:100%">
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 120px;">Acciones</th>
+						<th class="text-center">Nombre Completo</th>
+						<th class="text-center">Empresa</th>
+						<th class="text-center">Región</th>
+						<th class="text-center">Fecha Nac.</th>
+						<th class="text-center">Teléfono</th>
+						<th class="text-center">Email</th>
+						<th class="text-center">N° Empleado</th>
+						<th class="text-center">CURP</th>
+						<th class="text-center" style="width: 60px;">Género</th>
+						<th class="text-center">Educación</th>
+					</tr>
+				</thead>
+				<tbody>
+					{# DataTables will populate this via AJAX #}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	{# Modales extraídos a archivos separados #}
+	{{ include('user/_modal_bulk_upload.html.twig') }}
+	{{ include('user/_modal_new_user.html.twig') }}
+	{{ include('user/_modal_show_user.html.twig') }}
+	{{ include('user/_modal_edit_user.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{# SheetJS para parseo de Excel en frontend #}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+	{# Sistema de errores y manager de carga masiva #}
+	<script src="{{ asset('js/bulk-upload-errors.js') }}"></script>
+	<script src="{{ asset('js/bulk-upload.js') }}"></script>
+
+	{# Script principal de usuarios #}
+	<script src="{{ asset('js/user-index.js') }}"></script>
+	<script>
+		// Configuración con variables Twig para el JavaScript externo
+window.userIndexConfig = {
+dominio: '{{ dominio }}',
+datatableUrl: '{{ path('app_user_datatable', {'dominio': dominio}) }}',
+checkDuplicatesUrl: '{{ path('app_user_check_duplicates', {'dominio': dominio}) }}',
+bulkUploadAjaxUrl: '{{ path('app_user_bulk_upload_ajax', {'dominio': dominio}) }}',
+csrfToken: '{{ csrf_token_delete }}'
+};
+	</script>
+{% endblock %}

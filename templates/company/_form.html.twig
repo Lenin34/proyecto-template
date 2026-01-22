@@ -1,0 +1,19 @@
+{{ form_start(form) }}
+<div class="form-row-modern">
+	<div class="form-col-modern">
+		{{ form_row(form.name, {'label': 'Nombre de la empresa', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+</div>
+
+<div class="form-row-modern">
+	<div class="form-col-modern">
+		{{ form_row(form.region, {'label': 'Región', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+</div>
+
+<div class="d-flex justify-content-center col-12 text-center mt-5">
+	<button class="btn-modern-submit">{{ button_label|default('CREAR') }}</button>
+</div>
+{{ form_end(form) }}
+
+{# Replace all path/url calls using dominio with app.request.attributes.get('dominio') #}

@@ -1,0 +1,217 @@
+{# Modal para carga masiva de usuarios #}
+{% set dominio = app.request.attributes.get('dominio') %}
+
+<div class="modal fade" id="modalCargaMasiva" tabindex="-1" aria-labelledby="modalCargaMasivaLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content modal-form">
+			<div class="modal-header border-bottom-0">
+				<h5 class="modal-title text-white" id="modalCargaMasivaLabel">
+					<i class="fas fa-users-cog me-2"></i>
+					Carga Masiva de Usuarios
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<div
+				class="modal-body p-4">
+				{# Paso 1: Selección de archivo #}
+				<div
+					id="bulkUploadStep1">
+					<!-- Header con instrucciones -->
+					<div class="text-center mb-4">
+						<h6 class="text-white mb-2">Importar usuarios desde Excel</h6>
+						<p class="text-white-50 small mb-0">
+							Sube tu archivo Excel con los datos de los usuarios.
+						</p>
+						<a href="{{ path('app_user_download_template', {'dominio': dominio}) }}" class="btn btn-link btn-sm text-info text-decoration-none mt-1">
+							<i class="fas fa-download me-1"></i>
+							Descargar plantilla de ejemplo
+						</a>
+					</div>
+
+					<!-- Formulario oculto -->
+					<form id="bulkUploadForm" action="{{ path('app_user_bulk_upload', {'dominio': dominio}) }}" method="post" enctype="multipart/form-data" class="d-none">
+						<input type="file" name="excel_file" id="bulkUploadFile" accept=".xlsx,.xls" required>
+					</form>
+
+					<!-- Área de Dropzone personalizada -->
+					<div class="upload-dropzone p-5 text-center border rounded-3 mb-3" id="uploadDropzone" style="border: 2px dashed rgba(255,255,255,0.2) !important; background-color: rgba(255,255,255,0.05); cursor: pointer; transition: all 0.3s ease;">
+						<div class="mb-3">
+							<div class="icon-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 80px; height: 80px;">
+								<i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
+							</div>
+						</div>
+						<h5 class="text-white mb-2">Selecciona o arrastra tu archivo aquí</h5>
+						<p class="text-white-50 small mb-3">Soporta archivos .xlsx y .xls (Máx. 5MB)</p>
+						<button type="button" class="btn btn-primary px-4 py-2 rounded-pill" onclick="document.getElementById('bulkUploadFile').click()">
+							<i class="fas fa-folder-open me-2"></i>
+							Seleccionar Archivo
+						</button>
+					</div>
+				</div>
+
+				{# Paso 2: Preview de datos (se llena dinámicamente) #}
+				<div
+					id="bulkUploadPreview" style="display: none;">{# El contenido se genera desde JavaScript #}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{# Estilos específicos para el modal de carga masiva #}
+<style>
+	/* Estilos para el Dropzone */
+	.upload-dropzone:hover {
+		background-color: rgba(255, 255, 255, 0.1) !important;
+		border-color: var(--bs-primary) !important;
+	}
+
+	.upload-dropzone.dragover {
+		background-color: rgba(13, 110, 253, 0.1) !important;
+		border-color: var(--bs-primary) !important;
+		transform: scale(1.02);
+	}
+
+	/* Estilos para la tabla de preview */
+	.bulk-upload-preview .table {
+		font-size: 0.85rem;
+	}
+
+	.bulk-upload-preview .table th {
+		background-color: #1a1a2e;
+		color: #fff;
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		font-weight: 600;
+		text-transform: uppercase;
+		font-size: 0.75rem;
+		letter-spacing: 0.5px;
+	}
+
+	.bulk-upload-preview .table td {
+		vertical-align: middle;
+		color: #e0e0e0;
+	}
+
+	.bulk-upload-preview .preview-summary {
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 8px;
+	}
+
+	.bulk-upload-preview .pagination .page-link {
+		background-color: transparent;
+		border-color: rgba(255, 255, 255, 0.2);
+		color: #fff;
+	}
+
+	.bulk-upload-preview .pagination .page-link:hover {
+		background-color: rgba(255, 255, 255, 0.1);
+		color: var(--bs-primary);
+	}
+
+	.bulk-upload-preview .pagination .page-item.active .page-link {
+		background-color: var(--bs-primary);
+		border-color: var(--bs-primary);
+	}
+
+	.bulk-upload-preview .pagination .page-item.disabled .page-link {
+		background-color: transparent;
+		color: rgba(255, 255, 255, 0.3);
+		border-color: rgba(255, 255, 255, 0.1);
+	}
+
+	/* Scrollbar personalizado para la tabla */
+	.table-responsive::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}
+
+	.table-responsive::-webkit-scrollbar-track {
+		background: rgba(255, 255, 255, 0.05);
+		border-radius: 4px;
+	}
+
+	.table-responsive::-webkit-scrollbar-thumb {
+		background: rgba(255, 255, 255, 0.2);
+		border-radius: 4px;
+	}
+
+	.table-responsive::-webkit-scrollbar-thumb:hover {
+		background: rgba(255, 255, 255, 0.3);
+	}
+
+	/* Forzar texto blanco en todo el modal */
+	#modalCargaMasiva .modal-content,
+	#modalCargaMasiva .modal-title,
+	#modalCargaMasiva .form-label,
+	#modalCargaMasiva h6,
+	#modalCargaMasiva p,
+	#modalCargaMasiva small,
+	#modalCargaMasiva .text-muted {
+		color: #ffffff !important;
+	}
+
+	/* Excepción para alertas o elementos específicos */
+	#modalCargaMasiva .text-danger {
+		color: #ff6b6b !important;
+	}
+	#modalCargaMasiva .text-success {
+		color: #2ecc71 !important;
+	}
+	#modalCargaMasiva .text-warning {
+		color: #f1c40f !important;
+	}
+	#modalCargaMasiva .text-info {
+		color: #3498db !important;
+	}
+	#modalCargaMasiva .text-white-50 {
+		color: rgba(255, 255, 255, 0.7) !important;
+	}
+</style>
+
+<script>
+	// Script inline para manejo básico de drag & drop visual
+document.addEventListener('DOMContentLoaded', function () {
+const dropzone = document.getElementById('uploadDropzone');
+const fileInput = document.getElementById('bulkUploadFile');
+
+if (dropzone && fileInput) {
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+dropzone.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+e.preventDefault();
+e.stopPropagation();
+}['dragenter', 'dragover'].forEach(eventName => {
+dropzone.addEventListener(eventName, highlight, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+dropzone.addEventListener(eventName, unhighlight, false);
+});
+
+function highlight(e) {
+dropzone.classList.add('dragover');
+}
+
+function unhighlight(e) {
+dropzone.classList.remove('dragover');
+}
+
+dropzone.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+const dt = e.dataTransfer;
+const files = dt.files;
+fileInput.files = files;
+// Disparar evento change manualmente para que el manager lo detecte
+const event = new Event('change', {bubbles: true});
+fileInput.dispatchEvent(event);
+}
+}
+});
+</script>

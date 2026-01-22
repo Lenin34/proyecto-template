@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Plantillas de Formularios{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('form-templates') }}
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b py-3">
+        <div class="container text-center">
+            <h1 class="title-sntiasg mb-0">Plantillas de Formularios</h1>
+            <p class="text-light">Crea formularios rápidamente usando nuestras plantillas prediseñadas</p>
+        </div>
+    </section>
+
+    <div class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_forms_index', {'dominio': dominio}) }}">Formularios</a></li>
+                    <li class="breadcrumb-item active">Plantillas</li>
+                </ol>
+            </nav>
+            <a href="{{ path('app_forms_new', {'dominio': dominio}) }}" class="btn btn-outline-primary">
+                <i class="fas fa-plus me-2"></i> Crear Formulario Personalizado
+            </a>
+        </div>
+
+        <!-- Flash messages are handled by SweetAlert2 in base template -->
+
+        {% for category, templates in templates_by_category %}
+            <div class="mb-5">
+                <h3 class="h4 mb-3 text-primary">
+                    <i class="fas fa-folder-open me-2"></i> {{ category }}
+                </h3>
+                
+                <div class="row">
+                    {% for template_key, template in templates %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm border-0 template-card">
+                                <div class="card-header bg-light border-0 text-center py-3">
+                                    <div class="template-icon mb-2">
+                                        <i class="{{ template.icon }} fa-2x text-primary"></i>
+                                    </div>
+                                    <h5 class="card-title mb-0">{{ template.name }}</h5>
+                                </div>
+                                
+                                <div class="card-body d-flex flex-column">
+                                    <p class="card-text text-muted flex-grow-1">{{ template.description }}</p>
+                                    
+                                    <div class="template-stats mb-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-list me-1"></i> {{ template.fields|length }} campos
+                                        </small>
+                                    </div>
+                                    
+                                    <div class="btn-group-vertical d-grid gap-2">
+                                        <a href="{{ path('app_forms_template_preview', {'dominio': dominio, 'templateKey': template_key}) }}" 
+                                           class="btn btn-outline-info btn-sm">
+                                            <i class="fas fa-eye me-2"></i> Vista Previa
+                                        </a>
+                                        <a href="{{ path('app_forms_create_from_template', {'dominio': dominio, 'templateKey': template_key}) }}" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-magic me-2"></i> Usar Plantilla
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if templates_by_category is empty %}
+            <div class="text-center py-5">
+                <i class="fas fa-templates fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">No hay plantillas disponibles</h4>
+                <p class="text-muted">Las plantillas estarán disponibles próximamente.</p>
+                <a href="{{ path('app_forms_new', {'dominio': dominio}) }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i> Crear Formulario Personalizado
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .template-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+        
+        .template-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(var(--bs-primary-rgb), 0.1);
+            border-radius: 50%;
+        }
+        
+        .template-stats {
+            border-top: 1px solid #eee;
+            padding-top: 0.75rem;
+        }
+        
+        .btn-group-vertical .btn {
+            border-radius: 0.375rem !important;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+    </style>
+{% endblock %}

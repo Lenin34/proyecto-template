@@ -1,0 +1,541 @@
+html {
+    font-size: 16px;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 100%;
+    scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    width: 100%;
+    min-height: 100vh;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+    background-color: #392763;
+}
+
+/* Fondo detrás de todo */
+body::before {
+    content: "";
+    background-image: url('../img/master/background.png');
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+}
+
+/* NAV con blur */
+nav {
+    background-image: url('../img/master/nav4.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    padding: 1rem 2rem 6rem; /* importante para dar espacio a la curva */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    height: 175px;
+}
+
+.title {
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* NAV SELECTOR */
+.nav-select {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.nav-container {
+    width: 20%;
+    min-width: 200px;
+}
+.select-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #dfdfdf;
+    font-weight: 600;
+
+}
+.select-drop {
+    width: 100%;
+    border-width: 0;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    font-size: 1rem;
+    color: #dfdfdf;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-size: 1rem;
+    transition: border 0.3s ease, background-color 0.3s ease;
+}
+
+/* SECTION & FORMS */
+.formulario {
+    width: 100%;
+    padding: 4rem 5vw 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+}
+.modulos-form {
+    width: 100%;
+}
+.modulos-fieldset {
+    border: 0;
+    border-radius: 0.75rem;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+}
+.form {
+    background-color: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding-top: 1rem;
+}
+
+/* Override label color on light form surfaces */
+.form label { color: #2d2354; }
+
+.fieldset-item {
+    width: calc(50% - 2rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+legend {
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 0 1rem;
+    color: #2d2354;
+}
+
+/* campos individuales */
+.form-2 {
+    flex: 1 1 45%;
+    min-width: 280px;
+}
+.fieldset-2 {
+    border: 0;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* BUTTON */
+.container-button {
+    width: 100%;
+    padding: 2rem 5vw;
+    display: flex;
+    justify-content: flex-end;
+}
+.modulos-button {
+    border: none;
+    background-color: #dfdfdf;
+    color: #333;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: sans-serif;
+}
+.modulos-button:hover {
+    background-color: #5a3ee0;
+    color: #dfdfdf;
+}
+
+.file {
+    background-color: rgba(255, 255, 255, 0.401);
+    border-radius: 0.5em;
+    cursor: pointer;
+    padding: 0.5em 1em;
+    width: 20%;
+    display: inline-block;
+    margin-bottom: 0.5em;
+}
+
+.file-input {
+    width: 100%;
+    padding: 0.5em;
+    border: 2px dashed #ccc;
+    border-radius: 0.5em;
+    background-color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-input:hover {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.file-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.file-name-display {
+    margin-top: 0.5em;
+}
+
+.selected-file-info {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+option, select {
+    font-family: sans-serif;
+}
+
+.section-title {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.section-title h1 {
+    padding: 1rem 3rem;
+    color: #ffffff;
+}
+
+.glass {
+    background-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 12px;
+}
+
+/* Estilos generales para la tabla */
+.section-table {
+    width: 100%;
+    overflow-x: auto;
+    padding: 2rem 5vw;
+}
+.container-add-button {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+.add-button {
+    padding: 0.5rem 1rem;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    right: 0;
+}
+
+.add-button:hover {
+    opacity: 0.8;
+}
+
+table {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Encabezados */
+thead th {
+    background-color: rgba(29, 17, 51, 0.75);
+    color: white;
+    padding: 1.25rem 0.75rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+    white-space: nowrap;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+thead th:last-child {
+    border-right: none;
+}
+
+/* Feature status badges */
+.feature-badge { display: inline-block; padding: .2rem .6rem; border-radius: 999px; font-weight: 600; font-size: .85rem; }
+.feature-badge.on  { background: #E6F4EA; color: #1e7e34; border: 1px solid #b7e1c2; }
+.feature-badge.off { background: #F1F3F5; color: #6c757d; border: 1px solid #e2e6ea; }
+
+/* Responsive scroll con sombra */
+.section-table::-webkit-scrollbar {
+    height: 10px;
+}
+
+.section-table::-webkit-scrollbar-thumb {
+    background: rgba(108, 71, 255, 0.5);
+    border-radius: 5px;
+}
+
+tbody td {
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    color: #212529;
+    white-space: nowrap;
+}
+
+tr td {
+    color: #2d2354;
+    text-align: center;
+}
+
+tr td:last-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.action-button {
+    width: 80%;
+    text-align: center;
+    color: #fff;
+    font: 1em sans-serif;
+    padding: 0.25rem ;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-delete {
+    width: 80%;
+}
+
+.action-button:hover {
+    opacity: 0.75;
+}
+
+.btn-editar {
+    background-color: #EDBA1E;
+    color: #000;
+    border-width: 0;
+}
+
+.btn-activar {
+    background-color: #434DE7;
+    color: #fff;
+    border-width: 0;
+}
+
+.btn-desactivar {
+    background-color: #BF2331;
+    color: #fff;
+    border-width: 0;
+}
+.status-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circle {
+    width: 10px;
+    height: 10px;
+    border-radius:  1000px;
+    border: 0.5px solid #fff;
+}
+
+.circle-activated {
+    background-color: #59B41A;
+}
+
+.circle-deactivated {
+    background-color: #BF2331;
+}
+
+.fieldset-item {
+    width: calc(50% - 2rem);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.choice-label {
+    font-weight: 500;
+    min-width: 120px;
+    color: #2d2354;
+}
+
+.choice-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.choice-group input[type="checkbox"],
+.choice-group input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.choice-group label {
+    margin-right: 1.5rem; /* Espacio entre "Activo" y "Inactivo" */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+
+/* ---------------- MEDIA QUERIES ---------------- */
+
+@media (min-width: 1700px) {
+    nav {
+        height: 225px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .nav-container {
+        width: 40%;
+    }
+
+    .form-2 {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .fieldset-item {
+        width: 100%;
+    }
+
+    nav {
+        height: 80px;
+        padding-top: 2rem;
+    }
+
+    .action-button {
+        width: 95%;
+        font-size: 0.9rem;
+    }
+
+    .form-delete {
+        width: 95%;
+    }
+
+}
+
+@media (max-width: 768px) {
+    .nav-container {
+        width: 100%;
+    }
+
+    section {
+        padding: 2rem;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container-button {
+        justify-content: center;
+    }
+
+    .modulos-button {
+        width: 100%;
+    }
+
+    .file {
+        width: 100%;
+    }
+
+    .file-input {
+        width: 100%;
+        padding: 0.75em;
+    }
+
+    thead th {
+        font-size: 0.9rem;
+        padding: 0.75rem;
+    }
+
+    tbody tr {
+        padding: 0;
+    }
+
+    .add-button {
+        margin-bottom: 1.5rem;
+    }
+
+    .fieldset-item {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .choice-group {
+        flex-direction: row;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .select-drop {
+        font-size: 0.9rem;
+    }
+
+    .fieldset-2,
+    .modulos-fieldset {
+        padding: 1rem;
+    }
+
+    legend {
+        font-size: 1rem;
+    }
+
+}

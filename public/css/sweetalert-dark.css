@@ -1,0 +1,106 @@
+/* SweetAlert2 Dark Theme Overrides */
+/* Usamos div:where(.swal2-container) para aumentar la especificidad sin bloquear sobrescrituras futuras si fueran necesarias */
+
+/* Fondo y Texto General */
+div:where(.swal2-container) div:where(.swal2-popup) {
+    background-color: #212529 !important;
+    /* Fondo oscuro (Bootstrap dark) o #2d3a4f según tema */
+    background: #212529 !important;
+    color: #ffffff !important;
+    border: 1px solid #495057;
+}
+
+/* Títulos y Contenido */
+div:where(.swal2-container) .swal2-title,
+div:where(.swal2-container) .swal2-html-container,
+div:where(.swal2-container) .swal2-content {
+    color: #ffffff !important;
+}
+
+/* Iconos - Ajuste de colores para fondo oscuro */
+div:where(.swal2-container) .swal2-icon.swal2-success {
+    border-color: #28a745 !important;
+    color: #28a745 !important;
+}
+
+div:where(.swal2-container) .swal2-icon.swal2-success .swal2-success-ring {
+    border: .25em solid rgba(40, 167, 69, .3);
+}
+
+div:where(.swal2-container) .swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: #28a745 !important;
+}
+
+div:where(.swal2-container) .swal2-icon.swal2-error {
+    border-color: #dc3545 !important;
+    color: #dc3545 !important;
+}
+
+div:where(.swal2-container) .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+    background-color: #dc3545 !important;
+}
+
+div:where(.swal2-container) .swal2-icon.swal2-warning {
+    border-color: #ffc107 !important;
+    color: #ffc107 !important;
+}
+
+div:where(.swal2-container) .swal2-icon.swal2-info {
+    border-color: #17a2b8 !important;
+    color: #17a2b8 !important;
+}
+
+/* Botones */
+div:where(.swal2-container) .swal2-confirm {
+    background-color: #0d6efd !important;
+    /* Bootstrap Primary */
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+div:where(.swal2-container) .swal2-confirm:focus {
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.5) !important;
+}
+
+div:where(.swal2-container) .swal2-cancel {
+    background-color: #6c757d !important;
+    /* Bootstrap Secondary */
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+div:where(.swal2-container) .swal2-deny {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+/* Botón de cierre (X) */
+div:where(.swal2-container) .swal2-close {
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+div:where(.swal2-container) .swal2-close:hover {
+    color: #e9ecef !important;
+}
+
+/* Progress Bar */
+div:where(.swal2-container) .swal2-timer-progress-bar {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Input fields inside SweetAlert */
+div:where(.swal2-container) .swal2-input,
+div:where(.swal2-container) .swal2-textarea {
+    background-color: #2d3a4f !important;
+    color: #ffffff !important;
+    border: 1px solid #495057 !important;
+}
+
+div:where(.swal2-container) .swal2-input:focus,
+div:where(.swal2-container) .swal2-textarea:focus {
+    border-color: #86b7fe !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}

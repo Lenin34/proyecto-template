@@ -1,0 +1,607 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Horario - SNTIASG{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('work-schedule') }}
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b py-3">
+        <div class="container text-center">
+            <h1>
+                <i class="fas fa-edit mr-2"></i>
+                Editar Horario
+            </h1>
+            <ol class="breadcrumb float-sm-right" style="padding-left: 36em;">
+                <li class="breadcrumb-item"><a href="{{ path('app_dashboard', {dominio: dominio}) }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('work_schedule_index', {dominio: dominio}) }}">Horarios</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('work_schedule_show', {id: schedule.id, dominio: dominio}) }}">{{ schedule.name }}</a></li>
+                <li class="breadcrumb-item active">Editar</li>
+            </ol>
+        </div>
+    </section>
+
+    <br>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-edit mr-2"></i>
+                            Editar Horario: {{ schedule.name }}
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" id="scheduleForm" novalidate>
+                            <!-- Información Básica -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        Información Básica
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="form-group">
+                                        <label for="name" class="text-dark">Nombre del Horario *</label>
+                                        <input type="text" id="name" name="name" class="form-control"
+                                               placeholder="Ej: Horario Administrativo 8-5" 
+                                               value="{{ schedule.name }}" required>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="start_time" class="text-dark">Hora de Inicio *</label>
+                                                <input type="time" id="start_time" name="start_time" class="form-control form-control-sm" 
+                                                       value="{{ schedule.startTime|date('H:i') }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="end_time" class="text-dark">Hora de Fin *</label>
+                                                <input type="time" id="end_time" name="end_time" class="form-control form-control-sm" 
+                                                       value="{{ schedule.endTime|date('H:i') }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="company_id" class="text-dark">Empresa (Opcional)</label>
+                                                <select id="company_id" name="company_id" class="form-control form-control-sm">
+                                                    <option value="">Todas las empresas</option>
+                                                    {% for company in companies %}
+                                                        <option value="{{ company.id }}" 
+                                                                {% if schedule.company and schedule.company.id == company.id %}selected{% endif %}>
+                                                            {{ company.name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Días de Trabajo -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-calendar-week mr-2"></i>
+                                        Días de Trabajo
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted mb-3">Selecciona los días en que se aplicará este horario:</p>
+                                    
+                                    <div class="days-grid">
+                                        {% set workingDaysArray = [] %}
+                                        {% for day in schedule.workScheduleDays %}
+                                            {% if day.isWorkingDay %}
+                                                {% set workingDaysArray = workingDaysArray|merge([day.dayOfWeek]) %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        
+                                        <label class="day-checkbox {% if 1 in workingDaysArray %}checked{% endif %}">
+                                            <input type="checkbox" name="working_days[]" value="1" 
+                                                   {% if 1 in workingDaysArray %}checked{% endif %}
+                                                   onchange="toggleDayCheckbox(this)">
+                                            <span class="day-label text-dark">Lunes</span>
+                                        </label>
+                                        <label class="day-checkbox {% if 2 in workingDaysArray %}checked{% endif %}">
+                                            <input type="checkbox" name="working_days[]" value="2" 
+                                                   {% if 2 in workingDaysArray %}checked{% endif %}
+                                                   onchange="toggleDayCheckbox(this)">
+                                            <span class="day-label text-dark">Martes</span>
+                                        </label>
+                                        <label class="day-checkbox {% if 3 in workingDaysArray %}checked{% endif %}">
+                                            <input type="checkbox" name="working_days[]" value="3" 
+                                                   {% if 3 in workingDaysArray %}checked{% endif %}
+                                                   onchange="toggleDayCheckbox(this)">
+                                            <span class="day-label text-dark">Miércoles</span>
+                                        </label>
+                                        <label class="day-checkbox {% if 4 in workingDaysArray %}checked{% endif %}">
+                                            <input type="checkbox" name="working_days[]" value="4" 
+                                                   {% if 4 in workingDaysArray %}checked{% endif %}
+                                                   onchange="toggleDayCheckbox(this)">
+                                            <span class="day-label text-dark">Jueves</span>
+                                        </label>
+                                        <label class="day-checkbox {% if 5 in workingDaysArray %}checked{% endif %}">
+                                            <input type="checkbox" name="working_days[]" value="5" 
+                                                   {% if 5 in workingDaysArray %}checked{% endif %}
+                                                   onchange="toggleDayCheckbox(this)">
+                                            <span class="day-label text-dark">Viernes</span>
+                                        </label>
+                                        <label class="day-checkbox {% if 6 in workingDaysArray %}checked{% endif %}">
+                                            <input type="checkbox" name="working_days[]" value="6" 
+                                                   {% if 6 in workingDaysArray %}checked{% endif %}
+                                                   onchange="toggleDayCheckbox(this)">
+                                            <span class="day-label text-dark">Sábado</span>
+                                        </label>
+                                        <label class="day-checkbox {% if 7 in workingDaysArray %}checked{% endif %}">
+                                            <input type="checkbox" name="working_days[]" value="7" 
+                                                   {% if 7 in workingDaysArray %}checked{% endif %}
+                                                   onchange="toggleDayCheckbox(this)">
+                                            <span class="day-label text-dark">Domingo</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Descansos -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-coffee mr-2"></i>
+                                        Descansos
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted mb-3">Define los períodos de descanso durante la jornada laboral:</p>
+                                    
+                                    <div id="breaksContainer" class="breaks-container">
+                                        {% for break in schedule.workScheduleBreaks %}
+                                            <div class="break-item">
+                                                <div class="form-group">
+                                                    <label class="text-dark">Nombre del Descanso</label>
+                                                    <input type="text" name="breaks[{{ loop.index0 }}][name]" class="form-control form-control-sm"
+                                                           placeholder="Ej: Almuerzo" value="{{ break.breakName }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="text-dark">Hora Inicio</label>
+                                                    <input type="time" name="breaks[{{ loop.index0 }}][start_time]" class="form-control form-control-sm"
+                                                           value="{{ break.startTime|date('H:i') }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="text-dark">Hora Fin</label>
+                                                    <input type="time" name="breaks[{{ loop.index0 }}][end_time]" class="form-control form-control-sm"
+                                                           value="{{ break.endTime|date('H:i') }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" name="breaks[{{ loop.index0 }}][is_paid]" value="1" 
+                                                               id="paid_{{ loop.index0 }}" class="form-check-input"
+                                                               {% if break.isPaid %}checked{% endif %}>
+                                                        <label for="paid_{{ loop.index0 }}" class="form-check-label text-dark">Pagado</label>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeBreak(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="addBreak()">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        Agregar Descanso
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="{{ path('work_schedule_show', {id: schedule.id, dominio: dominio}) }}" class="btn btn-secondary mr-2">
+                                        <i class="fas fa-times mr-1"></i>
+                                        Cancelar
+                                    </a>
+                                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                                        <i class="fas fa-save mr-1"></i>
+                                        <span class="btn-text">Actualizar Horario</span>
+                                        <span class="btn-loading d-none">
+                                            <i class="fas fa-spinner fa-spin mr-1"></i>
+                                            Actualizando...
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+class WorkScheduleEditForm {
+    constructor() {
+        this.form = document.getElementById('scheduleForm');
+        this.submitBtn = document.getElementById('submitBtn');
+        this.breakCounter = {{ schedule.workScheduleBreaks|length }};
+
+        this.init();
+    }
+
+    init() {
+        // Configurar eventos
+        this.form.addEventListener('submit', this.handleSubmit.bind(this));
+
+        // Configurar validación en tiempo real
+        this.setupValidation();
+    }
+
+    async handleSubmit(e) {
+        e.preventDefault();
+
+        if (!this.validateForm()) {
+            return;
+        }
+
+        this.setLoading(true);
+
+        try {
+            const formData = new FormData(this.form);
+
+            const response = await fetch(this.form.action || window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                await this.showSuccess(result.message);
+                window.location.href = result.redirect;
+            } else {
+                // Error del servidor con código específico
+                const errorMessage = result.message || 'Error desconocido del servidor';
+                const errors = result.errors || [errorMessage];
+                const errorType = result.error_type || 'WS-999';
+
+                console.log('Error type:', errorType);
+                this.showErrorsWithCode(errors, errorType);
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            this.showError('Error de conexión. Por favor, inténtalo de nuevo.');
+        } finally {
+            this.setLoading(false);
+        }
+    }
+
+    validateForm() {
+        const errors = [];
+
+        // Validar nombre
+        const name = this.form.querySelector('[name="name"]').value.trim();
+        if (!name) {
+            errors.push('El nombre del horario es obligatorio');
+        }
+
+        // Validar horas
+        const startTime = this.form.querySelector('[name="start_time"]').value;
+        const endTime = this.form.querySelector('[name="end_time"]').value;
+
+        if (!startTime) {
+            errors.push('La hora de inicio es obligatoria');
+        }
+
+        if (!endTime) {
+            errors.push('La hora de fin es obligatoria');
+        }
+
+        if (startTime && endTime && startTime >= endTime) {
+            errors.push('La hora de fin debe ser posterior a la hora de inicio');
+        }
+
+        // Validar días de trabajo
+        const workingDays = this.form.querySelectorAll('[name="working_days[]"]:checked');
+        if (workingDays.length === 0) {
+            errors.push('Debe seleccionar al menos un día de trabajo');
+        }
+
+        if (errors.length > 0) {
+            this.showErrors(errors);
+            return false;
+        }
+
+        return true;
+    }
+
+    setupValidation() {
+        // Validación en tiempo real para campos obligatorios
+        const requiredFields = this.form.querySelectorAll('[required]');
+        requiredFields.forEach(field => {
+            field.addEventListener('blur', () => {
+                this.validateField(field);
+            });
+        });
+    }
+
+    validateField(field) {
+        const value = field.value.trim();
+        const isValid = value !== '';
+
+        field.classList.toggle('is-invalid', !isValid);
+        field.classList.toggle('is-valid', isValid);
+    }
+
+    setLoading(loading) {
+        if (!this.submitBtn) {
+            console.error('Submit button not found');
+            return;
+        }
+
+        this.submitBtn.disabled = loading;
+
+        const btnText = this.submitBtn.querySelector('.btn-text');
+        const btnLoading = this.submitBtn.querySelector('.btn-loading');
+
+        if (!btnText || !btnLoading) {
+            console.error('Button text or loading elements not found');
+            // Fallback: cambiar solo el texto del botón
+            if (loading) {
+                this.submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Actualizando...';
+            } else {
+                this.submitBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Actualizar Horario';
+            }
+            return;
+        }
+
+        if (loading) {
+            btnText.classList.add('d-none');
+            btnLoading.classList.remove('d-none');
+        } else {
+            btnText.classList.remove('d-none');
+            btnLoading.classList.add('d-none');
+        }
+    }
+
+    async showSuccess(message) {
+        return Swal.fire({
+            icon: 'success',
+            title: '¡Horario Actualizado!',
+            text: message,
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            background: '#d4edda',
+            color: '#155724',
+            iconColor: '#28a745'
+        });
+    }
+
+    showError(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error al Actualizar',
+            text: message,
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#dc3545',
+            background: '#f8f9fa',
+            customClass: {
+                popup: 'swal-error-popup',
+                title: 'swal-error-title'
+            }
+        });
+    }
+
+    showErrors(errors) {
+        const errorList = errors.map(error => `• ${error}`).join('<br>');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Errores de Validación',
+            html: `<div class="text-left">${errorList}</div>`,
+            confirmButtonText: 'Corregir',
+            confirmButtonColor: '#ffc107',
+            background: '#fff3cd',
+            customClass: {
+                popup: 'swal-validation-popup',
+                htmlContainer: 'swal-validation-content'
+            },
+            footer: '<small>Por favor, corrige los errores antes de continuar</small>'
+        });
+    }
+
+    showErrorsWithCode(errors, errorType) {
+        const errorList = errors.map(error => `• ${error}`).join('<br>');
+
+        // Configuración específica según el tipo de error
+        let config = {
+            html: `<div class="text-left">${errorList}</div>`,
+            confirmButtonText: 'Entendido',
+            customClass: {
+                popup: 'swal-validation-popup',
+                htmlContainer: 'swal-validation-content'
+            }
+        };
+
+        switch (errorType) {
+            case 'WS-001':
+                config.icon = 'warning';
+                config.title = 'Campos Obligatorios';
+                config.confirmButtonColor = '#ffc107';
+                config.footer = '<small>Completa todos los campos marcados con *</small>';
+                break;
+
+            case 'WS-002':
+                config.icon = 'error';
+                config.title = 'Nombre Duplicado';
+                config.confirmButtonColor = '#dc3545';
+                config.footer = '<small>Elige un nombre diferente para el horario</small>';
+                break;
+
+            case 'WS-005':
+            case 'WS-006':
+            case 'WS-007':
+                config.icon = 'warning';
+                config.title = 'Error en Horarios';
+                config.confirmButtonColor = '#ffc107';
+                config.footer = '<small>Verifica que las horas estén en formato correcto (HH:MM)</small>';
+                break;
+
+            case 'WS-004':
+                config.icon = 'error';
+                config.title = 'Error de Conexión';
+                config.confirmButtonColor = '#dc3545';
+                config.footer = '<small>Verifica tu conexión e inténtalo de nuevo</small>';
+                break;
+
+            case 'WS-019':
+                config.icon = 'error';
+                config.title = 'Error al Actualizar';
+                config.confirmButtonColor = '#dc3545';
+                config.footer = '<small>No se pudo actualizar el horario. Inténtalo de nuevo</small>';
+                break;
+
+            case 'WS-015':
+                config.icon = 'error';
+                config.title = 'Horario No Encontrado';
+                config.confirmButtonColor = '#dc3545';
+                config.footer = '<small>El horario que intentas editar no existe</small>';
+                break;
+
+            case 'WS-020':
+                config.icon = 'error';
+                config.title = 'Error de Configuración';
+                config.confirmButtonColor = '#dc3545';
+                config.footer = '<small>Error interno del sistema. Contacta al administrador</small>';
+                break;
+
+            default:
+                config.icon = 'error';
+                config.title = 'Error del Sistema';
+                config.confirmButtonColor = '#dc3545';
+                config.footer = `<small>Código de error: ${errorType}</small>`;
+        }
+
+        Swal.fire(config);
+    }
+
+    async showConfirmDelete() {
+        return Swal.fire({
+            icon: 'warning',
+            title: '¿Eliminar Horario?',
+            text: 'Esta acción no se puede deshacer',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            customClass: {
+                popup: 'swal-delete-popup'
+            }
+        });
+    }
+
+    showLoading(message = 'Procesando...') {
+        Swal.fire({
+            title: message,
+            html: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Cargando...</span></div>',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'swal-loading-popup'
+            }
+        });
+    }
+
+    toggleDayCheckbox(checkbox) {
+        const container = checkbox.closest('.day-checkbox');
+        if (checkbox.checked) {
+            container.classList.add('checked');
+        } else {
+            container.classList.remove('checked');
+        }
+    }
+
+    addBreak() {
+        this.breakCounter++;
+        const container = document.getElementById('breaksContainer');
+
+        const breakItem = document.createElement('div');
+        breakItem.className = 'break-item';
+        breakItem.innerHTML = `
+            <div class="form-group">
+                <label class="text-dark">Nombre del Descanso</label>
+                <input type="text" name="breaks[${this.breakCounter}][name]" class="form-control form-control-sm"
+                       placeholder="Ej: Almuerzo">
+            </div>
+            <div class="form-group">
+                <label class="text-dark">Hora Inicio</label>
+                <input type="time" name="breaks[${this.breakCounter}][start_time]" class="form-control form-control-sm">
+            </div>
+            <div class="form-group">
+                <label class="text-dark">Hora Fin</label>
+                <input type="time" name="breaks[${this.breakCounter}][end_time]" class="form-control form-control-sm">
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input type="checkbox" name="breaks[${this.breakCounter}][is_paid]" value="1" id="paid_${this.breakCounter}" class="form-check-input">
+                    <label for="paid_${this.breakCounter}" class="form-check-label text-dark">Pagado</label>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="workScheduleEditForm.removeBreak(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+
+        container.appendChild(breakItem);
+    }
+
+    removeBreak(button) {
+        button.closest('.break-item').remove();
+    }
+}
+
+// Funciones globales para compatibilidad
+function toggleDayCheckbox(checkbox) {
+    workScheduleEditForm.toggleDayCheckbox(checkbox);
+}
+
+function addBreak() {
+    workScheduleEditForm.addBreak();
+}
+
+function removeBreak(button) {
+    workScheduleEditForm.removeBreak(button);
+}
+
+// Inicializar cuando el DOM esté listo
+let workScheduleEditForm;
+document.addEventListener('DOMContentLoaded', function() {
+    workScheduleEditForm = new WorkScheduleEditForm();
+});
+</script>
+
+{% endblock %}

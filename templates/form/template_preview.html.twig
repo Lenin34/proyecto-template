@@ -1,0 +1,222 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Vista Previa: {{ template.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('form-templates') }}
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b py-3">
+        <div class="container text-center">
+            <h1 class="title-sntiasg mb-0">Vista Previa de Plantilla</h1>
+            <p class="text-light">{{ template.name }}</p>
+        </div>
+    </section>
+
+    <div class="container my-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_forms_index', {'dominio': dominio}) }}">Formularios</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_forms_templates', {'dominio': dominio}) }}">Plantillas</a></li>
+                <li class="breadcrumb-item active">Vista Previa: {{ template.name }}</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="{{ template.icon }} me-2"></i> {{ template.name }}
+                        </h4>
+                        <span class="badge bg-light text-dark">Vista Previa</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-4">{{ template.description }}</p>
+                        
+                        <!-- Formulario de Vista Previa -->
+                        <form class="preview-form">
+                            {% for field in template.fields %}
+                                <div class="mb-3 {% if field.cols %}{{ field.cols }}{% endif %}">
+                                    <label class="form-label">
+                                        {{ field.label }}
+                                        {% if field.required %}
+                                            <span class="text-danger">*</span>
+                                        {% endif %}
+                                    </label>
+                                    
+                                    {% if field.type == 'text' %}
+                                        <input type="text" class="form-control" placeholder="Ingrese {{ field.label|lower }}" disabled>
+                                    
+                                    {% elseif field.type == 'number' %}
+                                        <input type="number" class="form-control" placeholder="Ingrese un número" disabled>
+                                    
+                                    {% elseif field.type == 'date' %}
+                                        <input type="date" class="form-control" disabled>
+                                    
+                                    {% elseif field.type == 'textarea' %}
+                                        <textarea class="form-control" 
+                                                  rows="{{ field.textarea_cols ?: 3 }}" 
+                                                  placeholder="Ingrese {{ field.label|lower }}" 
+                                                  disabled></textarea>
+                                    
+                                    {% elseif field.type == 'select' %}
+                                        <select class="form-control" disabled>
+                                            <option>Seleccione una opción...</option>
+                                            {% if field.options %}
+                                                {% for option in field.options|split(',') %}
+                                                    <option>{{ option|trim }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    
+                                    {% elseif field.type == 'radio' %}
+                                        {% if field.options %}
+                                            {% for option in field.options|split(',') %}
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" 
+                                                           name="{{ field.name }}" 
+                                                           id="{{ field.name }}_{{ loop.index }}" disabled>
+                                                    <label class="form-check-label" for="{{ field.name }}_{{ loop.index }}">
+                                                        {{ option|trim }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    
+                                    {% elseif field.type == 'checkbox' %}
+                                        {% if field.options %}
+                                            {% for option in field.options|split(',') %}
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" 
+                                                           id="{{ field.name }}_{{ loop.index }}" disabled>
+                                                    <label class="form-check-label" for="{{ field.name }}_{{ loop.index }}">
+                                                        {{ option|trim }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    
+                                    {% elseif field.type == 'file' %}
+                                        <input type="file" class="form-control" 
+                                               {% if field.multiple %}multiple{% endif %} disabled>
+                                    
+                                    {% endif %}
+                                    
+                                    {% if field.help %}
+                                        <div class="form-text">{{ field.help }}</div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            
+                            <div class="mt-4 pt-3 border-top">
+                                <button type="button" class="btn btn-primary" disabled>
+                                    <i class="fas fa-paper-plane me-2"></i> Enviar Formulario (Vista Previa)
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i> Detalles de la Plantilla</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>Nombre:</strong><br>
+                            {{ template.name }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Categoría:</strong><br>
+                            <span class="badge bg-primary">{{ template.category }}</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Descripción:</strong><br>
+                            <small class="text-muted">{{ template.description }}</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Total de campos:</strong><br>
+                            <span class="badge bg-secondary">{{ template.fields|length }} campos</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Campos requeridos:</strong><br>
+                            {% set required_count = 0 %}
+                            {% for field in template.fields %}
+                                {% if field.required %}
+                                    {% set required_count = required_count + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            <span class="badge bg-warning">{{ required_count }} requeridos</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('app_forms_create_from_template', {'dominio': dominio, 'templateKey': template_key}) }}" 
+                               class="btn btn-primary">
+                                <i class="fas fa-magic me-2"></i> Usar esta Plantilla
+                            </a>
+                            <a href="{{ path('app_forms_templates', {'dominio': dominio}) }}" 
+                               class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i> Volver a Plantillas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0"><i class="fas fa-list me-2"></i> Campos Incluidos</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            {% for field in template.fields %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ field.label }}</strong>
+                                        <br><small class="text-muted">{{ field.type }}</small>
+                                    </div>
+                                    {% if field.required %}
+                                        <span class="badge bg-warning">Requerido</span>
+                                    {% else %}
+                                        <span class="badge bg-light text-dark">Opcional</span>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .preview-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 2px dashed #dee2e6;
+        }
+        
+        .preview-form .form-control:disabled,
+        .preview-form .form-check-input:disabled {
+            background-color: #fff;
+            opacity: 0.8;
+        }
+        
+        .card-header .badge {
+            font-size: 0.75rem;
+        }
+    </style>
+{% endblock %}

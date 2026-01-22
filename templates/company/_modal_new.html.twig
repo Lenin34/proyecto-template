@@ -1,0 +1,32 @@
+<div class="modal fade" id="modalNew" tabindex="-1" aria-labelledby="modalNewLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content modal-form">
+			<div class="modal-header border-0 pb-0">
+				<h5 class="modal-title fw-bold" id="modalNewLabel">NUEVA EMPRESA</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body pt-4">
+				{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+				<div class="row g-3">
+					<div class="col-md-6">
+						<label class="form-label">NOMBRE</label>
+						{{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Nombre de la empresa'}}) }}
+						<div class="text-danger small mt-1">{{ form_errors(form.name) }}</div>
+					</div>
+					<div class="col-md-6">
+						<label class="form-label">REGIÓN</label>
+						{{ form_widget(form.region, {'attr': {'class': 'form-select'}}) }}
+						<div class="text-danger small mt-1">{{ form_errors(form.region) }}</div>
+					</div>
+				</div>
+
+				<div class="modal-footer border-0 px-0 mt-4">
+					<button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">CANCELAR</button>
+					<button type="submit" class="btn btn-primary px-4" style="background-color: var(--color-accent-blue); border: none;">GUARDAR
+					</button>
+				</div>
+				{{ form_end(form) }}
+			</div>
+		</div>
+	</div>
+</div>

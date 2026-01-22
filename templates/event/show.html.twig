@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Event{% endblock %}
+
+{% block body %}
+
+    <div class="d-flex align-items-center justify-content-center min-vh-100">
+        <div class="container modal-r text-center container-show position-relative">
+
+            <a href="{{ path('app_event_index', {'dominio': dominio}) }}" class="btn-regresar-icon position-absolute top-0 end-0 m-3">
+                <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path id="Vector" d="M17.9999 17.9999L10.5 10.5M10.5 10.5L3 3M10.5 10.5L18 3M10.5 10.5L3 18" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+
+            <div class="row mb-3">
+                <div class="col-md-12 image-show">
+                    {% if event.image %}
+                        <div data-bs-toggle="modal" data-bs-target="#imageModal-{{ event.id }}">
+                            <img src="{{ image_full_url(event.image) }}" alt="Imagen del evento" class="img-detail object-fit-cover">
+                        </div>
+
+                        <div class="modal fade" id="imageModal-{{ event.id }}" tabindex="-1" aria-labelledby="imageModalLabel-{{ event.id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-body p-0">
+                                        <img src="{{ image_full_url(event.image) }}" alt="Imagen completa" class="img-fluid w-100 rounded">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-center text-light text-uppercase">No hay imagen disponible.</p>
+                    {% endif %}
+                    </a>
+                </div>
+            </div>
+           
+            <div class="row mb-3">
+                <div class="col-md-12 modal-title-sntiasg">{{ event.title }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12 modal-text-sntiasg"><strong class="fw-bold">Descripción: </strong>{{ event.description }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12 modal-text-sntiasg"><strong class="fw-bold">Empresa(s): </strong>{{ event.companyNames }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 modal-text-sntiasg mb-movil"><strong class="fw-bold">Día de inicio:</strong> {{ event.startDate ? event.startDate|date('d-m-Y H:i:s') : 'No disponible' }}</div>
+                <div class="col-md-6 modal-text-sntiasg"><strong class="fw-bold">Día de fin:</strong> {{ event.endDate ? event.endDate|date('d-m-Y H:i:s') : 'No disponible' }}</div>
+            </div>
+        
+            <div class="row mb-3">
+                <div class="col-md-6 modal-text-sntiasg mb-movil"><strong class="fw-bold">Creado:</strong> {{ event.createdAt ? event.createdAt|date('d-m-Y H:i:s') : 'No disponible' }}</div>
+                <div class="col-md-6 modal-text-sntiasg"><strong class="fw-bold">Actualizado:</strong> {{ event.updatedAt ? event.updatedAt|date('d-m-Y H:i:s') : 'No disponible' }}</div>
+            </div>
+
+            <div class="row mt-5 align-items-center">
+                <div class="col-md-6 d-flex justify-content-center align-items-center">
+                    <a href="{{ path('app_event_edit', {'id': event.id, 'dominio': dominio}) }}" class="btn-y">EDITAR</a>
+                </div>
+                <div class="col-md-6 d-flex justify-content-center">
+                    {{ include('event/_delete_form.html.twig', {'button_label': 'ELIMINAR'}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

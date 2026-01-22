@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificación de Correo - TS</title>
+    <style>
+        body { background: #f0f0f0; font-family: Arial, sans-serif; }
+        .container { background: #fff; padding: 30px; border-radius: 10px; max-width: 500px; margin: 40px auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .code { font-size: 2em; color: #4FC6C0; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Restablecimiento de contraseña</h2>
+        <p>Tu código de verificación para TS es:</p>
+        <div class="code">{{ verification_code }}</div>
+        <p>Si no solicitaste este código, puedes ignorar este correo.</p>
+    </div>
+</body>
+</html>

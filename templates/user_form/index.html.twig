@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Formularios Disponibles{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Available Forms</h1>
+    
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    
+    {% if form_templates|length > 0 %}
+        <div class="row">
+            {% for form_template in form_templates %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ form_template.name }}</h5>
+                            <p class="card-text">{{ form_template.description|nl2br }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ path('app_user_forms_show', {'id': form_template.id, 'dominio': dominio}) }}" class="btn btn-primary">Fill Out Form</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No forms are currently available.
+        </div>
+    {% endif %}
+    
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <div class="mt-4">
+            <a href="{{ path('app_user_forms_my_submissions', {'dominio': dominio}) }}" class="btn btn-secondary">
+                View My Submissions
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

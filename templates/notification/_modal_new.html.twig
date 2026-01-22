@@ -1,0 +1,47 @@
+<div class="modal fade" id="modalNew" tabindex="-1" aria-labelledby="modalNewLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content modal-form">
+			<div class="modal-header border-0 pb-0">
+				<h5 class="modal-title fw-bold" id="modalNewLabel">NUEVA NOTIFICACIÓN</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body pt-4">
+				{{ form_start(form, {'attr': {'id': 'newNotificationForm', 'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+				<div class="row g-3">
+					<div class="col-md-6">
+						<label class="form-label">TÍTULO</label>
+						{{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Título de la notificación'}}) }}
+						<div class="text-danger small mt-1">{{ form_errors(form.title) }}</div>
+					</div>
+					<div class="col-md-6">
+						<label class="form-label">MENSAJE</label>
+						{{ form_widget(form.message, {'attr': {'class': 'form-control', 'placeholder': 'Mensaje'}}) }}
+						<div class="text-danger small mt-1">{{ form_errors(form.message) }}</div>
+					</div>
+
+					{# Regiones - Use Symfony Form Field #}
+					<div class="col-12">
+						<label class="form-label">REGIONES</label>
+						{{ form_widget(form.regions, {'attr': {'class': 'form-select form-control-dark select2-notification-regions'}}) }}
+						<div class="form-text text-muted small mt-1">Si no seleccionas ninguna región, la notificación será global (todas las regiones).</div>
+						<div class="text-danger small mt-1">{{ form_errors(form.regions) }}</div>
+					</div>
+
+					{# Empresas - Use Symfony Form Field #}
+					<div class="col-12">
+						<label class="form-label">EMPRESAS</label>
+						{{ form_widget(form.companies, {'attr': {'class': 'form-select form-control-dark select2-notification-companies'}}) }}
+						<div class="form-text text-muted small mt-1">Si no seleccionas ninguna empresa, la notificación será para todas las empresas.</div>
+						<div class="text-danger small mt-1">{{ form_errors(form.companies) }}</div>
+					</div>
+				</div>
+
+				<div class="modal-footer border-0 px-0 mt-4">
+					<button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">CANCELAR</button>
+					<button type="submit" class="btn btn-primary px-4" style="background-color: var(--color-accent-blue); border: none;">GUARDAR</button>
+				</div>
+				{{ form_end(form) }}
+			</div>
+		</div>
+	</div>
+</div>

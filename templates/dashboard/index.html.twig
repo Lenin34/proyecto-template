@@ -1,0 +1,243 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Inicio
+{% endblock %}
+
+{% block body %}
+	<section class="dashboard min-vh-100">
+		<div class="container vh-80">
+			<div class="row">
+				<div class="col-md-3">
+					<a href="{{ path('app_user_index', {'dominio': dominio}) }}">
+						<div class="wdg widget-b hg-wdg d-flex flex-column align-items-center justify-content-center">
+							<h3 class="dashboard-subtitle">AGREMIADOS</h3>
+							<img src="{{ asset('images/users.svg') }}" alt="Icono de agremiados" class="dashboard-icon mt-2">
+						</div>
+					</a>
+				</div>
+				<div class="col-md-6">
+					<a href="{{ path('app_user_admin_index', {'dominio': dominio}) }}">
+						<div class="wdg widget-b d-flex flex-row align-items-center justify-content-center">
+							<h3 class="dashboard-subtitle">ADMINISTRADORES</h3>
+							<img src="{{ asset('images/user.svg') }}" alt="Icono de administradores" class="dashboard-icon ms-4">
+						</div>
+					</a>
+
+					<a href="{{ path('app_forms_index', {'dominio': dominio}) }}">
+						<div class="wdg widget-y mt-2 d-flex flex-row align-items-center justify-content-center">
+							<img src="{{ asset('images/forms.svg') }}" alt="Icono de redes sociales" class="dashboard-icon ms-4">
+							<h3 class="dashboard-subtitle">FORMULARIOS</h3>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-3 col-nm">
+					<a href="{{ path('app_notification_index', {'dominio': dominio}) }}" class="hg-wdg-50">
+						<div class="wdg widget-r d-flex flex-column align-items-center justify-content-center">
+							<h3 class="dashboard-subtitle">NOTIFICACIONES</h3>
+							<div class="rounded-circle bg-white fw-bold">
+								{{ notificationCount }}
+							</div>
+						</div>
+					</a>
+					<a href="{{ path('app_conversation_index', {'dominio': dominio}) }}" class="hg-wdg-50">
+						<div class="wdg widget-b mt-2 d-flex flex-column align-items-center justify-content-center">
+							<h3 class="dashboard-subtitle">MENSAJES</h3>
+							<div class="rounded-circle rounded-circle-b bg-white fw-bold">
+								{{ conversationsCount }}
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-9 col-statistics">
+					<div class="wdg widget-b statistics d-flex align-items-center">
+						<div class="col-md-5 use-app">
+							<div class="d-flex flex-row align-items-end justify-content-start">
+								<h3 class="dashboard-subtitle">ESTADISTICAS</h3>
+								<img src="{{ asset('images/graph.svg') }}" alt="Icono de grafica" class="dashboard-icon ms-4">
+							</div>
+							<h3 class="dashboard-text mt-4">USO DE LA APP</h3>
+							<div id="chart-1" class="weekly-usage-chart"></div>
+						</div>
+						<div class="col-md-7 company-info">
+							<div class="col-md-12">
+								<p class="dashboard-mintext d-flex flex-row justify-content-between">AGREMIADOS REGISTRADOS ESTE MES
+									<strong>{{ registeredThisMonthCount|number_format(0, '.', ',') }}</strong>
+								</p>
+								<p class="dashboard-mintext d-flex flex-row justify-content-between">
+									AGREMIADOS EN TOTAL
+									<strong>{{ agremiadosCount|number_format(0, '.', ',') }}</strong>
+								</p>
+								<p class="dashboard-mintext d-flex flex-row justify-content-between">
+									<strong>BENEFICIARIOS</strong>
+									<strong>{{ beneficiaryCount }}</strong>
+								</p>
+							</div>
+							<div class="col-md-12 people-cont d-flex justify-content-center">
+								<div class="col-md-6">
+									<div id="chart-2" class="people-information"></div>
+								</div>
+								<div class="col-md-6">
+									<div id="chart-3" class="people-information"></div>
+								</div>
+							</div>
+							<div class="col-md-12 d-flex flex-column align-items-end">
+								<h3 class="dashboard-minsubtitle">{{ companyCount }}
+									EMPRESAS</h3>
+
+								<div class="d-flex align-items-center">
+									<img src="{{ asset('images/filter.svg') }}" alt="Logo" class="icon-sntiasg">
+									<select class="form-select sntiasg-select" id="region-filter">
+										<option value="all">TODAS LAS REGIONES</option>
+										{% for region in regions %}
+											<option value="{{ region.id }}">{{ region.name|upper }}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3 col-events">
+					<a href="{{ path('app_event_index', {'dominio': dominio}) }}">
+						<div class="wdg widget-r hg-wdg-100 d-flex flex-column justify-content-evenly">
+							<div class="d-flex flex-row align-items-center justify-content-around">
+								<h3 class="dashboard-subtitle">EVENTOS</h3>
+								<img src="{{ asset('images/calendar.svg') }}" alt="Icono de calendario" class="dashboard-icon">
+							</div>
+							<div class="m-2">
+								<div class="calendar-cont">
+									<div id='calendar' class="calendar-dashboard"></div>
+								</div>
+							</div>
+
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+
+{% block javascripts %}
+	{{ parent() }}
+
+	<script>
+		window.calendarEvents = [{% if events is defined and events is not empty %}
+{% for event in events %}
+{
+id: '{{ event.id }}',
+title: '{{ event.title|e('js') }}',
+start: '{{ event.startDate ? event.startDate|date('Y-m-d') : '' }}',
+end: '{{ event.endDate ? event.endDate|date('Y-m-d') : '' }}'
+}
+{% if not loop.last %},{% endif %}{% endfor %}
+{% endif %}];
+
+// Pass weekly usage data to JavaScript
+window.adminWeeklyUsageData = {
+data: [
+{{ weeklyUsageData['Monday'] }},
+{{ weeklyUsageData['Tuesday'] }},
+{{ weeklyUsageData['Wednesday'] }},
+{{ weeklyUsageData['Thursday'] }},
+{{ weeklyUsageData['Friday'] }},
+{{ weeklyUsageData['Saturday'] }},
+{{ weeklyUsageData['Sunday'] }}
+],
+categories: [
+'L',
+'M',
+'MI',
+'J',
+'V',
+'S',
+'D'
+]
+};
+
+// Pass age distribution data to JavaScript
+window.ageDistributionData = {
+categories: [{% for category in ageDistributionData.categories %}'{{ category }}'{% if not loop.last %},{% endif %}
+{% endfor %}],
+men: [{% for value in ageDistributionData.men %}{{ value }}{% if not loop.last %},{% endif %}
+{% endfor %}],
+women: [{% for value in ageDistributionData.women %}{{ value }}{% if not loop.last %},{% endif %}
+{% endfor %}]
+};
+
+// Pass education distribution data to JavaScript
+window.educationDistributionData = {
+categories: [{% for category in educationDistributionData.categories %}'{{ category }}'{% if not loop.last %},{% endif %}
+{% endfor %}],
+men: [{% for value in educationDistributionData.men %}{{ value }}{% if not loop.last %},{% endif %}
+{% endfor %}],
+women: [{% for value in educationDistributionData.women %}{{ value }}{% if not loop.last %},{% endif %}
+{% endfor %}]
+};
+
+// Region filter functionality
+document.addEventListener('DOMContentLoaded', function () {
+const regionFilter = document.getElementById('region-filter');
+if (regionFilter) {
+regionFilter.addEventListener('change', function () {
+const selectedRegion = this.value;
+console.log('Selected region:', selectedRegion);
+
+// Show loading indicator
+const loadingIndicator = document.createElement('div');
+loadingIndicator.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando datos...</div>';
+loadingIndicator.id = 'loading-indicator';
+
+// Add loading to charts
+const chartContainers = document.querySelectorAll('.chart-container');
+chartContainers.forEach(container => {
+container.style.opacity = '0.5';
+});
+
+// Make AJAX call to filter data
+fetch('{{ path('app_dashboard_filter_region', {'dominio': app.request.attributes.get('dominio')}) }}', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded',
+'X-Requested-With': 'XMLHttpRequest'
+},
+body: 'region_id=' + encodeURIComponent(selectedRegion)
+}).then(response => response.json()).then(data => {
+if (data.success) { // Update education distribution data
+window.educationDistributionData = data.educationDistribution;
+
+// Update age distribution data
+window.ageDistributionData = data.ageDistribution;
+
+// Reload charts with new data
+if (typeof updateEducationChart === 'function') {
+updateEducationChart();
+}
+if (typeof updateAgeChart === 'function') {
+updateAgeChart();
+}
+
+console.log('Charts updated with filtered data');
+} else {
+console.error('Error filtering data:', data.error);
+alert('Error al filtrar los datos. Por favor, intente nuevamente.');
+}
+}).catch(error => {
+console.error('Network error:', error);
+alert('Error de conexión. Por favor, intente nuevamente.');
+}). finally(() => { // Remove loading indicator
+chartContainers.forEach(container => {
+container.style.opacity = '1';
+});
+});
+});
+}
+});
+	</script>
+
+{% endblock %}

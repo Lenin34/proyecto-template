@@ -1,0 +1,241 @@
+name: Deploy NSMAX
+
+on:
+  push:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: antoonio/asnmx:${{ github.sha }}
+  WORK_DIR: /home/github/wrkdirs/asnmx
+  SSH_USER: antoonio
+  SSH_HOST: 104.198.241.255
+  APP_URL_DEV: http://localhost:8004
+  APP_URL_PROD: https://sindicato.grupooptimo.mx
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure Secrets
+        env:
+          GHCR_PAT_SNMX: ${{ secrets.GHCR_PAT_SNMX }}
+        run: |
+          echo "GHCR_PAT_SNMX=$GHCR_PAT_SNMX" >> $GITHUB_ENV
+
+      - name: Ensure Docker network exists
+        run: |
+          docker network inspect database >/dev/null 2>&1 || docker network create database
+
+      - name: Install Composer dependencies
+        run: |
+          docker run --rm \
+            -v $(pwd):/app \
+            -w /app \
+            php:8.2-cli \
+            sh -c "apt-get update && \
+                  apt-get install -y \
+                    libfreetype6-dev \
+                    libjpeg62-turbo-dev \
+                    libpng-dev \
+                    libzip-dev \
+                    git \
+                    unzip && \
+                  docker-php-ext-configure gd --with-freetype --with-jpeg && \
+                  docker-php-ext-install gd zip && \
+                  git config --global --add safe.directory /app && \
+                  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+                  composer install --no-scripts --no-dev --optimize-autoloader"
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} -f .docker/Dockerfile .
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ env.GHCR_PAT_SNMX }}" | docker login ghcr.io -u ${{ env.SSH_USER }} --password-stdin
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Create docker.env file
+        run: |
+          mkdir -p .docker/env
+          cat << EOF > .docker/env/docker.env
+          APP_ENV=prod
+          APP_DEBUG=1
+          APP_SECRET=${{ secrets.APP_SECRET }}
+          
+          # --- BASES DE DATOS (Concatenación simple) ---
+          # Secreto DB_BASE_URL debe ser: mysql://user:pass@host:port (SIN barra al final)
+          DATABASE_URL_TS=${{ secrets.DB_BASE_URL }}/msc-app-ts
+          DATABASE_URL_RS=${{ secrets.DB_BASE_URL }}/msc-app-rs
+          DATABASE_URL_MASTER=${{ secrets.DB_BASE_URL }}/Master
+          DATABASE_URL_SNT=${{ secrets.DB_BASE_URL }}/msc-app-snt
+          DATABASE_URL_ISSEMYM=${{ secrets.DB_BASE_URL }}/msc-app-issemym
+          LOCK_DSN=${{ secrets.DB_BASE_URL }}/msc-app-ts
+          
+          # --- SEGURIDAD Y CORS ---
+          CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+          
+          # --- JWT ---
+          JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+          JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+          JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }}
+          CREDENTIAL_JWT_TTL=300
+          
+          # --- INTEGRACIONES ---
+          FIREBASE_CREDENTIALS=%kernel.project_dir%/config/firebase/firebase_credentials.json
+          
+          TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_WHATSAPP_NUMBER=${{ secrets.TWILIO_WHATSAPP_NUMBER }}
+          TWILIO_PHONE_NUMBER=${{ secrets.TWILIO_PHONE_NUMBER }}
+          
+          WHATSAPP_API_URL=
+          WHATSAPP_ACCESS_TOKEN=
+          WHATSAPP_PHONE_NUMBER_ID=
+          
+          MAILER_DSN=${{ secrets.MAILER_DSN }}
+          SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+          
+          EXPO_ACCESS_TOKEN=nIFv8MehP1LmD5sQTJrIz1cp5XzTFtCQlZbtipl1
+          
+          # --- MERCURE ---
+          MERCURE_URL=http://mercure/.well-known/mercure
+          MERCURE_PUBLIC_URL=https://sindicato.grupooptimo.mx/.well-known/mercure
+          MERCURE_JWT_SECRET=${{ secrets.MERCURE_JWT_SECRET }}
+          
+          # --- URLs ---
+          APP_URL_DEV=${{ env.APP_URL_DEV }}
+          APP_URL_PROD=${{ env.APP_URL_PROD }}
+          EOF
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ env.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Sync Environment File
+        run: |
+          scp -o StrictHostKeyChecking=no \
+          .docker/env/docker.env \
+          ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:${{ env.WORK_DIR }}/.docker/env/docker.env
+
+      - name: Sync Backup Script
+        run: |
+          # Crear directorio de scripts en el servidor si no existe
+          ssh -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.SSH_HOST }} "mkdir -p ${{ env.WORK_DIR }}/scripts"
+
+          # Copiar script de backup
+          scp -o StrictHostKeyChecking=no \
+          scripts/pre-deployment-backup.sh \
+          ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:${{ env.WORK_DIR }}/scripts/pre-deployment-backup.sh
+
+      - name: Deploy to Server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.SSH_HOST }} << 'EOF'
+          set -euxo pipefail
+
+          echo "🛡️ EJECUTANDO BACKUP PRE-DESPLIEGUE..."
+          chmod +x ${{ env.WORK_DIR }}/scripts/pre-deployment-backup.sh
+          ${{ env.WORK_DIR }}/scripts/pre-deployment-backup.sh || {
+            echo "⚠️ Backup falló, pero continuando con despliegue..."
+          }
+          
+          echo "=== LIMPIEZA AGRESIVA DE DOCKER ==="
+          docker stop asnmx || true
+          docker rm asnmx || true
+          docker system prune -a -f --filter "label!=persistent=true"
+          docker volume prune -f --filter "label!=persistent=true" || true
+          docker image prune -a -f
+
+          echo "=== VERIFICANDO SERVICIOS PERSISTENTES ==="
+          docker network inspect database >/dev/null 2>&1 || docker network create database
+
+          # Verificar y crear MySQL si no existe
+          if ! docker ps -q -f name=mysql | grep -q .; then
+            echo "⚠️  MySQL no encontrado. Creando MySQL persistente..."
+          
+            # Nota: Si el contenedor MySQL se crea aquí, se crea con la clave 'root'.
+            # Como YA cambiaste la clave manualmente en el volumen, MySQL ignorará 
+            # la variable MYSQL_ROOT_PASSWORD si el volumen de datos ya existe.
+            # Así que no te preocupes si aquí dice 'root', mandará lo que hay en disco.
+          
+            if docker volume inspect mysql_data >/dev/null 2>&1; then
+              echo "✅ Volumen mysql_data existente detectado"
+            else
+              echo "🆕 Creando nuevo volumen mysql_data"
+              docker volume create mysql_data
+            fi
+
+            docker run -d \
+              --name mysql \
+              --network database \
+              --restart unless-stopped \
+              --label persistent=true \
+              -e MYSQL_DATABASE=msc-app-ts \
+              -e MYSQL_ROOT_PASSWORD=root \
+              -e MYSQL_ROOT_HOST=% \
+              -v mysql_data:/var/lib/mysql \
+              -p 33306:3306 \
+              mysql:8.0.35 \
+              --default-authentication-plugin=mysql_native_password \
+              --bind-address=0.0.0.0
+
+            echo "⏳ Esperando a que MySQL esté listo..."
+            sleep 15
+          else
+            echo "✅ MySQL ya está ejecutándose"
+          fi
+
+          if ! docker ps -q -f name=phpmyadmin | grep -q .; then
+            echo "🔧 Iniciando phpMyAdmin..."
+            docker run -d \
+              --name phpmyadmin \
+              --network database \
+              --restart unless-stopped \
+              --label persistent=true \
+              -e PMA_HOST=mysql \
+              -e UPLOAD_LIMIT=100M \
+              -p 8080:80 \
+              phpmyadmin/phpmyadmin
+          else
+            echo "✅ phpMyAdmin ya está ejecutándose"
+          fi
+
+          mkdir -p ${{ env.WORK_DIR }}/.docker/{jwt,env}
+          chmod 750 ${{ env.WORK_DIR }}/.docker
+
+          docker logout ghcr.io || true
+          echo "${{ env.GHCR_PAT_SNMX }}" | docker login ghcr.io -u ${{ env.SSH_USER }} --password-stdin
+
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+          docker stop asnmx || true
+          docker rm asnmx || true
+
+          docker run -d \
+            --network database \
+            -p 8004:80 \
+            --name asnmx \
+            --restart unless-stopped \
+            --env-file ${{ env.WORK_DIR }}/.docker/env/docker.env \
+            -v ${{ env.WORK_DIR }}/public/uploads:/var/www/html/public/uploads \
+            -v ${{ env.WORK_DIR }}/.docker/jwt:/var/www/html/config/jwt \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+          echo "✅ Aplicación desplegada."
+          
+          # Limpieza final
+          docker image prune -a -f --filter "until=24h"
+          EOF
+

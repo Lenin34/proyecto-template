@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificación de Correo</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #4FC6C0, #F8931E);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+        .email-container {
+            max-width: 480px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #4FC6C0;
+            margin-bottom: 25px;
+        }
+        .heading {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .instruction {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .verification-code {
+            display: inline-block;
+            background: #F8931E;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 8px;
+            letter-spacing: 4px;
+            text-decoration: none;
+            margin-bottom: 30px;
+        }
+        .footer {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="logo">SINDICATO NACIONAL</div>
+
+    <h2 class="heading">¡Tu código de verificación ha llegado!</h2>
+
+    <p class="instruction">Utiliza el siguiente código para verificar tu cuenta:</p>
+
+    <div class="verification-code">{{ verification_code }}</div>
+
+    <p class="instruction">Este código caduca en unos minutos. ¡No tardes!</p>
+
+    <div class="footer">
+        © {{ "now"|date("Y") }} SNTIASG. Todos los derechos reservados.
+    </div>
+</div>
+</body>
+</html>

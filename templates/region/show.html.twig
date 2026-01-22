@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Detalle de la Región{% endblock %}
+
+{% block body %}
+    <div class="d-flex align-items-center justify-content-center min-vh-100">
+        <div class="container modal-a container-show position-relative text-white rounded-4 shadow-lg">
+            <a href="{{ path('app_region_index', {'dominio': dominio}) }}" class="btn-close btn-close-white position-absolute top-0 end-0 m-3"></a>
+
+            <div class="row mb-3">
+                <div class="col-md-12 modal-title-sntiasg">Detalle de la Región</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12 modal-text-sntiasg"><strong class="fw-bold">Nombre: </strong>{{ region.name }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 modal-text-sntiasg"><strong class="fw-bold">Fecha de Creación: </strong>{{ region.createdAt ? region.createdAt|date('d-m-Y H:i:s') : '' }}</div>
+                <div class="col-md-6 modal-text-sntiasg"><strong class="fw-bold">Fecha de Actualización: </strong>{{ region.updatedAt ? region.updatedAt|date('d-m-Y H:i:s') : '' }}</div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title-region">EMPRESAS EN ESTA REGIÓN</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for company in region.companies %}
+                                    <tr>
+                                        <td>{{ company.name }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="1">SIN EMPRESAS DISPONIBLES</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title-region">USUARIOS DE ESTA REGIÓN</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Correo</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in region.users %}
+                                    <tr>
+                                        <td>{{ user.name }} {{ user.lastName }}</td>
+                                        <td>{{ user.email }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="2">SIN USUARIOS DISPONIBLES</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+
+</script>
+{% endblock %}

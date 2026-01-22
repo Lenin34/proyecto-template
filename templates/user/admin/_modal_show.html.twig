@@ -1,0 +1,64 @@
+{# Modal de Ver Administrador #}
+<div class="modal fade" id="modalShowUserAdmin" tabindex="-1" aria-labelledby="modalShowUserAdminLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content modal-form">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalShowUserAdminLabel">
+					<i class="fas fa-user-shield me-2"></i>
+					Detalles del Administrador
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row g-4">
+					<div class="col-md-4 text-center">
+						<img id="showUserAdminPhoto" src="" alt="Foto de perfil" class="img-fluid rounded-circle shadow-sm mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+						<div>
+							<span id="showUserAdminStatus" class="badge"></span>
+						</div>
+					</div>
+					<div class="col-md-8">
+						<div class="row g-3">
+							<div class="col-12">
+								<h4 id="showUserAdminName" class="mb-1 fw-bold"></h4>
+								<div id="showUserAdminRole" class="text-muted small text-uppercase fw-bold mb-3"></div>
+							</div>
+
+							<div class="col-md-6">
+								<label class="form-label text-muted small">EMAIL</label>
+								<div id="showUserAdminEmail" class="fw-bold fs-6"></div>
+							</div>
+							<div class="col-md-6">
+								<label class="form-label text-muted small">TELÉFONO</label>
+								<div id="showUserAdminPhone" class="fw-bold fs-6"></div>
+							</div>
+							<div class="col-md-6">
+								<label class="form-label text-muted small">FECHA DE CREACIÓN</label>
+								<div id="showUserAdminCreated" class="fw-bold fs-6"></div>
+							</div>
+
+							<div class="col-md-6">
+								<label class="form-label text-muted small">EMPRESA</label>
+								<div id="showUserAdminCompany" class="fw-bold fs-6"></div>
+							</div>
+
+							<div class="col-12">
+								<hr class="border-secondary opacity-25 my-2">
+								<label class="form-label text-muted small mb-2">REGIONES ASIGNADAS</label>
+								<div
+									id="showUserAdminRegions" class="d-flex flex-wrap gap-2"><!-- Regions badges inserted here -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+					<i class="fas fa-times me-2"></i>
+					Cerrar
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

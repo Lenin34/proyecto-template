@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Usuarios del Sistema
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
+{% endblock %}
+
+{% block body %}
+	{# Unified Toolbar #}
+	<section class="user-toolbar">
+		<div class="container-fluid px-5">
+			<div
+				class="toolbar-content">
+				{# Left: Title #}
+				<div class="toolbar-left">
+					<h1 class="page-title">Administradores</h1>
+				</div>
+
+				{# Right: Actions #}
+				<div class="toolbar-right">
+					<button class="btn-action btn-action-success" data-bs-toggle="modal" data-bs-target="#modalNew" title="Nuevo Administrador">
+						<i class="fas fa-plus"></i>
+						<span>Nuevo</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	{# Main Content #}
+	<div class="container-fluid px-5 mt-4">
+		<div class="table-wrapper">
+			<table id="user-admin-datatable" class="data-table" style="width:100%">
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 120px;">Acciones</th>
+						<th class="text-center">Email</th>
+						<th class="text-center">Nombre</th>
+						<th class="text-center">Teléfono</th>
+						<th class="text-center">Rol</th>
+						<th class="text-center">Fecha Creación</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+
+	{# Modals #}
+	{% include 'user/admin/_modal_new.html.twig' %}
+	{% include 'user/admin/_modal_show.html.twig' %}
+	{% include 'user/admin/_modal_edit.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		window.userAdminConfig = {
+dominio: '{{ dominio }}',
+datatableUrl: '{{ path('app_user_admin_datatable', {'dominio': dominio}) }}',
+csrfToken: '{{ csrf_token_delete }}'
+};
+	</script>
+	<script src="{{ asset('js/user-admin-index.js') }}"></script>
+{% endblock %}

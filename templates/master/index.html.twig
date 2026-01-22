@@ -1,0 +1,87 @@
+{% extends 'base-master.html.twig' %}
+
+{% block title %}Aplicaciones{% endblock %}
+
+{% block body %}
+    <div class="section-title">
+        <h1 class="glass section-title-heading">Aplicaciones</h1>
+    </div>
+    <div class="section-table">
+
+        <div class="container-add-button">
+            <a href="{{ path('app_master_new', {'dominio': dominio}) }}" class="glass add-button">Agregar</a>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Dominio</th>
+                <th>Database</th>
+                {% for feature in features %}
+                    <th>{{ feature|capitalize }}</th>
+                {% endfor %}
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for tenant in tenants %}
+            <tr>
+                <td>
+                    <div class="status-cell">
+                        <div class="circle {{ tenant.status.value == '1' ? 'circle-activated' : 'circle-deactivated' }}"></div>
+                    </div>
+                </td>
+
+                <td>{{ tenant.dominio }}</td>
+                <td>{{ tenant.databaseName }}</td>
+
+                {% for feature in features %}
+                    {% set on = (tenant.features[feature]|default('0')) == '1' %}
+                    <td>
+                        <span class="feature-badge {{ on ? 'on' : 'off' }}" title="{{ on ? 'Activo' : 'Inactivo' }}">{{ on ? '✓' : '—' }}</span>
+                    </td>
+                {% endfor %}
+
+                <td>
+                    <a href="{{ path('app_master_edit', {'dominio': dominio, 'rtenant': tenant.id}) }}" class="action-button btn-editar">Editar</a>
+                    {% if tenant.dominio != dominio %}
+                        <form
+                                method="post"
+                                action="{{ path('app_master_delete', {'dominio': dominio, 'rtenant': tenant.id}) }}"
+                                class="form-delete"
+                                data-confirm="delete"
+                                data-dominio="{{ tenant.dominio }}"
+                        >
+                            <input
+                                    type="hidden"
+                                    name="_token"
+                                    value="{{ csrf_token('delete' ~ tenant.id) }}"
+                            >
+                            <button
+
+                                    class="action-button {{
+                                    tenant.status.value == '0'
+                                    ? 'btn-activar'
+                                    : 'btn-desactivar' }}"
+                                    type="submit">{{
+                                tenant.status.value == '0'
+                                ? 'Activar'
+                                : 'Desactivar' }}
+                            </button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" >No hay tenants</td>
+                <td style="display: none"></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+

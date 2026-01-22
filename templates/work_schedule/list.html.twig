@@ -1,0 +1,290 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista de Horarios - SNTIASG{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('work-schedule') }}
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b py-3">
+        <div class="container text-center">
+            <h1>
+                <i class="fas fa-list mr-2"></i>
+                Lista de Horarios
+            </h1>
+            <ol class="breadcrumb float-sm-right" style="padding-left: 36em;">
+                <li class="breadcrumb-item"><a href="{{ path('app_dashboard', {dominio: dominio}) }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('work_schedule_index', {dominio: dominio}) }}">Horarios</a></li>
+                <li class="breadcrumb-item active">Lista</li>
+            </ol>
+        </div>
+    </section>
+
+    <br>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Horarios Configurados</h3>
+                <div class="card-tools">
+                    <a href="{{ path('work_schedule_new', {dominio: dominio}) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus mr-1"></i>
+                        Nuevo Horario
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+
+                {% if schedules %}
+                    <div class="schedules-grid">
+                        {% for schedule in schedules %}
+                        <div class="schedule-card">
+                            <div class="schedule-card-header">
+                                <div>
+                                    <h3 class="schedule-name">{{ schedule.name }}</h3>
+                                    {% if schedule.company %}
+                                        <p class="schedule-company">{{ schedule.company.name }}</p>
+                                    {% else %}
+                                        <p class="schedule-company">Todas las empresas</p>
+                                    {% endif %}
+                                </div>
+                                <span class="schedule-status">Activo</span>
+                            </div>
+
+                            <div class="schedule-time">
+                                <i class="fas fa-clock mr-2"></i>
+                                <span class="schedule-time-text">
+                                    {{ schedule.startTime|date('H:i') }} - {{ schedule.endTime|date('H:i') }}
+                                </span>
+                            </div>
+
+                            <div class="schedule-meta">
+                                <div class="meta-item">
+                                    <p class="meta-value">{{ schedule.workScheduleDays|length }}</p>
+                                    <p class="meta-label">Días</p>
+                                </div>
+                                <div class="meta-item">
+                                    <p class="meta-value">{{ schedule.workScheduleBreaks|length }}</p>
+                                    <p class="meta-label">Descansos</p>
+                                </div>
+                            </div>
+
+                            <div class="schedule-actions">
+                                <a href="{{ path('work_schedule_show', {id: schedule.id, dominio: dominio}) }}"
+                                   class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+
+                                <a href="{{ path('work_schedule_edit', {id: schedule.id, dominio: dominio}) }}"
+                                   class="btn btn-sm btn-outline-warning" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+
+                                <button class="btn btn-sm btn-outline-danger"
+                                        onclick="deleteSchedule({{ schedule.id }})"
+                                        title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-clock fa-3x mb-3 text-muted"></i>
+                        <h3>No hay horarios configurados</h3>
+                        <p>Comienza creando tu primer horario de trabajo</p>
+                        <a href="{{ path('work_schedule_new', {dominio: dominio}) }}" class="btn btn-primary">
+                            <i class="fas fa-plus mr-1"></i>
+                            Crear Primer Horario
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// ========================================
+// WORK SCHEDULE LIST - SweetAlert2 Implementation
+// ========================================
+
+class WorkScheduleList {
+    constructor() {
+        this.dominio = '{{ dominio }}';
+    }
+
+    async deleteSchedule(scheduleId, scheduleName) {
+        // Confirmación de eliminación
+        const result = await Swal.fire({
+            icon: 'warning',
+            title: '¿Eliminar Horario?',
+            html: `
+                <p>¿Estás seguro de que deseas eliminar el horario:</p>
+                <strong>"${scheduleName}"</strong>
+                <p class="text-muted mt-2">Esta acción no se puede deshacer</p>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            customClass: {
+                popup: 'swal-delete-popup',
+                confirmButton: 'btn btn-danger',
+                cancelButton: 'btn btn-secondary'
+            },
+            buttonsStyling: false
+        });
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        // Mostrar loading
+        Swal.fire({
+            title: 'Eliminando horario...',
+            html: '<div class="spinner-border text-danger" role="status"><span class="sr-only">Eliminando...</span></div>',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'swal-loading-popup'
+            }
+        });
+
+        try {
+            const response = await fetch(`/${this.dominio}/admin/schedules/${scheduleId}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Éxito
+                await Swal.fire({
+                    icon: 'success',
+                    title: '¡Horario Eliminado!',
+                    text: data.message,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end',
+                    background: '#d4edda',
+                    color: '#155724',
+                    iconColor: '#28a745'
+                });
+
+                // Recargar página
+                location.reload();
+            } else {
+                // Error del servidor con código específico
+                const errorType = data.error_code || data.error_type || 'WS-999';
+                console.log('Delete error type:', errorType);
+                this.showDeleteError(data.message || 'No se pudo eliminar el horario', errorType);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+
+            // Error de conexión
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de Conexión',
+                text: 'No se pudo conectar con el servidor. Inténtalo de nuevo.',
+                confirmButtonText: 'Reintentar',
+                confirmButtonColor: '#dc3545',
+                customClass: {
+                    popup: 'swal-error-popup'
+                }
+            });
+        }
+    }
+
+    showDeleteError(message, errorType) {
+        let config = {
+            text: message,
+            confirmButtonText: 'Entendido',
+            customClass: {
+                popup: 'swal-error-popup'
+            }
+        };
+
+        switch (errorType) {
+            case 'WS-015':
+                config.icon = 'warning';
+                config.title = 'Horario No Encontrado';
+                config.confirmButtonColor = '#ffc107';
+                config.footer = '<small>El horario que intentas eliminar no existe</small>';
+                break;
+
+            case 'WS-016':
+                config.icon = 'info';
+                config.title = 'Horario Ya Eliminado';
+                config.confirmButtonColor = '#17a2b8';
+                config.footer = '<small>Este horario ya fue eliminado anteriormente</small>';
+                break;
+
+            case 'WS-017':
+                config.icon = 'warning';
+                config.title = 'Horario con Asignaciones';
+                config.confirmButtonColor = '#ffc107';
+                config.footer = '<small>Elimina primero las asignaciones de empleados</small>';
+                break;
+
+            case 'WS-018':
+                config.icon = 'error';
+                config.title = 'Error al Eliminar';
+                config.confirmButtonColor = '#dc3545';
+                config.footer = '<small>Error interno. Inténtalo de nuevo</small>';
+                break;
+
+            case 'WS-004':
+                config.icon = 'error';
+                config.title = 'Error de Conexión';
+                config.confirmButtonColor = '#dc3545';
+                config.footer = '<small>Verifica tu conexión e inténtalo de nuevo</small>';
+                break;
+
+            default:
+                config.icon = 'error';
+                config.title = 'Error al Eliminar';
+                config.confirmButtonColor = '#dc3545';
+                config.footer = `<small>Código de error: ${errorType}</small>`;
+        }
+
+        Swal.fire(config);
+    }
+
+    showInfo(title, message) {
+        Swal.fire({
+            icon: 'info',
+            title: title,
+            text: message,
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#007bff',
+            customClass: {
+                popup: 'swal-info-popup'
+            }
+        });
+    }
+}
+
+// Instancia global
+const workScheduleList = new WorkScheduleList();
+
+// Función global para compatibilidad
+function deleteSchedule(scheduleId, scheduleName = 'este horario') {
+    workScheduleList.deleteSchedule(scheduleId, scheduleName);
+}
+</script>
+{% endblock %}

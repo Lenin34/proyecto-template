@@ -1,0 +1,214 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = dominio|default(app.request.attributes.get('dominio')) %}
+
+{% block title %}Nuevo Formulario{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('form-templates') }}
+    <style>
+        /* Estilos personalizados para Select2 de empresas */
+        .select2-container--bootstrap-5 .select2-selection--multiple {
+            min-height: 45px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection--multiple {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
+            background-color: #0d6efd;
+            border: 1px solid #0d6efd;
+            color: white;
+            border-radius: 6px;
+            padding: 4px 8px;
+            margin: 2px;
+            font-size: 0.875rem;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove {
+            color: white;
+            margin-right: 5px;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove:hover {
+            color: #ffcccc;
+        }
+
+        .select2-dropdown {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .companies-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b form-header-enhanced py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <nav class="form-navigation mb-3">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_forms_index', {'dominio': dominio}) }}">
+                                    <i class="fas fa-file-alt mr-1"></i> Formularios
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">Crear Nuevo</li>
+                        </ol>
+                    </nav>
+                    <h1><i class="fas fa-plus-circle mr-3"></i> Crear Nuevo Formulario</h1>
+                    <p class="subtitle">Diseña un formulario personalizado para recopilar información específica</p>
+                </div>
+                <div class="col-md-4 text-md-end text-center mt-3 mt-md-0">
+                    <div class="form-actions-group justify-content-end">
+                        <a href="{{ path('app_forms_index', {'dominio': dominio}) }}" class="btn btn-outline-light">
+                            <i class="fas fa-arrow-left mr-2"></i> Regresar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="form-card-modern">
+                    <div class="card-header">
+                        <h4><i class="fas fa-edit mr-2"></i> Información del Formulario</h4>
+                    </div>
+                    <div class="card-body form-field-enhanced">
+                        <!-- Flash messages are handled by SweetAlert2 in base template -->
+
+                        {% if errors is defined and errors %}
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    SwalHelper.validationErrors({{ errors|json_encode|raw }});
+                                });
+                            </script>
+                        {% endif %}
+
+                        <form method="post">
+                            <div class="form-group">
+                                <label for="name">Nombre del Formulario</label>
+                                <input type="text" id="name" name="name" class="form-control {% if errors.name is defined %}is-invalid{% endif %}"
+                                       value="{{ app.request.request.get('name') }}" required>
+                                {% if errors.name is defined %}
+                                    <div class="invalid-feedback">{{ errors.name }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Descripción</label>
+                                <textarea id="description" name="description" class="form-control {% if errors.description is defined %}is-invalid{% endif %}" rows="5">{{ app.request.request.get('description') }}</textarea>
+                                <small class="form-text text-muted">Incluir una descripción para el formulario.</small>
+                                {% if errors.description is defined %}
+                                    <div class="invalid-feedback">{{ errors.description }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="companyIds" class="fw-bold">
+                                    <i class="fas fa-building me-2 text-primary"></i>Empresas Autorizadas
+                                </label>
+                                {% if form is defined %}
+                                    {{ form_widget(form.companies, {'id': 'companyIds', 'attr': {'class': 'form-select select2-multiple', 'data-placeholder': 'Seleccionar empresas (vacio = todas las empresas)'}}) }}
+                                {% else %}
+                                    <select id="companyIds" name="companyIds[]" class="form-select select2-multiple {% if errors.companyIds is defined %}is-invalid{% endif %}" multiple="multiple" data-placeholder="Seleccionar empresas (vacio = todas las empresas)">
+                                    </select>
+                                {% endif %}
+                                <div class="companies-info">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-info-circle text-primary me-2"></i>
+                                            <small class="fw-bold text-dark">Configuracion de Acceso:</small>
+                                        </div>
+                                        <div class="d-flex gap-3">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-globe text-info me-1"></i>
+                                                <small class="text-dark"><strong>Vacio:</strong> Todas</small>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-lock text-warning me-1"></i>
+                                                <small class="text-dark"><strong>Seleccion:</strong> Especificas</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if errors.companyIds is defined %}
+                                    <div class="invalid-feedback">{{ errors.companyIds }}</div>
+                                {% endif %}
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <div class="form-actions-group justify-content-end">
+                                    <a href="{{ path('app_forms_index', {'dominio': dominio}) }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times mr-2"></i> Cancelar
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save mr-2"></i> Crear Formulario
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            // Inicializar Select2 para el selector de empresas con configuracion mejorada
+            $('#companyIds').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Seleccionar empresas (vacio = todas las empresas)',
+                allowClear: true,
+                width: '100%',
+                closeOnSelect: false,
+                tags: false,
+                tokenSeparators: [','],
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                templateResult: function(option) {
+                    if (!option.id) return option.text;
+                    return $('<span><i class="fas fa-building me-2"></i>' + option.text + '</span>');
+                },
+                templateSelection: function(option) {
+                    if (!option.id) return option.text;
+                    return $('<span><i class="fas fa-building me-1"></i>' + option.text + '</span>');
+                }
+            });
+
+            // Agregar evento para mostrar informacion cuando se selecciona/deselecciona
+            $('#companyIds').on('select2:select select2:unselect', function (e) {
+                const selectedCount = $(this).val() ? $(this).val().length : 0;
+                const totalCompanies = $(this).find('option').length;
+
+                if (selectedCount === 0) {
+                    console.log('Formulario disponible para TODAS las empresas');
+                } else {
+                    console.log('Formulario restringido a ' + selectedCount + ' de ' + totalCompanies + ' empresas');
+                }
+            });
+        });
+    </script>
+{% endblock %}

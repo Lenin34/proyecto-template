@@ -1,0 +1,4 @@
+kreait_firebase:
+    projects:
+        default:
+            credentials: '%env(resolve:FIREBASE_CREDENTIALS)%'

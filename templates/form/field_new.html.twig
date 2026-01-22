@@ -1,0 +1,256 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Agregar Campo al Formulario{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('form-templates') }}
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b form-header-enhanced py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <nav class="form-navigation mb-3">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_forms_index', {'dominio': dominio}) }}">
+                                    <i class="fas fa-file-alt mr-1"></i> Formularios
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_forms_show', {'id': form_template.id, 'dominio': dominio}) }}">
+                                    {{ form_template.name }}
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">Agregar Campo</li>
+                        </ol>
+                    </nav>
+                    <h1><i class="fas fa-plus-square mr-3"></i> Agregar Campo</h1>
+                    <p class="subtitle">Crea un nuevo campo para el formulario "{{ form_template.name }}"</p>
+                </div>
+                <div class="col-md-4 text-md-end text-center mt-3 mt-md-0">
+                    <div class="form-actions-group justify-content-end">
+                        <a href="{{ path('app_forms_show', {'id': form_template.id, 'dominio': dominio}) }}" class="btn btn-back">
+                            <i class="fas fa-arrow-left mr-2"></i> Regresar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="form-card-modern">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-plus me-2"></i> Nuevo Campo</h5>
+            </div>
+            <div class="card-body">
+                <!-- Flash messages are handled by SweetAlert2 in base template -->
+
+                {% if errors is defined and errors %}
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            SwalHelper.validationErrors({{ errors|json_encode|raw }});
+                        });
+                    </script>
+                {% endif %}
+
+                <form method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="label">Etiqueta</label>
+                                <input type="text" id="label" name="label" class="form-control {% if errors.label is defined %}is-invalid{% endif %}"
+                                       value="{{ app.request.request.get('label') }}" required>
+                                <small class="form-text text-muted">Etiqueta que verán los usuarios</small>
+                                {% if errors.label is defined %}
+                                    <div class="invalid-feedback">{{ errors.label }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Nombre del Campo <span class="text-danger">*</span></label>
+                                <input type="text" id="name" name="name" class="form-control {% if errors.name is defined %}is-invalid{% endif %}"
+                                       value="{{ app.request.request.get('name') }}" required
+                                       placeholder="Ejemplo: nombre_campo"
+                                       pattern="^[a-zA-Z][a-zA-Z0-9_]*$">
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    <strong>Debe comenzar con una letra</strong> y solo puede contener letras, números, sin espacios y guiones bajos (_).
+                                </small>
+                                {% if errors.name is defined %}
+                                    <div class="invalid-feedback">{{ errors.name }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="type">Tipo de Campo</label>
+                                <select id="type" name="type" class="form-control {% if errors.type is defined %}is-invalid{% endif %}" required>
+                                    <option value="">Seleccionar tipo...</option>
+                                    <option value="text" {% if app.request.request.get('type') == 'text' %}selected{% endif %}>Texto</option>
+                                    <option value="number" {% if app.request.request.get('type') == 'number' %}selected{% endif %}>Número</option>
+                                    <option value="textarea" {% if app.request.request.get('type') == 'textarea' %}selected{% endif %}>Caja de Texto</option>
+                                    <option value="select" {% if app.request.request.get('type') == 'select' %}selected{% endif %}>Selección</option>
+                                    <option value="checkbox" {% if app.request.request.get('type') == 'checkbox' %}selected{% endif %}>Checkbox</option>
+                                    <option value="radio" {% if app.request.request.get('type') == 'radio' %}selected{% endif %}>Radio Botones</option>
+                                    <option value="date" {% if app.request.request.get('type') == 'date' %}selected{% endif %}>Fecha</option>
+                                    <option value="file" {% if app.request.request.get('type') == 'file' %}selected{% endif %}>Subir Archivo</option>
+                                </select>
+                                {% if errors.type is defined %}
+                                    <div class="invalid-feedback">{{ errors.type }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group mt-3">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="required" name="required">
+                                    <label class="custom-control-label" for="required">Campo obligatorio</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="help">Texto de ayuda</label>
+                                <input type="text" id="help" name="help" class="form-control">
+                                <small class="form-text text-muted">Texto explicativo que aparece debajo del campo</small>
+                            </div>
+                            <div class="form-group" id="options-group">
+                                <label for="options">
+                                    Opciones <span class="text-danger" id="options-required" style="display: none;">*</span>
+                                </label>
+                                <textarea id="options" name="options" class="form-control" rows="3" placeholder="Ejemplo: Opción 1,Opción 2,Opción 3"></textarea>
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    <strong>Obligatorio</strong> para campos de tipo select, checkbox o radio.
+                                    Ingresa las opciones separadas por comas.
+                                </small>
+                                <div class="invalid-feedback" id="options-error" style="display: none;">
+                                    Las opciones son obligatorias para este tipo de campo.
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="multiple" name="multiple">
+                                    <label class="custom-control-label" for="multiple">Permitir selección múltiple</label>
+                                    <small class="form-text text-muted">Para campos de tipo select o archivo</small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cols">Ancho de columna</label>
+                                <select id="cols" name="cols" class="form-control">
+                                    <option value="">Por defecto</option>
+                                    <option value="col-md-6">Mitad (50%)</option>
+                                    <option value="col-md-4">Un tercio (33%)</option>
+                                    <option value="col-md-3">Un cuarto (25%)</option>
+                                    <option value="col-md-12">Ancho completo (100%)</option>
+                                </select>
+                                <small class="form-text text-muted">Ancho del campo en la distribución del formulario</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="textarea_cols">Filas del textarea</label>
+                                <input type="number" id="textarea_cols" name="textarea_cols" class="form-control" min="1" max="20" value="3">
+                                <small class="form-text text-muted">Cantidad de filas visibles para campos de texto largo</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mt-4 d-flex justify-content-end gap-2">
+                        <button type="submit" class="btn btn-success fw-bold">Agregar campo</button>
+                        <a href="{{ path('app_forms_edit', {'id': form_template.id, 'dominio': dominio}) }}" class="btn btn-cancel fw-bold">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeSelect = document.getElementById('type');
+            const optionsGroup = document.getElementById('options-group');
+            const optionsField = document.getElementById('options');
+            const optionsRequired = document.getElementById('options-required');
+            const optionsError = document.getElementById('options-error');
+            const multipleGroup = document.getElementById('multiple').closest('.form-group');
+            const textareaColsGroup = document.getElementById('textarea_cols').closest('.form-group');
+            const form = document.querySelector('form');
+
+            function updateFieldVisibility() {
+                const selectedType = typeSelect.value;
+                const needsOptions = ['select', 'checkbox', 'radio'].includes(selectedType);
+
+                // Mostrar/ocultar campo de opciones
+                if (needsOptions) {
+                    optionsGroup.style.display = 'block';
+                    optionsRequired.style.display = 'inline';
+                    optionsField.setAttribute('required', 'required');
+                    optionsGroup.classList.add('border-warning', 'p-3', 'rounded');
+                } else {
+                    optionsGroup.style.display = 'none';
+                    optionsRequired.style.display = 'none';
+                    optionsField.removeAttribute('required');
+                    optionsGroup.classList.remove('border-warning', 'p-3', 'rounded');
+                    clearOptionsValidation();
+                }
+
+                // Mostrar/ocultar campo múltiple
+                if (selectedType === 'select' || selectedType === 'file') {
+                    multipleGroup.style.display = 'block';
+                } else {
+                    multipleGroup.style.display = 'none';
+                }
+
+                // Mostrar/ocultar textarea cols
+                if (selectedType === 'textarea') {
+                    textareaColsGroup.style.display = 'block';
+                } else {
+                    textareaColsGroup.style.display = 'none';
+                }
+            }
+
+            function clearOptionsValidation() {
+                optionsField.classList.remove('is-invalid');
+                optionsError.style.display = 'none';
+            }
+
+            function validateOptions() {
+                const selectedType = typeSelect.value;
+                const needsOptions = ['select', 'checkbox', 'radio'].includes(selectedType);
+
+                if (needsOptions && !optionsField.value.trim()) {
+                    optionsField.classList.add('is-invalid');
+                    optionsError.style.display = 'block';
+                    return false;
+                }
+
+                clearOptionsValidation();
+                return true;
+            }
+
+            // Validación en tiempo real
+            optionsField.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    clearOptionsValidation();
+                }
+            });
+
+            // Validación al enviar el formulario
+            form.addEventListener('submit', function(e) {
+                if (!validateOptions()) {
+                    e.preventDefault();
+                    optionsField.focus();
+
+                    // Mostrar alerta con SweetAlert si está disponible
+                    if (typeof SwalHelper !== 'undefined') {
+                        SwalHelper.error('Por favor, ingresa las opciones para el campo de tipo ' + typeSelect.value);
+                    } else {
+                        alert('Por favor, ingresa las opciones para el campo de tipo ' + typeSelect.value);
+                    }
+                }
+            });
+
+            updateFieldVisibility();
+            typeSelect.addEventListener('change', updateFieldVisibility);
+        });
+    </script>
+{% endblock %}

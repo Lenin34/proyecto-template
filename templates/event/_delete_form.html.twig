@@ -1,0 +1,61 @@
+{% set dominio = app.request.attributes.get('dominio') %}
+
+<form id="delete-form-{{ event.id }}" method="post" action="{{ path('app_event_delete', {'id': event.id, 'dominio': dominio}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+    <button type="button" class="btn-delete-event" data-bs-toggle="modal" data-bs-target="#modalDeleteEvent" data-form-id="delete-form-{{ event.id }}">ELIMINAR</button>
+</form>
+
+<div class="modal fade" id="modalDeleteEvent" tabindex="-1" aria-labelledby="modalDeleteEventLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="modal-body text-center p-4">
+                <!-- Icono de evento -->
+                <div class="mb-3">
+                    <i class="fas fa-calendar-times text-warning" style="font-size: 3rem;"></i>
+                </div>
+
+                <!-- Título elegante -->
+                <h5 class="text-white fw-bold mb-3" style="font-size: 1.3rem;" id="modalDeleteEventLabel">
+                    Eliminar Evento
+                </h5>
+
+                <!-- Texto conciso -->
+                <p class="text-white-50 mb-4" style="font-size: 0.95rem;">
+                    ¿Está seguro de eliminar este evento?
+                </p>
+
+                <!-- Botones modernos -->
+                <div class="d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal" style="border-radius: 25px;">
+                        <i class="fas fa-times me-1"></i> Cancelar
+                    </button>
+                    <button id="btnConfirmDelete" type="button" class="btn btn-danger btn-sm px-4" style="border-radius: 25px;">
+                        <i class="fas fa-calendar-times me-1"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let formToSubmit = null;
+    
+        document.querySelectorAll('.btn-delete-event').forEach(button => {
+        button.addEventListener('click', function () {
+            formToSubmit = button.closest('form');
+        });
+        });
+    
+        const confirmBtn = document.getElementById('btnConfirmDelete');
+        if (confirmBtn) {
+        confirmBtn.addEventListener('click', function () {
+            if (formToSubmit) {
+            formToSubmit.submit();
+            formToSubmit = null;
+            }
+        });
+        }
+    });
+</script>

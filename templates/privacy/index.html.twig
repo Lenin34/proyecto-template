@@ -1,0 +1,686 @@
+{% extends 'base-public.html.twig' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('support') }}
+{% endblock %}
+
+{% block body %}
+    <!-- Header Section -->
+    <section class="header-sntiasg-b py-5">
+        <div class="container text-center">
+            <h1 class="title-sntiasg mb-3">
+                <i class="fas fa-shield-alt me-3"></i>
+                Política de Privacidad
+            </h1>
+            <p class="text-white fs-5 mb-0" style="opacity: 0.95;">Protegemos tu información personal</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+
+                <!-- Última actualización Card -->
+                <div class="card border-0 shadow-sm mb-4" style="border-left: 4px solid #175E82 !important;">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-calendar-alt text-primary me-3 fs-4"></i>
+                            <div>
+                                <strong class="text-dark">Última actualización:</strong>
+                                <span class="text-muted ms-2">{{ "now"|date("d/m/Y") }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Introducción Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-info-circle text-primary me-2"></i>
+                            1. Introducción
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-3 lh-lg">
+                            Esta Política de Privacidad describe cómo recopilamos, usamos, almacenamos y protegemos
+                            la información personal que nos proporcionas al utilizar nuestra aplicación móvil y servicios web.
+                        </p>
+                        <p class="text-muted mb-0 lh-lg">
+                            Al utilizar nuestra aplicación, aceptas las prácticas descritas en esta política.
+                            Si no estás de acuerdo con alguna parte de esta política, por favor no utilices nuestra aplicación.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Información que recopilamos Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-database text-primary me-2"></i>
+                            2. Información que Recopilamos
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+
+                        <!-- 2.1 Información Personal -->
+                        <div class="mb-4">
+                            <h3 class="h6 fw-bold text-dark mb-3">2.1 Información Personal</h3>
+                            <p class="text-muted mb-3">Recopilamos la siguiente información personal cuando te registras y utilizas nuestra aplicación:</p>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <span class="text-muted small">Nombre completo</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <span class="text-muted small">CURP</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <span class="text-muted small">Número de empleado</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <span class="text-muted small">Fecha de nacimiento</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <span class="text-muted small">Género</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <span class="text-muted small">Nivel de educación</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <span class="text-muted small">Número de teléfono</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <span class="text-muted small">Correo electrónico</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <span class="text-muted small">Fotografía de perfil</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                        <span class="text-muted small">Información de beneficiarios</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2.2 Información Técnica -->
+                        <div class="mb-4">
+                            <h3 class="h6 fw-bold text-dark mb-3">2.2 Información Técnica</h3>
+                            <p class="text-muted mb-3">También recopilamos información técnica automáticamente:</p>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-mobile-alt text-primary me-2 mt-1"></i>
+                                        <span class="text-muted small">Tokens de dispositivo</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-mobile-alt text-primary me-2 mt-1"></i>
+                                        <span class="text-muted small">Tipo de dispositivo</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-mobile-alt text-primary me-2 mt-1"></i>
+                                        <span class="text-muted small">Dirección IP</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-mobile-alt text-primary me-2 mt-1"></i>
+                                        <span class="text-muted small">Información de uso</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2.3 Archivos y Documentos -->
+                        <div>
+                            <h3 class="h6 fw-bold text-dark mb-3">2.3 Archivos y Documentos</h3>
+                            <p class="text-muted mb-3">Cuando utilizas las funcionalidades de la aplicación:</p>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-file-upload text-info me-2 mt-1"></i>
+                                        <span class="text-muted small">Fotografías de cámara/galería</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="fas fa-file-upload text-info me-2 mt-1"></i>
+                                        <span class="text-muted small">Documentos adjuntos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cómo usamos tu información Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-cogs text-primary me-2"></i>
+                            3. Cómo Usamos tu Información
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-3">Utilizamos la información recopilada para los siguientes propósitos:</p>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-user-check text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Crear y gestionar tu cuenta de usuario</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-user-check text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Autenticar tu identidad y proporcionar acceso seguro</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-user-check text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Procesar y gestionar tus solicitudes y formularios</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-user-check text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Enviarte notificaciones importantes sobre eventos y beneficios</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-user-check text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Verificar tu identidad mediante SMS o correo electrónico</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-user-check text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Proporcionar soporte técnico y atención al usuario</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-user-check text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Mejorar nuestros servicios y la experiencia del usuario</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-user-check text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Cumplir con obligaciones legales y regulatorias</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-user-check text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Facilitar la comunicación entre usuarios mediante mensajería</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Permisos de la aplicación Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-key text-primary me-2"></i>
+                            4. Permisos de la Aplicación Móvil
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-4">Nuestra aplicación móvil solicita los siguientes permisos en tu dispositivo:</p>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card h-100 border" style="border-color: #e9ecef !important;">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-camera text-primary fs-4 me-3"></i>
+                                            <h5 class="mb-0 text-dark fw-bold">Cámara</h5>
+                                        </div>
+                                        <p class="text-muted small mb-0">Para capturar fotografías de perfil y documentos necesarios en formularios.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border" style="border-color: #e9ecef !important;">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-images text-success fs-4 me-3"></i>
+                                            <h5 class="mb-0 text-dark fw-bold">Galería</h5>
+                                        </div>
+                                        <p class="text-muted small mb-0">Para seleccionar imágenes existentes de tu dispositivo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border" style="border-color: #e9ecef !important;">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-bell text-warning fs-4 me-3"></i>
+                                            <h5 class="mb-0 text-dark fw-bold">Notificaciones</h5>
+                                        </div>
+                                        <p class="text-muted small mb-0">Para enviarte alertas importantes sobre eventos y beneficios.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border" style="border-color: #e9ecef !important;">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-save text-info fs-4 me-3"></i>
+                                            <h5 class="mb-0 text-dark fw-bold">Almacenamiento</h5>
+                                        </div>
+                                        <p class="text-muted small mb-0">Para guardar y acceder a archivos en tu dispositivo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-light border mt-4 mb-0">
+                            <i class="fas fa-info-circle text-primary me-2"></i>
+                            <small class="text-muted">Puedes gestionar estos permisos en cualquier momento desde la configuración de tu dispositivo.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicios de terceros Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-share-alt text-primary me-2"></i>
+                            5. Servicios de Terceros
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-4">Utilizamos los siguientes servicios de terceros para proporcionar funcionalidades:</p>
+
+                        <div class="mb-4">
+                            <h3 class="h6 fw-bold text-dark mb-3">5.1 Autenticación Social</h3>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fab fa-google text-danger me-2"></i>
+                                <span class="text-muted small"><strong>Google OAuth:</strong> Inicio de sesión con Google</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fab fa-facebook text-primary me-2"></i>
+                                <span class="text-muted small"><strong>Facebook OAuth:</strong> Inicio de sesión con Facebook</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h3 class="h6 fw-bold text-dark mb-3">5.2 Comunicaciones</h3>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-sms text-success me-2"></i>
+                                <span class="text-muted small"><strong>Twilio:</strong> Envío de códigos de verificación por SMS</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-envelope text-info me-2"></i>
+                                <span class="text-muted small"><strong>Email:</strong> Correos de verificación y notificaciones</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h3 class="h6 fw-bold text-dark mb-3">5.3 Notificaciones</h3>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-bell text-warning me-2"></i>
+                                <span class="text-muted small"><strong>Expo Notifications:</strong> Notificaciones push móviles</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fab fa-google text-danger me-2"></i>
+                                <span class="text-muted small"><strong>Firebase:</strong> Notificaciones push alternativas</span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning border-warning mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <small>Estos servicios tienen sus propias políticas de privacidad. Te recomendamos revisarlas.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compartir información Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-user-shield text-primary me-2"></i>
+                            6. Compartir tu Información
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-3">No vendemos, alquilamos ni compartimos tu información personal con terceros, excepto en los siguientes casos:</p>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-building text-primary me-2 mt-1"></i>
+                                    <span class="text-muted small">Con tu empresa u organización para fines administrativos</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-gavel text-warning me-2 mt-1"></i>
+                                    <span class="text-muted small">Cuando sea requerido por ley o autoridades competentes</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-shield-alt text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Para proteger nuestros derechos, propiedad o seguridad</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-handshake text-info me-2 mt-1"></i>
+                                    <span class="text-muted small">Con proveedores de servicios bajo acuerdos de confidencialidad</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seguridad Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-lock text-primary me-2"></i>
+                            7. Seguridad de la Información
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-3">Implementamos medidas de seguridad técnicas y organizativas para proteger tu información:</p>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-key text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Encriptación de datos sensibles</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-key text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Autenticación mediante JWT</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-key text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Verificación de identidad</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-key text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Acceso restringido</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-key text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Monitoreo continuo</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="fas fa-key text-success me-2 mt-1"></i>
+                                    <span class="text-muted small">Copias de seguridad regulares</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-light border mt-3 mb-0">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle text-primary me-2"></i>
+                                Ningún método de transmisión por Internet es 100% seguro. Aunque nos esforzamos por proteger tu información, no podemos garantizar su seguridad absoluta.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Retención de datos Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-clock text-primary me-2"></i>
+                            8. Retención de Datos
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-3 lh-lg">
+                            Conservamos tu información personal durante el tiempo que sea necesario para cumplir con los
+                            propósitos descritos en esta política, a menos que la ley requiera o permita un período de retención más largo.
+                        </p>
+                        <p class="text-muted mb-0 lh-lg">
+                            Cuando tu cuenta sea desactivada o eliminada, procederemos a eliminar o anonimizar tu información personal,
+                            excepto cuando debamos conservarla por obligaciones legales o regulatorias.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tus derechos Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-balance-scale text-primary me-2"></i>
+                            9. Tus Derechos
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-4">De acuerdo con la legislación aplicable, tienes los siguientes derechos sobre tu información personal:</p>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card h-100 border" style="border-color: #e9ecef !important;">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-eye text-primary fs-5 me-3"></i>
+                                            <div>
+                                                <h6 class="mb-0 text-dark fw-bold">Acceso</h6>
+                                                <small class="text-muted">Solicitar una copia de tu información</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border" style="border-color: #e9ecef !important;">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-edit text-success fs-5 me-3"></i>
+                                            <div>
+                                                <h6 class="mb-0 text-dark fw-bold">Rectificación</h6>
+                                                <small class="text-muted">Corregir información inexacta</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border" style="border-color: #e9ecef !important;">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-trash text-danger fs-5 me-3"></i>
+                                            <div>
+                                                <h6 class="mb-0 text-dark fw-bold">Eliminación</h6>
+                                                <small class="text-muted">Solicitar eliminación de datos</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border" style="border-color: #e9ecef !important;">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-download text-info fs-5 me-3"></i>
+                                            <div>
+                                                <h6 class="mb-0 text-dark fw-bold">Portabilidad</h6>
+                                                <small class="text-muted">Recibir datos en formato estructurado</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-light border mt-4 mb-0">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle text-primary me-2"></i>
+                                Para ejercer cualquiera de estos derechos, contáctanos a través de los medios indicados en la sección de contacto.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menores de edad Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-child text-primary me-2"></i>
+                            10. Menores de Edad
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-3 lh-lg">
+                            Nuestra aplicación está destinada a usuarios mayores de 18 años. No recopilamos intencionalmente
+                            información personal de menores de edad sin el consentimiento de sus padres o tutores legales.
+                        </p>
+                        <p class="text-muted mb-0 lh-lg">
+                            Si descubrimos que hemos recopilado información de un menor sin el consentimiento apropiado,
+                            tomaremos medidas para eliminar esa información de nuestros sistemas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Cambios a la política Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-sync-alt text-primary me-2"></i>
+                            11. Cambios a esta Política
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-3 lh-lg">
+                            Podemos actualizar esta Política de Privacidad periódicamente para reflejar cambios en nuestras
+                            prácticas o por razones legales, operativas o regulatorias.
+                        </p>
+                        <p class="text-muted mb-3 lh-lg">
+                            Te notificaremos sobre cambios significativos mediante una notificación en la aplicación o por
+                            correo electrónico. Te recomendamos revisar esta política regularmente para estar informado sobre
+                            cómo protegemos tu información.
+                        </p>
+                        <div class="alert alert-light border mb-0">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt text-primary me-2"></i>
+                                La fecha de la última actualización se muestra al inicio de esta política.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contacto Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-3">
+                        <h2 class="h4 mb-0 text-dark fw-bold">
+                            <i class="fas fa-envelope text-primary me-2"></i>
+                            12. Contacto
+                        </h2>
+                    </div>
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted mb-4">
+                            Si tienes preguntas, comentarios o inquietudes sobre esta Política de Privacidad o sobre cómo
+                            manejamos tu información personal, puedes contactarnos a través de:
+                        </p>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card h-100 border" style="border-color: #e9ecef !important; background: #f8f9fa;">
+                                    <div class="card-body text-center p-4">
+                                        <i class="fas fa-envelope text-primary fs-2 mb-3"></i>
+                                        <h6 class="text-dark fw-bold mb-2">Correo Electrónico</h6>
+                                        <a href="mailto:app@masoftcode.com" class="text-primary text-decoration-none">
+                                            app@masoftcode.com
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border" style="border-color: #e9ecef !important; background: #f8f9fa;">
+                                    <div class="card-body text-center p-4">
+                                        <i class="fab fa-whatsapp text-success fs-2 mb-3"></i>
+                                        <h6 class="text-dark fw-bold mb-2">WhatsApp</h6>
+                                        <a href="https://wa.me/5580451575" target="_blank" class="text-success text-decoration-none">
+                                            +52 55 8045 1575
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consentimiento Card -->
+                <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success fs-2 me-3 mt-1"></i>
+                            <div>
+                                <h4 class="text-dark fw-bold mb-3">Consentimiento</h4>
+                                <p class="text-dark mb-0 lh-lg">
+                                    Al utilizar nuestra aplicación, confirmas que has leído, entendido y aceptado esta Política de Privacidad.
+                                    Si no estás de acuerdo con alguna parte de esta política, por favor deja de utilizar nuestra aplicación.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón de regreso -->
+                <div class="text-center mt-5 mb-4">
+                    <a href="{{ path('app_login', {'dominio': dominio}) }}" class="btn btn-primary btn-lg shadow-sm px-5 py-3">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

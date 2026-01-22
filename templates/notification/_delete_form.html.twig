@@ -1,0 +1,63 @@
+{% set dominio = app.request.attributes.get('dominio') %}
+
+<button type="button" class="btn-delete-notification" data-bs-toggle="modal" data-bs-target="#modalDeleteNotification" data-form-id="delete-form-{{ notification.id }}">ELIMINAR</button>
+
+<form id="delete-form-{{ notification.id }}" method="post" action="{{ path('app_notification_delete', {'id': notification.id, 'dominio': dominio}) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ notification.id) }}">
+</form>
+
+<div class="modal fade" id="modalDeleteNotification" tabindex="-1" aria-labelledby="modalDeleteNotificationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="modal-body text-center p-4">
+                <!-- Icono de notificación -->
+                <div class="mb-3">
+                    <i class="fas fa-bell-slash text-warning" style="font-size: 3rem;"></i>
+                </div>
+
+                <!-- Título elegante -->
+                <h5 class="text-white fw-bold mb-3" style="font-size: 1.3rem;" id="modalDeleteNotificationLabel">
+                    Eliminar Notificación
+                </h5>
+
+                <!-- Texto conciso -->
+                <p class="text-white-50 mb-4" style="font-size: 0.95rem;">
+                    ¿Está seguro de eliminar esta notificación?
+                </p>
+
+                <!-- Botones modernos -->
+                <div class="d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal" style="border-radius: 25px;">
+                        <i class="fas fa-times me-1"></i> Cancelar
+                    </button>
+                    <button id="btnConfirmDelete" type="button" class="btn btn-danger btn-sm px-4" style="border-radius: 25px;">
+                        <i class="fas fa-bell-slash me-1"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let formToSubmit = null;
+
+        document.querySelectorAll('.btn-delete-notification').forEach(button => {
+            button.addEventListener('click', function () {
+                const formId = button.getAttribute('data-form-id');
+                formToSubmit = document.getElementById(formId);
+            });
+        });
+
+        const confirmBtn = document.getElementById('btnConfirmDelete');
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function () {
+                if (formToSubmit) {
+                    formToSubmit.submit();
+                    formToSubmit = null;
+                }
+            });
+        }
+    });
+</script>

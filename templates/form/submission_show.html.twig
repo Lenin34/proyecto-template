@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Detalles de la Presentación{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('form-templates') }}
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b text-center">
+        <div class="container-fluid container-header">
+            <h1 class="title-sntiasg">DETALLES DE LA PRESENTACIÓN</h1>
+        </div>
+    </section>
+
+    <div class="container my-4">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{{ path('app_forms_submissions', {'id': submission.formTemplate.id, 'dominio': dominio}) }}" class="btn btn-secondary fw-bold">
+                <i class="fas fa-arrow-left me-1"></i> REGRESAR
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> Información de Envío</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <td>{{ submission.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Formulario</th>
+                                <td>{{ submission.formTemplate.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Usuario</th>
+                                <td>
+                                    {% if submission.user %}
+                                        {{ submission.user.email }}
+                                    {% else %}
+                                        Anónimo
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Enviado</th>
+                                <td>{{ submission.createdAt|date('d/m/Y H:i') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Última Actualización</th>
+                                <td>{{ submission.updatedAt|date('d/m/Y H:i') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Estado</th>
+                                <td>
+                                    {% if submission.status.value == 'A' %}
+                                        <span class="badge bg-success">Activo</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-cogs me-2"></i> Acciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('app_forms_show', {'id': submission.formTemplate.id, 'dominio': dominio}) }}" class="btn btn-info">
+                                <i class="fas fa-eye me-1"></i> Ver Formulario
+                            </a>
+                            {% if submission.status.value == 'A' %}
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                    <i class="fas fa-times me-1"></i> Rechazar Presentación
+                                </button>
+                            {% else %}
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
+                                    <i class="fas fa-check me-1"></i> Aprobar Presentación
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-list me-2"></i> Valores de la Presentación</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-bordered align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Campo</th>
+                        <th>Valor</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set activeValues = submission.formEntryValues|filter(v => v.status.value == 'A') %}
+                    {% if activeValues|length > 0 %}
+                        {% for value in activeValues %}
+                            <tr>
+                                <td>
+                                    <strong>{{ value.formTemplateField.label }}</strong>
+                                    {% if value.formTemplateField.help %}
+                                        <br><small class="text-muted">{{ value.formTemplateField.help }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if value.formTemplateField.type == 'file' %}
+                                        <a href="#" class="btn btn-sm btn-primary">Descargar Archivo</a>
+                                    {% elseif value.formTemplateField.type == 'checkbox' %}
+                                        {% if value.value in ['1', 'true', 'on'] %}
+                                            <span class="badge bg-success">Sí</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">No</span>
+                                        {% endif %}
+                                    {% else %}
+                                        {{ value.value|nl2br }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="2" class="text-center">No se encontraron valores para esta presentación.</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Approve Modal -->
+        <div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i> Confirmar Aprobación</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de que deseas aprobar esta presentación?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="{{ path('app_forms_submission_approve', {'id': submission.id, 'dominio': dominio}) }}" method="post">
+                            <button type="submit" class="btn btn-success">Aprobar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reject Modal -->
+        <div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title"><i class="fas fa-times-circle me-2"></i> Confirmar Rechazo</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de que deseas rechazar esta presentación?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="{{ path('app_forms_submission_reject', {'id': submission.id, 'dominio': dominio}) }}" method="post">
+                            <button type="submit" class="btn btn-danger">Rechazar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

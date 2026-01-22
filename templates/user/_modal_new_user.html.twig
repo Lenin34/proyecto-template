@@ -1,0 +1,254 @@
+{# Modal de Nuevo Usuario - Con Formulario Completo #}
+{% set dominio = app.request.attributes.get('dominio') %}
+
+<div class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-labelledby="modalNuevoUsuarioLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+		<div class="modal-content modal-form">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalNuevoUsuarioLabel">
+					<i class="fas fa-user-plus me-2"></i>
+					Tu Nuevo Usuario
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="newUserForm" action="{{ path('app_user_new', {'dominio': dominio}) }}" method="post" enctype="multipart/form-data">
+					<!-- BLOQUE 1: PERFIL BÁSICO -->
+					<div class="row g-4 mb-4 align-items-center">
+						<div class="col-md-3">
+							<div class="file-upload-wrapper avatar-left">
+								<input type="file" name="user[photo]" accept="image/*" id="photoInput">
+								<div class="file-upload-display">
+									<div class="file-upload-icon">
+										<i class="fas fa-camera"></i>
+									</div>
+									<div class="file-upload-text">
+										<div class="upload-title" id="uploadTitle">Foto</div>
+										<div class="upload-subtitle">Máx. 5MB</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-9">
+							<div class="row g-3">
+								<div class="col-md-6">
+									<label class="form-label">Nombre *</label>
+									<input type="text" name="user[name]" required class="form-control form-control-dark">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Apellidos *</label>
+									<input type="text" name="user[last_name]" required class="form-control form-control-dark">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Correo Electrónico *</label>
+									<input type="email" name="user[email]" required class="form-control form-control-dark">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Teléfono *</label>
+									<input type="tel" name="user[phone_number]" required class="form-control form-control-dark">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<hr class="my-4 opacity-25">
+
+					<!-- BLOQUE 2: INFORMACIÓN PERSONAL -->
+					<h6 class="mb-3 text-warning">
+						<i class="fas fa-id-card me-2"></i>Información Personal
+					</h6>
+					<div class="row g-3 mb-4">
+						<div class="col-md-4">
+							<label class="form-label">CURP *</label>
+							<input type="text" name="user[curp]" required class="form-control form-control-dark" maxlength="18">
+						</div>
+						<div class="col-md-4">
+							<label class="form-label">Fecha de Nacimiento *</label>
+							<input type="date" name="user[birthday]" required class="form-control form-control-dark">
+						</div>
+						<div class="col-md-4">
+							<label class="form-label">Género</label>
+							<select name="user[gender]" class="form-select form-control-dark">
+								<option value="">Selecciona un género</option>
+								<option value="Femenino">Femenino</option>
+								<option value="Masculino">Masculino</option>
+								<option value="Otro">Otro</option>
+							</select>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Nivel de Educación</label>
+							<select name="user[education]" class="form-select form-control-dark">
+								<option value="">Selecciona un nivel</option>
+								<option value="Preescolar">Preescolar</option>
+								<option value="Primaria">Primaria</option>
+								<option value="Secundaria">Secundaria</option>
+								<option value="Preparatoria">Preparatoria / Bachillerato</option>
+								<option value="Universidad">Universidad / Licenciatura</option>
+								<option value="Posgrado">Posgrado</option>
+								<option value="Otro">Otro</option>
+							</select>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">N° de Empleado</label>
+							<input type="text" name="user[employee_number]" class="form-control form-control-dark">
+						</div>
+					</div>
+
+					<hr class="my-4 opacity-25">
+
+					<!-- BLOQUE 3: CONFIGURACIÓN Y ACCESO -->
+					<h6 class="mb-3 text-warning">
+						<i class="fas fa-user-shield me-2"></i>Configuración y Acceso
+					</h6>
+					<div class="row g-3">
+						<div class="col-md-6">
+							<label class="form-label">Contraseña</label>
+							<input type="password" name="user[password]" class="form-control form-control-dark">
+							<small class="form-text text-muted">Dejar en blanco para generar automáticamente</small>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label" for="companiesSelect">Empresa *</label>
+							<select name="user[company]" id="companiesSelect" class="form-select select2" data-placeholder="Selecciona una empresa" required>
+								<option value="">Selecciona una empresa</option>
+								{% for company in companies %}
+									<option value="{{ company.id }}">{{ company.name }}</option>
+								{% else %}
+									<option disabled>No hay empresas disponibles</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<input type="hidden" name="user[_token]" value="{{ csrf_token('user') }}">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+					<i class="fas fa-times me-2"></i>
+					Cancelar
+				</button>
+				<button type="submit" form="newUserForm" class="btn btn-success">
+					<i class="fas fa-save me-2"></i>
+					Guardar Usuario
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () { // Inicializar Select2 para empresas
+$('#companiesSelect').select2({
+theme: 'bootstrap-5',
+placeholder: 'Selecciona una empresa',
+allowClear: true,
+width: '100%',
+dropdownParent: $('#modalNuevoUsuario'),
+templateResult: function (option) {
+if (! option.id) 
+return option.text;
+
+
+return $('<span><i class="fas fa-building me-2"></i>' + option.text + '</span>');
+},
+templateSelection: function (option) {
+if (! option.id) 
+return option.text;
+
+
+return $('<span><i class="fas fa-building me-1"></i>' + option.text + '</span>');
+}
+});
+
+// Envío asíncrono del formulario de nuevo usuario
+const newUserForm = document.getElementById('newUserForm');
+if (newUserForm) {
+newUserForm.addEventListener('submit', function (e) {
+e.preventDefault();
+
+const formData = new FormData(this);
+const actionUrl = this.action;
+
+// Mostrar loading
+Swal.fire({
+title: 'Creando usuario...',
+text: 'Por favor espere',
+allowOutsideClick: false,
+allowEscapeKey: false,
+showConfirmButton: false,
+didOpen: () => Swal.showLoading(),
+customClass: {
+popup: 'swal-dark-popup'
+}
+});
+
+fetch(actionUrl, {
+method: 'POST',
+body: formData,
+headers: {
+'Accept': 'application/json'
+}
+}).then(response => response.json()).then(data => {
+if (data.status === 'success') {
+Swal.fire({
+icon: 'success',
+title: '¡Usuario creado!',
+text: data.message,
+customClass: {
+popup: 'swal-dark-popup'
+},
+didClose: () => {
+document.body.classList.remove('modal-open');
+const backdrops = document.getElementsByClassName('modal-backdrop');
+while (backdrops.length > 0) {
+backdrops[0].parentNode.removeChild(backdrops[0]);
+}
+document.body.style.paddingRight = '';
+document.body.style.overflow = '';
+}
+}).then(() => { // Cerrar modal
+const modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoUsuario'));
+if (modal) 
+modal.hide();
+
+
+// Recargar DataTable
+if (typeof $.fn.DataTable !== 'undefined') {
+$('#users-datatable').DataTable().ajax.reload(null, false);
+} else {
+location.reload();
+}
+// Limpiar formulario
+newUserForm.reset();
+$('#companiesSelect').val(null).trigger('change');
+});
+} else {
+let errorMessage = data.message || 'Error al crear usuario';
+if (data.errors && data.errors.length > 0) {
+errorMessage += ':<br>' + data.errors.join('<br>');
+}
+Swal.fire({
+icon: 'error',
+title: 'Error',
+html: errorMessage,
+customClass: {
+popup: 'swal-dark-popup'
+}
+});
+}
+}).catch(error => {
+console.error('Error:', error);
+Swal.fire({
+icon: 'error',
+title: 'Error',
+text: 'Ocurrió un error al procesar la solicitud.',
+customClass: {
+popup: 'swal-dark-popup'
+}
+});
+});
+});
+}
+});
+</script>

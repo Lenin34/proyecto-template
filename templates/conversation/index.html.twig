@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mensajes{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-o">
+        <div class="container-fluid container-header">
+            <h1 class="title-sntiasg">CHATS</h1>
+        </div>
+    </section>
+    <section STYLE="margin-top: 10vh">
+        <div class="container">
+            {% for conversation in conversations %}
+                {% set sender = conversation_service.getSender(app.user, conversation) %}
+
+                <div class="row align-items-center mb-3 notification-item" data-title="{{ sender.name }}">
+                    <div class="col-md-8 notification-container" style="display: flex; align-items: center; flex-direction: row; justify-content: space-between;">
+                        <div class="title-sntiasg title-notification">{{ sender.name }} {{ sender.lastName }}</div>
+                        {% if conversation.getUnreadMessages is not empty %}
+                            <div style="
+                                    color: white;
+                                    font-size: 2em;
+                                    font-weight: bold;
+                                    background-color: #174C9C;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    border-radius: 50%;
+                                    width: 2em;
+                                    height: 2em;
+                                "
+                            >{{ conversation.getUnreadMessages|length }}</div >
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 d-flex gap-2 h-btn">
+                        <a href="{{ path('app_conversation_show', {'id': conversation.id, 'dominio': dominio}) }}" class="btn-bl">CONTESTAR</a>
+
+                        <button type="button" class="btn-red" data-bs-toggle="modal" data-bs-target="#modalDeleteNotification" data-form-id="delete-form-{{ conversation.id }}">ELIMINAR</button>
+
+                        <form id="delete-form-{{ conversation.id }}" method="post" action="{{ path('app_conversation_delete', {'conversation': conversation.id, 'dominio': dominio}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ conversation.id) }}">
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <p style="text-align: center;
+                            font-size: 2em;
+                            color: white;
+
+                    ">No hay mensajes disponibles.</p> <!-- Mensaje en caso de que la lista de "chats" esté vacía -->
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}
+

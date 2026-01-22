@@ -1,0 +1,363 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ schedule.name }} - Horario - SNTIASG{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('work-schedule') }}
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b py-3">
+        <div class="container text-center">
+            <h1>
+                <i class="fas fa-clock mr-2"></i>
+                {{ schedule.name }}
+            </h1>
+            <ol class="breadcrumb float-sm-right" style="padding-left: 36em;">
+                <li class="breadcrumb-item"><a href="{{ path('app_dashboard', {dominio: dominio}) }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('work_schedule_index', {dominio: dominio}) }}">Horarios</a></li>
+                <li class="breadcrumb-item active">{{ schedule.name }}</li>
+            </ol>
+        </div>
+    </section>
+
+    <br>
+
+    <div class="container-fluid mb-3">
+        <div class="row">
+            <div class="col-sm-12">
+                <a href="{{ path('work_schedule_list', {dominio: dominio}) }}" class="btn btn-secondary mr-2">
+                    <i class="fas fa-arrow-left mr-1"></i>
+                    Volver
+                </a>
+                <a href="{{ path('work_schedule_edit', {id: schedule.id, dominio: dominio}) }}" class="btn btn-warning">
+                    <i class="fas fa-edit mr-1"></i>
+                    Editar
+                </a>
+            </div>
+        </div>
+    </div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Información del Horario -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Información del Horario
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="schedule-time-display">
+                            <p class="time-display">{{ schedule.startTime|date('H:i') }} - {{ schedule.endTime|date('H:i') }}</p>
+                            <p class="time-label">Horario de Trabajo</p>
+                        </div>
+
+                        {% if schedule.company %}
+                            <div class="company-info">
+                                <p class="company-name">{{ schedule.company.name }}</p>
+                                <small>Empresa asignada</small>
+                            </div>
+                        {% else %}
+                            <div class="company-info">
+                                <p class="company-name">Todas las empresas</p>
+                                <small>Horario general</small>
+                            </div>
+                        {% endif %}
+
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                Creado {{ schedule.createdAt|date('d/m/Y') }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Días de Trabajo -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-calendar-week mr-2"></i>
+                            Días de Trabajo
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="days-grid">
+                            {% set dayNames = ['', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'] %}
+                            {% for day in days %}
+                                <div class="day-item {{ day.isWorkingDay ? 'working' : 'non-working' }}">
+                                    {{ dayNames[day.dayOfWeek] }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <!-- Descansos -->
+            {% if breaks %}
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-coffee mr-2"></i>
+                            Descansos Programados
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {% for break in breaks %}
+                        <div class="break-item">
+                            <div class="break-info">
+                                <h6>{{ break.breakName }}</h6>
+                                <span class="break-time">{{ break.startTime|date('H:i') }} - {{ break.endTime|date('H:i') }}</span>
+                            </div>
+                            <span class="break-badge {{ break.isPaid ? '' : 'unpaid' }}">
+                                {{ break.isPaid ? 'Pagado' : 'No Pagado' }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Empleados Asignados -->
+            <div class="col-md-{{ breaks ? '6' : '12' }}">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-users mr-2"></i>
+                            Empleados Asignados ({{ assignments|length }})
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {% if assignments %}
+                            <div class="row">
+                                {% for assignment in assignments %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="assignment-item">
+                                        <div class="user-avatar">
+                                            {{ assignment.user.name|slice(0, 1)|upper }}
+                                        </div>
+                                        <div class="user-info">
+                                            <h6>{{ assignment.user.name }}</h6>
+                                            <small>
+                                                Desde {{ assignment.effectiveFrom|date('d/m/Y') }}
+                                                {% if assignment.effectiveUntil %}
+                                                    hasta {{ assignment.effectiveUntil|date('d/m/Y') }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-users fa-3x mb-3 text-muted"></i>
+                                <h4>No hay empleados asignados</h4>
+                                <p>Este horario aún no ha sido asignado a ningún empleado</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+// ========================================
+// WORK SCHEDULE SHOW - SweetAlert2 Implementation
+// ========================================
+
+class WorkScheduleShow {
+    constructor() {
+        this.dominio = '{{ dominio }}';
+        this.scheduleId = {{ schedule.id }};
+        this.scheduleName = '{{ schedule.name }}';
+    }
+
+    async deleteSchedule() {
+        // Verificar si hay empleados asignados
+        const hasAssignments = {{ schedule.userScheduleAssignments|length > 0 ? 'true' : 'false' }};
+
+        let confirmConfig = {
+            icon: 'warning',
+            title: '¿Eliminar Horario?',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            customClass: {
+                popup: 'swal-delete-popup',
+                confirmButton: 'btn btn-danger',
+                cancelButton: 'btn btn-secondary'
+            },
+            buttonsStyling: false
+        };
+
+        if (hasAssignments) {
+            confirmConfig.html = `
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>¡Atención!</strong>
+                </div>
+                <p>El horario <strong>"${this.scheduleName}"</strong> tiene empleados asignados.</p>
+                <p class="text-danger">Al eliminarlo, se removerán todas las asignaciones.</p>
+                <p class="text-muted">Esta acción no se puede deshacer.</p>
+            `;
+            confirmConfig.confirmButtonText = 'Sí, eliminar todo';
+        } else {
+            confirmConfig.html = `
+                <p>¿Estás seguro de que deseas eliminar el horario:</p>
+                <strong>"${this.scheduleName}"</strong>
+                <p class="text-muted mt-2">Esta acción no se puede deshacer</p>
+            `;
+        }
+
+        const result = await Swal.fire(confirmConfig);
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        // Mostrar loading
+        Swal.fire({
+            title: 'Eliminando horario...',
+            html: '<div class="spinner-border text-danger" role="status"><span class="sr-only">Eliminando...</span></div>',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'swal-loading-popup'
+            }
+        });
+
+        try {
+            const response = await fetch(`/${this.dominio}/admin/schedules/${this.scheduleId}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Éxito
+                await Swal.fire({
+                    icon: 'success',
+                    title: '¡Horario Eliminado!',
+                    text: data.message,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+
+                // Redirigir a la lista
+                window.location.href = `/${this.dominio}/admin/schedules`;
+            } else {
+                // Error del servidor con código específico
+                const errorType = data.error_code || data.error_type || 'WS-999';
+                console.log('Delete error type:', errorType);
+                this.showDeleteError(data.message || 'No se pudo eliminar el horario', errorType);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+
+            // Error de conexión
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de Conexión',
+                text: 'No se pudo conectar con el servidor. Inténtalo de nuevo.',
+                confirmButtonText: 'Reintentar',
+                confirmButtonColor: '#dc3545'
+            });
+        }
+    }
+
+    showScheduleInfo() {
+        const workingDays = [
+            {% for day in schedule.workScheduleDays %}
+                {% if day.isWorkingDay %}
+                    '{{ ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][day.dayOfWeek] }}'{% if not loop.last %},{% endif %}
+                {% endif %}
+            {% endfor %}
+        ];
+
+        const breaks = [
+            {% for break in schedule.workScheduleBreaks %}
+                {
+                    name: '{{ break.breakName }}',
+                    start: '{{ break.startTime|date('H:i') }}',
+                    end: '{{ break.endTime|date('H:i') }}',
+                    paid: {{ break.isPaid ? 'true' : 'false' }}
+                }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        let breaksHtml = '';
+        if (breaks.length > 0) {
+            breaksHtml = '<h6 class="mt-3">Descansos:</h6><ul class="list-unstyled">';
+            breaks.forEach(breakItem => {
+                const paidBadge = breakItem.paid ?
+                    '<span class="badge badge-success">Pagado</span>' :
+                    '<span class="badge badge-secondary">No pagado</span>';
+                breaksHtml += `<li><strong>${breakItem.name}:</strong> ${breakItem.start} - ${breakItem.end} ${paidBadge}</li>`;
+            });
+            breaksHtml += '</ul>';
+        }
+
+        Swal.fire({
+            icon: 'info',
+            title: 'Información del Horario',
+            html: `
+                <div class="text-left">
+                    <h6>Horario de Trabajo:</h6>
+                    <p><strong>{{ schedule.startTime|date('H:i') }} - {{ schedule.endTime|date('H:i') }}</strong></p>
+
+                    <h6>Días Laborales:</h6>
+                    <p>${workingDays.join(', ')}</p>
+
+                    ${breaksHtml}
+
+                    <h6 class="mt-3">Empleados Asignados:</h6>
+                    <p><strong>{{ schedule.userScheduleAssignments|length }}</strong> empleado(s)</p>
+                </div>
+            `,
+            confirmButtonText: 'Cerrar',
+            confirmButtonColor: '#007bff',
+            customClass: {
+                popup: 'swal-info-popup',
+                htmlContainer: 'text-left'
+            }
+        });
+    }
+}
+
+// Instancia global
+const workScheduleShow = new WorkScheduleShow();
+
+// Funciones globales para compatibilidad
+function deleteSchedule() {
+    workScheduleShow.deleteSchedule();
+}
+
+function showScheduleInfo() {
+    workScheduleShow.showScheduleInfo();
+}
+</script>
+
+{% endblock %}

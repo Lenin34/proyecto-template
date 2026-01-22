@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Detalle de la empresa {% endblock %}
+
+{% block body %}
+    <div class="d-flex align-items-center justify-content-center min-vh-100">
+        <div class="container modal-a container-show position-relative text-white rounded-4 shadow-lg">
+            <a href="{{ path('app_company_index', {'dominio': dominio}) }}" class="btn-close btn-close-white position-absolute top-0 end-0 m-3"></a>
+
+            <div class="row mb-3">
+                <div class="col-md-12 modal-title-sntiasg">Detalle de la Empresa</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12 modal-text-sntiasg"><strong class="fw-bold">Nombre: </strong>{{ company.name }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12 modal-text-sntiasg"><strong class="fw-bold">Región: </strong>{{ company.region.name }}</div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 modal-text-sntiasg"><strong class="fw-bold">Fecha de Creación: </strong>{{ company.createdAt ? company.createdAt|date('d-m-Y H:i:s') : '' }}</div>
+                <div class="col-md-6 modal-text-sntiasg"><strong class="fw-bold">Fecha de Actualización: </strong>{{ company.updatedAt ? company.updatedAt|date('d-m-Y H:i:s') : '' }}</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

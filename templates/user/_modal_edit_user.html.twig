@@ -1,0 +1,163 @@
+{# Modal de Editar Usuario - Estilo consistente con Nuevo Usuario #}
+{% set dominio = app.request.attributes.get('dominio') %}
+
+<div class="modal fade" id="modalEditUser" tabindex="-1" aria-labelledby="modalEditUserLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+		<div class="modal-content modal-form">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalEditUserLabel">
+					<i class="fas fa-user-edit me-2"></i>
+					Editar Usuario
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="editUserForm" method="post" enctype="multipart/form-data">
+					<!-- BLOQUE 1: PERFIL BÁSICO -->
+					<div class="row g-4 mb-4 align-items-center">
+						<div class="col-md-3">
+							<div class="file-upload-wrapper avatar-left">
+								<input type="file" name="user[photo]" accept="image/*" id="editPhotoInput">
+								<div class="file-upload-display" id="editPhotoDisplay">
+									<div class="file-upload-icon">
+										<i class="fas fa-camera"></i>
+									</div>
+									<div class="file-upload-text">
+										<div class="upload-title" id="editUploadTitle">Nueva foto</div>
+										<div class="upload-subtitle">Máx. 5MB</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-9">
+							<div class="row g-3">
+								<div class="col-md-6">
+									<label class="form-label">Nombre *</label>
+									<input type="text" name="user[name]" id="editUserName" required class="form-control form-control-dark">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Apellidos *</label>
+									<input type="text" name="user[last_name]" id="editUserLastName" required class="form-control form-control-dark">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Correo Electrónico *</label>
+									<input type="email" name="user[email]" id="editUserEmail" required class="form-control form-control-dark">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Teléfono *</label>
+									<input type="tel" name="user[phone_number]" id="editUserPhone" required class="form-control form-control-dark">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<hr class="my-4 opacity-25">
+
+					<!-- BLOQUE 2: INFORMACIÓN PERSONAL -->
+					<h6 class="mb-3 text-warning">
+						<i class="fas fa-id-card me-2"></i>Información Personal
+					</h6>
+					<div class="row g-3 mb-4">
+						<div class="col-md-4">
+							<label class="form-label">CURP *</label>
+							<input type="text" name="user[curp]" id="editUserCurp" required class="form-control form-control-dark" maxlength="18">
+						</div>
+						<div class="col-md-4">
+							<label class="form-label">Fecha de Nacimiento *</label>
+							<input type="date" name="user[birthday]" id="editUserBirthday" required class="form-control form-control-dark">
+						</div>
+						<div class="col-md-4">
+							<label class="form-label">Género</label>
+							<select name="user[gender]" id="editUserGender" class="form-select form-control-dark">
+								<option value="">Selecciona un género</option>
+								<option value="Femenino">Femenino</option>
+								<option value="Masculino">Masculino</option>
+								<option value="Otro">Otro</option>
+							</select>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">Nivel de Educación</label>
+							<select name="user[education]" id="editUserEducation" class="form-select form-control-dark">
+								<option value="">Selecciona un nivel</option>
+								<option value="Preescolar">Preescolar</option>
+								<option value="Primaria">Primaria</option>
+								<option value="Secundaria">Secundaria</option>
+								<option value="Preparatoria">Preparatoria / Bachillerato</option>
+								<option value="Universidad">Universidad / Licenciatura</option>
+								<option value="Posgrado">Posgrado</option>
+								<option value="Otro">Otro</option>
+							</select>
+						</div>
+						<div class="col-md-6">
+							<label class="form-label">N° de Empleado</label>
+							<input type="text" name="user[employee_number]" id="editUserEmployeeNumber" class="form-control form-control-dark">
+						</div>
+					</div>
+
+					<hr class="my-4 opacity-25">
+
+					<!-- BLOQUE 3: CONFIGURACIÓN Y ACCESO -->
+					<h6 class="mb-3 text-warning">
+						<i class="fas fa-user-shield me-2"></i>Configuración y Acceso
+					</h6>
+					<div class="row g-3">
+						<div class="col-md-4">
+							<label class="form-label">Rol *</label>
+							<select name="user[role]" id="editUserRole" required class="form-select form-control-dark">
+								<option value="">Selecciona un rol</option>
+								{% for role in roles %}
+									<option value="{{ role.id }}">{{ role.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="col-md-4">
+							<label class="form-label">Empresa *</label>
+							<select name="selected_company" id="editUserCompany" class="form-select form-control-dark" required>
+								<option value="">Seleccionar empresa...</option>
+							</select>
+						</div>
+						<div class="col-md-4">
+							<label class="form-label">Contraseña</label>
+							<input type="password" name="user[password]" class="form-control form-control-dark">
+							<small class="form-text text-muted">Dejar en blanco para no cambiar</small>
+						</div>
+					</div>
+
+					<input type="hidden" name="user[_token]" value="{{ csrf_token('user') }}">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+					<i class="fas fa-times me-2"></i>
+					Cancelar
+				</button>
+				<button type="submit" form="editUserForm" class="btn btn-warning">
+					<i class="fas fa-save me-2"></i>
+					Actualizar Usuario
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		// Initialize Select2 for company field in edit modal
+		$('#editUserCompany').select2({
+			theme: 'bootstrap-5',
+			placeholder: 'Selecciona una empresa',
+			allowClear: true,
+			width: '100%',
+			dropdownParent: $('#modalEditUser'),
+			templateResult: function (option) {
+				if (!option.id) return option.text;
+				return $('<span><i class="fas fa-building me-2"></i>' + option.text + '</span>');
+			},
+			templateSelection: function (option) {
+				if (!option.id) return option.text;
+				return $('<span><i class="fas fa-building me-1"></i>' + option.text + '</span>');
+			}
+		});
+	});
+</script>

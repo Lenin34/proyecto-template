@@ -1,0 +1,217 @@
+/* ========================================
+   CARD SYSTEM - Sistema Unificado de Cards
+   Dark Theme - SNTIASG Form Management
+   ======================================== */
+
+/* ========================================
+   CARD BASE
+   ======================================== */
+.card-dark {
+    background: var(--color-bg-secondary, #1a1f2e);
+    border: 1px solid var(--color-border, #3a3c45);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.card-dark:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ========================================
+   CARD HEADER
+   ======================================== */
+.card-dark-header {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b91 100%);
+    padding: 1rem 1.5rem;
+    border-bottom: none;
+}
+
+.card-dark-header h4,
+.card-dark-header h5,
+.card-dark-header .card-title {
+    color: #fff !important;
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.card-dark-header .card-subtitle {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Header con icono */
+.card-dark-header-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-dark-header-icon i {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ========================================
+   CARD BODY
+   ======================================== */
+.card-dark-body {
+    padding: 1.5rem;
+    background: var(--color-bg-secondary, #1a1f2e);
+    color: var(--color-text-primary, #e8eaed);
+}
+
+.card-dark-body p {
+    color: var(--color-text-secondary, #9aa0a6);
+    margin-bottom: 0.75rem;
+}
+
+.card-dark-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* ========================================
+   CARD FOOTER
+   ======================================== */
+.card-dark-footer {
+    padding: 1rem 1.5rem;
+    background: var(--color-bg-tertiary, #232833);
+    border-top: 1px solid var(--color-border, #3a3c45);
+}
+
+/* ========================================
+   VARIANTE: CARD ELEVADA
+   ======================================== */
+.card-dark--elevated {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-dark--elevated:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* ========================================
+   VARIANTE: CARD DE ESTADÍSTICAS
+   ======================================== */
+.card-dark--stat {
+    background: var(--color-surface, #1e1f25);
+    text-align: center;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border, #3a3c45);
+    border-radius: 12px;
+}
+
+.card-dark--stat .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary, #e8eaed);
+    line-height: 1.2;
+}
+
+.card-dark--stat .stat-label {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary, #9aa0a6);
+    margin-top: 0.5rem;
+}
+
+.card-dark--stat .stat-icon {
+    font-size: 2.5rem;
+    color: var(--color-accent-blue, #4a9eff);
+    margin-bottom: 0.75rem;
+    opacity: 0.8;
+}
+
+/* Variantes de color para stats */
+.card-dark--stat.stat-success .stat-icon {
+    color: var(--color-success, #3D791E);
+}
+
+.card-dark--stat.stat-info .stat-icon {
+    color: #17a2b8;
+}
+
+.card-dark--stat.stat-warning .stat-icon {
+    color: #fd7e14;
+}
+
+.card-dark--stat.stat-danger .stat-icon {
+    color: #dc3545;
+}
+
+/* ========================================
+   VARIANTE: CARD COMPACTA
+   ======================================== */
+.card-dark--compact .card-dark-header {
+    padding: 0.75rem 1rem;
+}
+
+.card-dark--compact .card-dark-body {
+    padding: 1rem;
+}
+
+/* ========================================
+   VARIANTE: CARD SIN HEADER
+   ======================================== */
+.card-dark--no-header {
+    border-radius: 12px;
+}
+
+.card-dark--no-header .card-dark-body {
+    border-radius: 12px;
+}
+
+/* ========================================
+   VARIANTE: CARD INFO (Para detalles)
+   ======================================== */
+.card-dark--info {
+    background: var(--color-surface, #1e1f25);
+}
+
+.card-dark--info .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border, #3a3c45);
+}
+
+.card-dark--info .info-row:last-child {
+    border-bottom: none;
+}
+
+.card-dark--info .info-label {
+    color: var(--color-text-secondary, #9aa0a6);
+    font-weight: 500;
+}
+
+.card-dark--info .info-value {
+    color: var(--color-text-primary, #e8eaed);
+    font-weight: 600;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    .card-dark-header {
+        padding: 0.875rem 1rem;
+    }
+
+    .card-dark-body {
+        padding: 1rem;
+    }
+
+    .card-dark--stat {
+        padding: 1rem;
+    }
+
+    .card-dark--stat .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .card-dark--stat .stat-icon {
+        font-size: 2rem;
+    }
+}
+

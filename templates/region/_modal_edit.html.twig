@@ -1,0 +1,36 @@
+{# Modal de Editar Región #}
+<div class="modal fade" id="modalEditRegion" tabindex="-1" aria-labelledby="modalEditRegionLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content modal-form">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalEditRegionLabel">
+					<i class="fas fa-edit me-2"></i>
+					Editar Región
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="editRegionForm" method="post">
+					<div class="row g-3">
+						<div class="col-12">
+							<label class="form-label">Nombre *</label>
+							<input type="text" name="region[name]" id="editRegionName" required class="form-control form-control-dark">
+						</div>
+					</div>
+
+					<input type="hidden" name="region[_token]" value="{{ csrf_token('region') }}">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+					<i class="fas fa-times me-2"></i>
+					Cancelar
+				</button>
+				<button type="submit" form="editRegionForm" class="btn btn-warning">
+					<i class="fas fa-save me-2"></i>
+					Actualizar Región
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

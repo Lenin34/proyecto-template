@@ -1,0 +1,318 @@
+{% extends 'base-login.html.twig' %}
+
+{% set dominio = app.request.get('dominio', 'ts') %}
+
+{% block title %}Verificar código{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Corregir fondo para evitar deformación */
+        body.bg-dark {
+            background: linear-gradient(to bottom, #0B3F61 0%, #586975 100%) !important;
+            background-attachment: fixed !important;
+            background-repeat: no-repeat !important;
+            background-size: 100% 100% !important;
+            min-height: 100vh !important;
+        }
+
+        .logo-login {
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4))
+                    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))
+                    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        /* Mejorar apariencia de los campos de contraseña */
+        .password-toggle-eye {
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .password-toggle-eye:hover {
+            color: #495057 !important;
+        }
+
+        /* Asegurar que los inputs tengan el ancho correcto */
+        .input-field {
+            width: 100% !important;
+            max-width: 400px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<body class="bg-dark text-white d-flex align-items-center justify-content-center vh-100">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-7 col-lg-6">
+        <div class="login-wrapper p-4 text-white">
+          <div class="text-center mb-4 d-flex flex-column align-items-center">
+            <img src="{{ tenant_logo_url(dominio) }}" alt="Logo" class="logo-login mb-2" />
+            <h2 class="login-title">VERIFICAR CÓDIGO</h2>
+          </div>
+
+          <!-- Paso 1: Verificar código -->
+          <form id="verifyCodeForm" method="post" action="{{ path('verify_code', {'dominio': dominio}) }}" style="display: block;">
+            <div class="form-group mb-3 d-flex flex-column align-items-center">
+              <label for="verificationCode" class="form-label fw-light text-login">CÓDIGO DE VERIFICACIÓN</label>
+              <input type="text" name="verification_code" id="verificationCode" class="form-control rounded-pill input-field" required>
+              <small class="text-muted mt-2">Ingrese el código de 6 dígitos enviado a su email</small>
+            </div>
+
+            <div class="d-flex flex-column align-items-center">
+              <button id="verifyButton" class="btn btn-lg btn-primary rounded-pill btn-login" type="submit">
+                <span id="verifyButtonText">VERIFICAR CÓDIGO</span>
+                <span id="verifySpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+              </button>
+              <a href="{{ path('forget_password', {'dominio': dominio}) }}" class="btn btn-link text-white mt-2">Volver</a>
+            </div>
+          </form>
+
+          <!-- Paso 2: Cambiar contraseña (inicialmente oculto) -->
+          <form id="changePasswordForm" method="post" action="{{ path('verify_code', {'dominio': dominio}) }}" style="display: none;">
+            <input type="hidden" name="verification_code" id="hiddenVerificationCode">
+
+            <div class="form-group mb-3 d-flex flex-column align-items-center">
+              <label for="newPassword" class="form-label fw-light text-login">NUEVA CONTRASEÑA</label>
+              <div class="position-relative" style="width: 100%; max-width: 400px;">
+                <input type="password" name="new_password" id="newPassword" class="form-control rounded-pill input-field" required minlength="8" style="padding-right: 45px;">
+                <button type="button" class="password-toggle-eye position-absolute" tabindex="-1"
+                        aria-label="Mostrar/Ocultar contraseña" data-target="newPassword"
+                        style="right: 15px; top: 50%; transform: translateY(-50%); background: transparent; border: none; padding: 0; z-index: 2; color: #6c757d;">
+                    <i class="fa fa-eye"></i>
+                </button>
+              </div>
+              <small class="text-muted mt-2">Mínimo 8 caracteres</small>
+            </div>
+
+            <div class="form-group mb-3 d-flex flex-column align-items-center">
+              <label for="confirmPassword" class="form-label fw-light text-login">CONFIRMAR CONTRASEÑA</label>
+              <div class="position-relative" style="width: 100%; max-width: 400px;">
+                <input type="password" name="confirm_password" id="confirmPassword" class="form-control rounded-pill input-field" required minlength="8" style="padding-right: 45px;">
+                <button type="button" class="password-toggle-eye position-absolute" tabindex="-1"
+                        aria-label="Mostrar/Ocultar contraseña" data-target="confirmPassword"
+                        style="right: 15px; top: 50%; transform: translateY(-50%); background: transparent; border: none; padding: 0; z-index: 2; color: #6c757d;">
+                    <i class="fa fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="d-flex flex-column align-items-center">
+              <button id="changePasswordButton" class="btn btn-lg btn-primary rounded-pill btn-login" type="submit">
+                <span id="changePasswordButtonText">CAMBIAR CONTRASEÑA</span>
+                <span id="changePasswordSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+              </button>
+              <button type="button" id="backToCodeButton" class="btn btn-link text-white mt-2">Volver al código</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const verifyCodeForm = document.getElementById('verifyCodeForm');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    const verifyButton = document.getElementById('verifyButton');
+    const verifyButtonText = document.getElementById('verifyButtonText');
+    const verifySpinner = document.getElementById('verifySpinner');
+    const changePasswordButton = document.getElementById('changePasswordButton');
+    const changePasswordButtonText = document.getElementById('changePasswordButtonText');
+    const changePasswordSpinner = document.getElementById('changePasswordSpinner');
+    const backToCodeButton = document.getElementById('backToCodeButton');
+
+    // Paso 1: Verificar código
+    verifyCodeForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Mostrar loading
+        verifyButton.disabled = true;
+        verifyButtonText.classList.add('d-none');
+        verifySpinner.classList.remove('d-none');
+
+        const formData = new FormData(this);
+        formData.append('step', 'verify_code');
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Restaurar botón
+            verifyButton.disabled = false;
+            verifyButtonText.classList.remove('d-none');
+            verifySpinner.classList.add('d-none');
+
+            if (data.swal) {
+                if (data.success) {
+                    // Código verificado correctamente, mostrar formulario de cambio de contraseña
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Código Verificado',
+                        text: 'Ahora puede establecer su nueva contraseña',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        // Guardar el código verificado
+                        document.getElementById('hiddenVerificationCode').value = document.getElementById('verificationCode').value;
+
+                        // Cambiar a formulario de contraseña
+                        verifyCodeForm.style.display = 'none';
+                        changePasswordForm.style.display = 'block';
+
+                        // Enfocar el campo de nueva contraseña
+                        document.getElementById('newPassword').focus();
+                    });
+                } else {
+                    // Error en verificación
+                    Swal.fire({
+                        icon: data.icon || 'error',
+                        title: data.title || 'Error',
+                        text: data.message,
+                        confirmButtonText: 'Intentar de nuevo'
+                    }).then(() => {
+                        document.getElementById('verificationCode').focus();
+                    });
+                }
+            }
+        })
+        .catch(error => {
+            // Restaurar botón
+            verifyButton.disabled = false;
+            verifyButtonText.classList.remove('d-none');
+            verifySpinner.classList.add('d-none');
+
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de Conexión',
+                text: 'No se pudo verificar el código. Intente nuevamente.',
+                confirmButtonText: 'Intentar de nuevo'
+            });
+        });
+    });
+
+    // Paso 2: Cambiar contraseña
+    changePasswordForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // Validar que las contraseñas coincidan
+        if (newPassword !== confirmPassword) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Las contraseñas no coinciden',
+                confirmButtonText: 'Corregir'
+            });
+            return;
+        }
+
+        // Mostrar loading
+        changePasswordButton.disabled = true;
+        changePasswordButtonText.classList.add('d-none');
+        changePasswordSpinner.classList.remove('d-none');
+
+        const formData = new FormData(this);
+        formData.append('step', 'change_password');
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Restaurar botón
+            changePasswordButton.disabled = false;
+            changePasswordButtonText.classList.remove('d-none');
+            changePasswordSpinner.classList.add('d-none');
+
+            if (data.swal) {
+                if (data.success) {
+                    // Contraseña cambiada exitosamente
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Contraseña Actualizada',
+                        text: data.message,
+                        confirmButtonText: 'Ir al login'
+                    }).then(() => {
+                        window.location.href = '{{ path('app_login', {'dominio': dominio}) }}';
+                    });
+                } else {
+                    // Error al cambiar contraseña
+                    Swal.fire({
+                        icon: data.icon || 'error',
+                        title: data.title || 'Error',
+                        text: data.message,
+                        confirmButtonText: 'Intentar de nuevo'
+                    });
+                }
+            }
+        })
+        .catch(error => {
+            // Restaurar botón
+            changePasswordButton.disabled = false;
+            changePasswordButtonText.classList.remove('d-none');
+            changePasswordSpinner.classList.add('d-none');
+
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de Conexión',
+                text: 'No se pudo cambiar la contraseña. Intente nuevamente.',
+                confirmButtonText: 'Intentar de nuevo'
+            });
+        });
+    });
+
+    // Botón para volver al código
+    backToCodeButton.addEventListener('click', function() {
+        changePasswordForm.style.display = 'none';
+        verifyCodeForm.style.display = 'block';
+        document.getElementById('verificationCode').focus();
+    });
+
+    // Validación en tiempo real de confirmación de contraseña
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = this.value;
+
+        if (confirmPassword && newPassword !== confirmPassword) {
+            this.setCustomValidity('Las contraseñas no coinciden');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+    // Funcionalidad de mostrar/ocultar contraseña
+    document.querySelectorAll('.password-toggle-eye').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const targetInput = document.getElementById(targetId);
+            const icon = this.querySelector('i');
+
+            if (targetInput.type === 'password') {
+                targetInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                targetInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

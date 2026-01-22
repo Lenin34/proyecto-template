@@ -1,0 +1,225 @@
+/* Navbar Modernization - Glassmorphism Style */
+
+.navbar-glass {
+    background: rgba(11, 63, 97, 0.75);
+    /* Base blue color with transparency */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0.8rem 1rem;
+    width: 100%;
+    z-index: 1030;
+    /* Bootstrap fixed-top z-index */
+}
+
+.navbar-glass.scrolled {
+    background: rgba(11, 63, 97, 0.95);
+    padding: 0.4rem 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.nav-content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Logo Area */
+.nav-brand {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo {
+    height: 70px;
+    width: auto;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.nav-logo:hover {
+    transform: scale(1.05);
+}
+
+/* Navigation Links */
+.nav-menu {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link-custom {
+    position: relative;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none !important;
+    font-family: "League Spartan", sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 1px;
+    padding: 0.5rem 0.2rem;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+    display: block;
+}
+
+.nav-link-custom:hover,
+.nav-link-custom.active {
+    color: #ffffff;
+}
+
+/* Animated Underline Effect */
+.nav-link-custom::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: 0;
+    left: 50%;
+    background: linear-gradient(90deg, #E9AF0F, #C67618);
+    /* Gold gradient */
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 2px;
+    opacity: 0;
+}
+
+.nav-link-custom:hover::after,
+.nav-link-custom.active::after {
+    width: 100%;
+    left: 0;
+    opacity: 1;
+}
+
+/* User Actions Area */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.action-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #E9AF0F;
+}
+
+.action-icon {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.home-icon {
+    width: 28px;
+    height: auto;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 1200px) {
+    .nav-menu {
+        gap: 1rem;
+    }
+
+    .nav-link-custom {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 992px) {
+    .navbar-glass {
+        padding: 0.5rem;
+    }
+
+    .nav-menu {
+        display: none;
+        /* For now, hide on mobile or implement a hamburger menu if requested later. User focused on desktop improvements primarily but we should be careful. */
+    }
+
+    /* Simple mobile fallback for now to ensure access */
+    .nav-menu.mobile-active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(11, 63, 97, 0.98);
+        padding: 1rem;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-menu.mobile-active .nav-item {
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .mobile-toggle {
+        display: block;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 5px;
+        margin-right: 15px;
+    }
+}
+
+@media (min-width: 993px) {
+    .mobile-toggle {
+        display: none;
+    }
+}
+
+/* Notification Badge Styles */
+.notification-badge-navbar {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #E52D1D;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border: 1.5px solid #0b3f61; /* Background color color matching */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    pointer-events: none;
+    line-height: 1;
+}
+
+.action-btn.position-relative {
+    position: relative;
+}

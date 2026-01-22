@@ -1,0 +1,152 @@
+{{ form_start(form, {
+    'action':
+        user is defined and user.id is defined and user.id
+            ? path(app.request.get('_route'), {'dominio': dominio, 'id': user.id})
+            : path(app.request.get('_route'), {'dominio': dominio})
+}) }}
+
+{# SECCIÓN: FOTO DE PERFIL #}
+{% if form.photo is defined %}
+	<div class="row mb-4">
+		<div class="col-md-12">
+			<div class="file-upload-wrapper">
+				<i class="fas fa-camera file-upload-icon"></i>
+				<span class="file-upload-text">Sube una foto aquí</span>
+				{{ form_widget(form.photo, {'attr': {'class': 'file-upload-input'}}) }}
+			</div>
+			{{ form_errors(form.photo) }}
+		</div>
+	</div>
+{% endif %}
+
+{# SECCIÓN: INFORMACIÓN PERSONAL #}
+<div class="form-row-modern">
+	<div class="form-col-modern">
+		{{ form_row(form.name, {'label': 'Nombre', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+	<div class="form-col-modern">
+		{{ form_row(form.last_name, {'label': 'Apellidos', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+</div>
+
+<div class="form-row-modern">
+	<div class="form-col-modern">
+		{{ form_row(form.curp, {'label': 'CURP', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+	<div class="form-col-modern">
+		{{ form_row(form.birthday, {'label': 'Fecha de nacimiento', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+</div>
+
+<div class="form-row-modern">
+	<div class="form-col-modern">
+		{{ form_row(form.gender, {'label': 'Género', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+	<div class="form-col-modern">
+		{{ form_row(form.education, {'label': 'Educación', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+</div>
+
+{# SECCIÓN: INFORMACIÓN DE CONTACTO #}
+<div class="form-row-modern">
+	<div class="form-col-modern">
+		{{ form_row(form.phone_number, {'label': 'Teléfono', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+	<div class="form-col-modern">
+		{{ form_label(form.email, 'Correo electrónico', {'label_attr': {'class': 'form-label-modern'}}) }}
+		{{ form_widget(form.email, {'attr': {'class': 'form-control-modern'}}) }}
+		{% for error in form.email.vars.errors %}
+			<small class="text-danger mt-1 d-block">
+				{{ error.message }}
+			</small>
+		{% endfor %}
+	</div>
+</div>
+
+{# SECCIÓN: INFORMACIÓN LABORAL #}
+<div class="form-row-modern">
+	<div class="form-col-modern">
+		<label class="form-label-modern">Empresa *</label>
+		<select id="company-select" name="selected_company" class="form-control-modern" required>
+			<option value="">Seleccionar empresa...</option>
+		</select>
+		<div id="company-error" class="text-danger mt-1" style="display: none; font-size: 12px;">Por favor seleccione una empresa</div>
+	</div>
+	<div class="form-col-modern">
+		{{ form_row(form.employee_number, {'label': 'N° de empleado', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+	</div>
+</div>
+
+{# SECCIÓN: ACCESO Y PERMISOS #}
+<div class="form-row-modern">
+	{% if form.role is defined %}
+		<div class="form-col-modern">
+			{{ form_row(form.role, {'label': 'Rol', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+		</div>
+	{% endif %}
+	{% if form.password is defined %}
+		<div class="form-col-modern">
+			{{ form_row(form.password, {'label': 'Contraseña', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+		</div>
+	{% endif %}
+</div>
+
+{# SECCIÓN: REGIONES #}
+{% if form.regions is defined %}
+	<div class="row mb-4">
+		<div class="col-md-12">
+			{{ form_row(form.regions, {'label': 'Regiones', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+		</div>
+	</div>
+{% endif %}
+
+{# BOTÓN DE ENVÍO #}
+<div class="d-flex justify-content-center col-12 text-center mt-5">
+	<button class="btn-modern-submit">{{ button_label|default('GUARDAR') }}</button>
+</div>
+
+{{ form_end(form) }}
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+const companySelect = document.getElementById('company-select');
+const dominio = '{{ dominio }}';
+
+// Load companies
+fetch(`/${dominio}/social-media/companies`).then(response => response.json()).then(companies => {
+companies.forEach(company => {
+const option = document.createElement('option');
+option.value = company.id;
+option.textContent = company.name;
+
+// If editing, select the current company
+{% if user is defined and user.company %}
+if (company.id === {{ user.company.id }}) {
+option.selected = true;
+}
+{% endif %}companySelect.appendChild(option);
+});
+}).catch(error => {
+console.error('Error loading companies:', error);
+companySelect.innerHTML = '<option value="">Error al cargar empresas</option>';
+});
+
+// Form validation
+const form = document.querySelector('form');
+form.addEventListener('submit', function (event) {
+const selectedCompany = companySelect.value;
+const errorDiv = document.getElementById('company-error');
+
+if (! selectedCompany) {
+event.preventDefault();
+errorDiv.style.display = 'block';
+companySelect.classList.add('is-invalid');
+} else {
+errorDiv.style.display = 'none';
+companySelect.classList.remove('is-invalid');
+}
+});
+});
+</script>
+
+{# Replace all path/url calls using dominio with app.request.attributes.get('dominio') #}

@@ -1,0 +1,39 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(APP_SECRET)%'
+
+    csrf_protection: true
+
+    # Note that the session will be started ONLY if you read or write from it.
+    # Confiar en proxies de redes privadas y REMOTE_ADDR para detectar el proxy directo
+    # REMOTE_ADDR confía en la IP del proxy que hace la conexión directa al contenedor
+    trusted_proxies: '192.168.200.105,REMOTE_ADDR'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port', 'x-forwarded-prefix']
+
+    session:
+        handler_id: session.handler.native_file
+        save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
+        # IMPORTANTE: Nombre de sesión FIJO para evitar pérdida de sesión entre requests
+        # NO usar nombres dinámicos por tenant - esto causa que PHP no encuentre la sesión
+        name: CTMSESSID
+        cookie_samesite: lax
+        # Forzamos secure porque el sitio es HTTPS en producción
+        cookie_secure: auto
+        cookie_httponly: true
+        cookie_lifetime: 604800
+        gc_maxlifetime: 604800
+        # Deshabilitar GC por probabilidad para evitar limpiezas inesperadas
+        gc_probability: 0
+        # Path raíz para que la cookie sea válida en todas las rutas (/rs/, /ts/, etc.)
+        cookie_path: /
+
+when@prod:
+    framework:
+        session:
+            cookie_secure: true
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

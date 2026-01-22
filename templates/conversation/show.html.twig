@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+{% block title %}Inbox{% endblock %}
+{% set sender = conversation_service.getSender(app.user, conversation) %}
+{% block body %}
+    <section style="margin-top: 150px; display: flex; flex-direction: column; align-items: center; height: 80vh; overflow: hidden; width: 100%">
+        <header style="display: flex; flex-direction: row; border: 1px solid rgba(198,118,24); height: 10vh; min-height: 50px; width: 100%;">
+            <div style="width: 15%; background-color: #C67618; display: flex; justify-content: center; align-items: center;">
+                <a style="font-size: 1.2em; text-align: center; color: #fff;" href="{{ path('app_conversation_index', {'dominio': dominio}) }}">Regresar</a>
+            </div>
+            <div style="width: 85%; display: flex; align-items: center; padding-left: 2%; overflow: hidden;">
+                <h2 style="color: #fff; font-size: 1.2em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ sender.name }} {{ sender.lastName }}</h2>
+            </div>
+        </header>
+        <div id="messages" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1vh; padding: 10px; width: 100%; max-width: 1200px; box-sizing: border-box;"
+                hx-ext="sse"
+                sse-connect="{{ mercure(topic) }}"
+                sse-swap="message"
+        >
+            {% for message in messages %}
+                <div style="background-color: rgba(250,250,250,0.85); width: 70%; max-width: 500px; padding: 8px 12px; border-radius: 8px; display: flex; flex-direction: column; align-self: {% if message.author.getRoles[0] == 'ROLE_ADMIN' or message.author.getRoles[0] == 'ROLE_LIDER' %}flex-end{% else %}flex-start{% endif %}; word-break: break-word;">
+                    <strong>{{ message.author.name }} {{ message.author.lastName }}</strong>
+                    <p style="margin: 5px 0; white-space: pre-wrap;">{{ message.content }}</p>
+                    <span style="font-size: 0.75em; color: #555;">{{ message.createdAt.date|date('d/m/Y H:i', 'America/Mexico_City') }}</span>
+                </div>
+            {% else %}
+                <p style="text-align: center; color: white;">No hay mensajes.</p>
+            {% endfor %}
+        </div>
+        <form style="display: flex; height: 7vh; min-height: 40px; max-height: 50px; border-radius: 8px; overflow: hidden; width: 100%; max-width: 1200px; margin-top: 1vh;"
+                hx-post="{{ path('app_message_create', {'dominio': dominio}) }}"
+                hx-swap="none">
+            <input style="flex: 1; padding: 10px; border: none; outline: none; font-size: 1em;" placeholder="Escribe un mensaje..."
+                   id="content"
+                    name="content"
+                    type="text">
+            <input type="hidden" name="conversationId" value="{{ conversation.id }}">
+            <button type="submit" id="sendButton" style="width: 20%; max-width: 100px; background-color: #C67618; color: #fff; border: none; font-size: 1em;">Enviar</button>
+        </form>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const messages = document.querySelector('#messages');
+            const userId = {{ app.user.id }};
+
+            console.log(userId);
+
+            if (!messages) {
+                console.warn('Elemento #messages no encontrado.');
+                return;
+            }
+
+            scrollToBottom(messages);
+
+/*            document.body.addEventListener('htmx:sseBeforeMessage', function (e) {
+
+                e.preventDefault();
+
+                const json = JSON.parse(e.detail.data);
+                const authorId = json['authorId'];
+                const content = json['content'];
+
+                if (authorId === userId) {
+                    document.querySelector('#content').value = '';
+                }
+
+                console.log(json)
+
+                htmx.swap('#messages', `<message-element author-id="${authorId}" user-id="${userId}" content="${content}" ></message-element>>`, {
+                    swapStyle: 'beforeend'
+                })
+
+                scrollToBottom(messages);
+
+            });*/
+
+            document.body.addEventListener('htmx:sseBeforeMessage', function (e) {
+                e.preventDefault(); // prevenimos inserción automática de HTMX
+
+                const json = JSON.parse(e.detail.data);
+                const authorId = json.author.id;
+                const content = json['content'];
+                const createdAt = json['createdAt']; // si lo envías en tu backend
+                const authorRole = json.author.role[0]
+
+                if (authorId === userId) {
+                    document.querySelector('#content').value = '';
+                }
+
+                const alignment = (authorRole === 'ROLE_ADMIN' || authorRole === 'ROLE_LIDER') ? 'flex-end' : 'flex-start';
+
+                // Construimos el HTML a insertar:
+                const messageHtml = `
+                    <div style="background-color: rgba(250,250,250,0.85); width: 70%; max-width: 500px; padding: 8px 12px; border-radius: 8px; display: flex; flex-direction: column; align-self: ${alignment}; word-break: break-word;">
+                        <strong>${json.author.name} ${json.author.lastName}</strong>
+                        <p style="margin: 5px 0; white-space: pre-wrap;">${content}</p>
+                        <span style="font-size: 0.75em; color: #555;">${createdAt ?? ''}</span>
+                    </div>
+                `;
+
+                // Insertar de forma segura sin borrar mensajes previos:
+                document.querySelector('#messages').insertAdjacentHTML('beforeend', messageHtml);
+
+                scrollToBottom(messages);
+            });
+
+        });
+
+
+        function scrollToBottom(container) {
+            if (!container) return;
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+
+
+
+{% endblock %}

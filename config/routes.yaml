@@ -1,0 +1,94 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+app_login:
+    path: /{dominio}/login
+    controller: App\Controller\SecurityController::login
+    methods: [GET, POST]
+
+app_logout:
+    path: /{dominio}/logout
+    controller: App\Controller\SecurityController::logout
+    methods: [GET]
+
+forget_password:
+    path: /{dominio}/forget-password
+    controller: App\Controller\SecurityController::forgetPassword
+    methods: [GET, POST]
+
+verify_code:
+    path: /{dominio}/verify-code
+    controller: App\Controller\SecurityController::verifyCode
+    methods: [POST]
+
+load_verify_code_template:
+    path: /{dominio}/load-verify-code-template
+    controller: App\Controller\SecurityController::loadVerifyCodeTemplate
+    methods: [GET]
+
+
+api_login:
+    path: /{dominio}/api/login
+    controller: App\Controller\Api\AuthController::login
+    methods: [POST]
+
+api_register:
+    path: /{dominio}/api/register
+    controller: App\Controller\Api\AuthController::register
+    methods: [POST]
+
+api_phone_verification:
+    path: /{dominio}/api/users/{id}/phone-verification
+    controller: App\Controller\Api\PhoneVerificationController::phoneVerification
+    methods: [PATCH]
+
+api_phone_verification_resend:
+    path: /{dominio}/api/users/{id}/phone-verification/resend
+    controller: App\Controller\Api\PhoneVerificationController::resendPhoneVerification
+    methods: [POST]
+
+api_email_verification_resend:
+    path: /{dominio}/api/users/{id}/email-verification/resend
+    controller: App\Controller\Api\EmailVerificationController::resendEmailVerification
+    methods: [POST]
+
+
+
+
+
+auth_google_login:
+    path: /{dominio}/connect/google
+    controller: App\Controller\SocialController::googleLogin
+    methods: [GET]
+
+auth_google_check:
+    path: /{dominio}/connect/google/check
+    controller: App\Controller\SocialController::googleCheck
+    methods: [GET]
+
+auth_facebook_login:
+    path: /{dominio}/connect/facebook
+    controller: App\Controller\SocialController::facebookLogin
+    methods: [GET]
+
+auth_facebook_check:
+    path: /{dominio}/connect/facebook/check
+    controller: App\Controller\SocialController::facebookCheck
+    methods: [GET]
+
+api_debug_tenant:
+    path: /{dominio}/api/debug/tenant
+    controller: App\Controller\Api\DebugController::debugTenant
+    methods: [GET]
+
+api_debug_images:
+    path: /{dominio}/api/debug/images
+    controller: App\Controller\Api\DebugController::debugImages
+    methods: [GET]
+
+default:
+    path: /
+    controller: App\Controller\DefaultController::home

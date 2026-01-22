@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Gestión de Horarios - SNTIASG{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('work-schedule') }}
+{% endblock %}
+
+{% block body %}
+
+    <section class="header-sntiasg-b py-3">
+        <div class="container text-center">
+            <h1>
+                <i class="fas fa-clock mr-2"></i>
+                Gestión de Horarios
+            </h1>
+            <ol class="breadcrumb float-sm-right" style="padding-left: 36em;">
+                <li class="breadcrumb-item"><a href="{{ path('app_dashboard', {dominio: dominio}) }}">Inicio</a></li>
+                <li class="breadcrumb-item active">Horarios</li>
+            </ol>
+        </div>
+    </section>
+    <br>
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <h2 class="stat-number">{{ total_schedules }}</h2>
+                <p class="stat-label">Horarios Activos</p>
+            </div>
+
+            <div class="stat-card green">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <h2 class="stat-number">{{ total_assignments }}</h2>
+                <p class="stat-label">Empleados Asignados</p>
+            </div>
+
+            <div class="stat-card orange">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                </div>
+                <h2 class="stat-number">{{ companies|length }}</h2>
+                <p class="stat-label">Empresas Configuradas</p>
+            </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="mb-3">
+            <a href="{{ path('work_schedule_new', {dominio: dominio}) }}" class="btn btn-primary mr-2">
+                <i class="fas fa-plus mr-1"></i>
+                Crear Nuevo Horario
+            </a>
+
+            <a href="{{ path('work_schedule_list', {dominio: dominio}) }}" class="btn btn-outline-primary">
+                <i class="fas fa-list mr-1"></i>
+                Ver Todos los Horarios
+            </a>
+        </div>
+
+        <!-- Horarios Recientes -->
+        {% if recent_schedules %}
+        <div class="recent-schedules">
+            <h3 class="section-title">
+                <i class="fas fa-history mr-2"></i>
+                Horarios Recientes
+            </h3>
+
+            {% for schedule in recent_schedules %}
+            <div class="schedule-item">
+                <div class="schedule-info">
+                    <h6>{{ schedule.name }}</h6>
+                    <small>
+                        {% if schedule.company %}
+                            {{ schedule.company.name }} •
+                        {% endif %}
+                        Creado {{ schedule.createdAt|date('d/m/Y') }}
+                    </small>
+                </div>
+                <div class="schedule-time">
+                    {{ schedule.startTime|date('H:i') }} - {{ schedule.endTime|date('H:i') }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,208 @@
+.index {
+  background-image: url("../images/principalFondo.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.buttons {
+  text-decoration: none;
+  background: #90D63B;
+  padding: 25px 45px 25px 45px; 
+  border-radius: 15px; 
+  font-weight: bold;
+  box-shadow: 10px 10px 10px rgba(42, 48, 44, 0.623);
+  display: inline-block; 
+  text-align: center; 
+  color: white; 
+}
+.buttons:hover {
+  background: #daddd6;
+  box-shadow: 6px 5px 3px rgba(66, 82, 68, 0.5);
+  transition: 0.3s ease-in-out;
+}
+.button {
+  text-decoration: none;
+  background: #90D63B;
+  padding: 15px 25px 15px 25px; 
+  border-radius: 15px; 
+  font-weight: bold;
+  box-shadow: 10px 10px 10px rgba(42, 48, 44, 0.623);
+  display: inline-block; 
+  text-align: center; 
+  color: white; 
+}
+.button:hover {
+  background: #daddd6;
+  box-shadow: 6px 5px 3px rgba(66, 82, 68, 0.5);
+  transition: 0.3s ease-in-out;
+}
+.form {
+  background-image: url("../images/secundarioFondo.png");
+  background-size: cover;
+  background-position: center;
+
+}
+.form {
+  background-image: url("../images/secundarioFondo.png");
+  background-size: cover;
+  background-position: center;
+
+}
+video, canvas, img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+    #preview {
+      width: 200px;
+      height: auto;
+      display: block;
+      margin: 10px auto;
+    }
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 25px; 
+  font-size: 16px;
+
+}
+
+.form-control  {
+
+  width: 100%;
+  padding: 15px;
+  border-radius: 25px; 
+}
+input[type="text"],
+input[type="file"]{
+  
+  width: 100%;
+  padding: 10px;
+  border-radius: 25px; 
+  font-size: 16px;
+  outline: none;
+  text-transform: uppercase;
+
+}
+
+input[type="file"]
+{
+  background-color: #7CC13E; 
+  color: #000000;
+  border-radius: 30px; 
+  padding: 5px; 
+  border: none;
+}
+/* Estilos para cards y elementos shadow, excluyendo modal-content */
+.card-body, .shadow-lg {
+  background-color: #b1afaf8c;
+  border: none;
+  box-shadow: none;
+}
+
+/* Modal backdrop con opacidad correcta para Bootstrap */
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Modal body personalizado */
+.modal-body {
+  background-color: #f1ededfd;
+  padding: 10px;
+  border-radius: 25px;
+}
+
+/* Asegurar que el modal-content funcione correctamente */
+.modal-content {
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.end{
+  background-color: rgba(255, 255, 255, 0);
+}
+
+/* Estilos adicionales para asegurar que los modales funcionen correctamente */
+.modal.show {
+  display: block !important;
+}
+
+.modal-backdrop.show {
+  opacity: 0.5 !important;
+}
+
+/* Asegurar que el modal esté por encima de otros elementos */
+.modal {
+  z-index: 1055 !important;
+}
+
+.modal-backdrop {
+  z-index: 1050 !important;
+}
+
+/* Prevenir scroll del body cuando el modal está abierto */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* FORZAR VISIBILIDAD COMPLETA DEL MODAL */
+.modal {
+  display: block !important;
+  opacity: 1 !important;
+  z-index: 9999 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.modal.show {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+.modal-backdrop {
+  display: block !important;
+  opacity: 0.5 !important;
+  z-index: 9998 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal-dialog {
+  position: relative !important;
+  z-index: 10000 !important;
+  margin: 50px auto !important;
+  max-width: 500px !important;
+  width: 90% !important;
+  transform: none !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+.modal-content {
+  position: relative !important;
+  z-index: 10001 !important;
+  background-color: #fff !important;
+  border: 2px solid #333 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.modal-body {
+  padding: 30px !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+

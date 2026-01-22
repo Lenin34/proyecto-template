@@ -1,0 +1,818 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Editar Usuario - {{ user.name }} {{ user.lastName }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/user-edit-complete.css') }}">
+    <style>
+        .user-edit-container {
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            min-height: 80vh;
+        }
+        
+        .sidebar {
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px 20px;
+            min-height: 80vh;
+        }
+        
+        .user-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.2);
+            object-fit: cover;
+            margin: 0 auto 20px;
+            display: block;
+        }
+        
+        .user-avatar-placeholder {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .user-name {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .user-role {
+            text-align: center;
+            opacity: 0.8;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .user-stats {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .quick-actions {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .quick-actions li {
+            margin-bottom: 10px;
+        }
+        
+        .quick-actions a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-actions a:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .quick-actions i {
+            margin-right: 10px;
+            width: 16px;
+        }
+        
+        .content-area {
+            padding: 30px;
+        }
+        
+        .breadcrumb-custom {
+            background: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+        
+        .breadcrumb-custom .breadcrumb-item a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .section-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-header h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .section-content {
+            padding: 20px;
+        }
+        
+        .form-group-custom {
+            margin-bottom: 20px;
+        }
+        
+        .form-group-custom label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-control-custom {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control-custom:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-primary-custom {
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary-custom {
+            background: #6c757d;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary-custom:hover {
+            background: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .collapse-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+        
+        .form-responses-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .form-responses-table th,
+        .form-responses-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .form-responses-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin: 10px;
+            }
+            
+            .sidebar {
+                min-height: auto;
+                padding: 20px;
+            }
+            
+            .content-area {
+                padding: 20px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b">
+        <div class="container-fluid container-header">
+            <h1 class="title-sntiasg">USUARIOS DEL SISTEMA</h1>
+        </div>
+    </section>
+
+
+    <div class="user-edit-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="main-content">
+                    <div class="row g-0">
+                        <!-- Sidebar -->
+                        <div class="col-lg-3 col-md-4">
+                            <div class="sidebar">
+                                <!-- Avatar del usuario -->
+                                {% if user.photo %}
+                                    <img src="{{ asset('uploads/users/' ~ user.photo) }}" alt="Avatar" class="user-avatar">
+                                {% else %}
+                                    <div class="user-avatar-placeholder">
+                                        {{ user.name|first|upper }}{{ user.lastName|first|upper }}
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Información básica -->
+                                <div class="user-name">{{ user.name }} {{ user.lastName }}</div>
+                                <div class="user-role">
+                                    {% if user.role %}
+                                        {{ user.role.name }}
+                                    {% else %}
+                                        Sin rol asignado
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Estadísticas del usuario -->
+                                <div class="user-stats">
+                                    <div class="stat-item">
+                                        <span>Estado:</span>
+                                        <span class="badge {{ user.status.value == '1' ? 'bg-success' : 'bg-danger' }}">
+                                            {{ user.status.value == '1' ? 'Activo' : 'Inactivo' }}
+                                        </span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>Empresa:</span>
+                                        <span>{{ user.company ? user.company.name : 'Sin asignar' }}</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>Regiones:</span>
+                                        <span>{{ user.regions|length }}</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>Beneficiarios:</span>
+                                        <span>{{ user.beneficiaries|length }}</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>Formularios:</span>
+                                        <span>{{ form_entries is not null ? form_entries|length : 0 }}</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Enlaces rápidos -->
+                                <ul class="quick-actions">
+                                    <li>
+                                        <a href="{{ path('app_user_admin_show', {'dominio': dominio, 'id': user.id}) }}">
+                                            <i class="fas fa-eye"></i> Ver Perfil
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#beneficiarios-section">
+                                            <i class="fas fa-users"></i> Ver Beneficiarios
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#formularios-section">
+                                            <i class="fas fa-clipboard-list"></i> Formularios Contestados
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('app_user_admin_index', {'dominio': dominio}) }}">
+                                            <i class="fas fa-arrow-left"></i> Volver a Lista
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Área de contenido principal -->
+                        <div class="col-lg-9 col-md-8">
+                            <div class="content-area">
+                                <!-- Breadcrumbs -->
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb breadcrumb-custom">
+                                        <li class="breadcrumb-item">
+                                            <a href="{{ path('app_user_admin_index', {'dominio': dominio}) }}">Usuarios</a>
+                                        </li>
+                                        <li class="breadcrumb-item active">Editar Usuario</li>
+                                    </ol>
+                                </nav>
+                                
+                                <!-- Título -->
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h2 class="mb-0">Editar Usuario</h2>
+                                    <div>
+                                        <a href="{{ path('app_user_admin_index', {'dominio': dominio}) }}" class="btn btn-secondary-custom me-2">
+                                            <i class="fas fa-times"></i> Cancelar
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                {{ form_start(form, {
+                                    'action': path('app_user_admin_edit_complete', {'dominio': dominio, 'id': user.id}),
+                                    'attr': {'id': 'user-edit-form'}
+                                }) }}
+                                
+                                <!-- Sección: Datos Personales -->
+                                <div class="section-card">
+                                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#personal-data" aria-expanded="true">
+                                        <h5><i class="fas fa-user me-2"></i>Datos Personales</h5>
+                                        <i class="fas fa-chevron-down collapse-icon"></i>
+                                    </div>
+                                    <div class="collapse show" id="personal-data">
+                                        <div class="section-content">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.name) }}
+                                                        {{ form_widget(form.name, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.name) }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.last_name) }}
+                                                        {{ form_widget(form.last_name, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.last_name) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.email) }}
+                                                        {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.email) }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.phone_number) }}
+                                                        {{ form_widget(form.phone_number, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.phone_number) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.curp) }}
+                                                        {{ form_widget(form.curp, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.curp) }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.birthday) }}
+                                                        {{ form_widget(form.birthday, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.birthday) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.gender) }}
+                                                        {{ form_widget(form.gender, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.gender) }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.education) }}
+                                                        {{ form_widget(form.education, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.education) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sección: Información Laboral -->
+                                <div class="section-card">
+                                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#work-info" aria-expanded="true">
+                                        <h5><i class="fas fa-briefcase me-2"></i>Información Laboral</h5>
+                                        <i class="fas fa-chevron-down collapse-icon"></i>
+                                    </div>
+                                    <div class="collapse show" id="work-info">
+                                        <div class="section-content">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.company) }}
+                                                        {{ form_widget(form.company, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.company) }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.role) }}
+                                                        {{ form_widget(form.role, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.role) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.employee_number) }}
+                                                        {{ form_widget(form.employee_number, {'attr': {'class': 'form-control form-control-custom'}}) }}
+                                                        {{ form_errors(form.employee_number) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.regions) }}
+                                                        <div class="regions-container p-3 border rounded">
+                                                            {{ form_widget(form.regions) }}
+                                                        </div>
+                                                        {{ form_errors(form.regions) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sección: Seguridad -->
+                                <div class="section-card">
+                                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#security-info" aria-expanded="false">
+                                        <h5><i class="fas fa-shield-alt me-2"></i>Seguridad</h5>
+                                        <i class="fas fa-chevron-down collapse-icon"></i>
+                                    </div>
+                                    <div class="collapse" id="security-info">
+                                        <div class="section-content">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group-custom">
+                                                        {{ form_label(form.password) }}
+                                                        {{ form_widget(form.password, {'attr': {'class': 'form-control form-control-custom', 'placeholder': 'Dejar en blanco para mantener la actual'}}) }}
+                                                        {{ form_errors(form.password) }}
+                                                        <small class="text-muted">Dejar en blanco para mantener la contraseña actual</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sección: Beneficiarios -->
+                                <div class="section-card" id="beneficiarios-section">
+                                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#beneficiarios-info" aria-expanded="false">
+                                        <h5><i class="fas fa-users me-2"></i>Beneficiarios ({{ user.beneficiaries|length }})</h5>
+                                        <i class="fas fa-chevron-down collapse-icon"></i>
+                                    </div>
+                                    <div class="collapse" id="beneficiarios-info">
+                                        <div class="section-content">
+                                            {% if user.beneficiaries|length > 0 %}
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Nombre</th>
+                                                                <th>Parentesco</th>
+                                                                <th>Género</th>
+                                                                <th>Educación</th>
+                                                                <th>Fecha Nacimiento</th>
+                                                                <th>Estado</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for beneficiary in user.beneficiaries %}
+                                                                <tr>
+                                                                    <td>{{ beneficiary.name }} {{ beneficiary.lastName }}</td>
+                                                                    <td>{{ beneficiary.kinship }}</td>
+                                                                    <td>{{ beneficiary.gender }}</td>
+                                                                    <td>{{ beneficiary.education }}</td>
+                                                                    <td>{{ beneficiary.birthday ? beneficiary.birthday|date('d/m/Y') : '-' }}</td>
+                                                                    <td>
+                                                                        <span class="badge {{ beneficiary.status.value == '1' ? 'bg-success' : 'bg-danger' }}">
+                                                                            {{ beneficiary.status.value == '1' ? 'Activo' : 'Inactivo' }}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% else %}
+                                                <div class="text-center py-4">
+                                                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                                    <p class="text-muted">Este usuario no tiene beneficiarios registrados.</p>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sección: Formularios Contestados -->
+                                <div class="section-card" id="formularios-section">
+                                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#formularios-info" aria-expanded="false">
+                                        <h5><i class="fas fa-clipboard-list me-2"></i>Formularios Contestados ({{ form_entries is not null ? form_entries|length : 0 }})</h5>
+                                        <i class="fas fa-chevron-down collapse-icon"></i>
+                                    </div>
+                                    <div class="collapse" id="formularios-info">
+                                        <div class="section-content">
+                                            {% if form_entries|length > 0 %}
+                                                <div class="table-responsive">
+                                                    <table class="form-responses-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Formulario</th>
+                                                                <th>Fecha Contestado</th>
+                                                                <th>Estado</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for entry in form_entries %}
+                                                                <tr>
+                                                                    <td>
+                                                                        <strong>{{ entry.formTemplate.name }}</strong>
+                                                                        <br>
+                                                                        <small class="text-muted">{{ entry.formTemplate.description }}</small>
+                                                                    </td>
+                                                                    <td>{{ entry.createdAt|date('d/m/Y H:i') }}</td>
+                                                                    <td>
+                                                                        <span class="status-badge status-completed">Completado</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <button class="btn btn-sm btn-outline-primary" onclick="viewFormDetails({{ entry.id }})">
+                                                                            <i class="fas fa-eye"></i> Ver Detalles
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% else %}
+                                                <div class="text-center py-4">
+                                                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                                                    <p class="text-muted">Este usuario no ha contestado ningún formulario aún.</p>
+                                                    <small class="text-muted">Los formularios contestados desde React Native aparecerán aquí.</small>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Botones de acción -->
+                                <div class="d-flex justify-content-end gap-3 mt-4">
+                                    <a href="{{ path('app_user_admin_index', {'dominio': dominio}) }}" class="btn btn-secondary-custom">
+                                        <i class="fas fa-times"></i> Cancelar
+                                    </a>
+                                    <button type="submit" class="btn btn-primary-custom">
+                                        <i class="fas fa-save"></i> Guardar Cambios
+                                    </button>
+                                </div>
+
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para ver detalles del formulario -->
+<div class="modal fade" id="formDetailsModal" tabindex="-1" aria-labelledby="formDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formDetailsModalLabel">Detalles del Formulario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="formDetailsContent">
+                <!-- El contenido se cargará dinámicamente -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Función para ver detalles del formulario
+        function viewFormDetails(entryId) {
+            // Mostrar loading
+            document.getElementById('formDetailsContent').innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i>
+                    <p>Cargando detalles del formulario...</p>
+                </div>
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('formDetailsModal'));
+            modal.show();
+
+            // Llamada AJAX para obtener los detalles
+            fetch(`/{{ dominio }}/api/form-entries/${entryId}/details`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al cargar los detalles');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayFormDetails(data);
+                })
+                .catch(error => {
+                    document.getElementById('formDetailsContent').innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-exclamation-triangle fa-2x text-danger mb-3"></i>
+                            <p class="text-danger">Error al cargar los detalles del formulario</p>
+                            <small class="text-muted">${error.message}</small>
+                        </div>
+                    `;
+                });
+        }
+
+        // Función para mostrar los detalles del formulario
+        function displayFormDetails(data) {
+            let fieldsHtml = '';
+
+            data.fields.forEach(field => {
+                let valueDisplay = field.value;
+
+                // Formatear el valor según el tipo de campo
+                if (field.field_type === 'date' && field.value) {
+                    const date = new Date(field.value);
+                    valueDisplay = date.toLocaleDateString('es-ES');
+                } else if (field.field_type === 'checkbox') {
+                    valueDisplay = field.value ? 'Sí' : 'No';
+                } else if (!field.value || field.value.trim() === '') {
+                    valueDisplay = '<em class="text-muted">Sin respuesta</em>';
+                }
+
+                fieldsHtml += `
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>${field.field_label}</strong>
+                            ${field.field_required ? '<span class="text-danger">*</span>' : ''}
+                            <br>
+                            <small class="text-muted">${field.field_type}</small>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="p-2 bg-light rounded">
+                                ${valueDisplay}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('formDetailsContent').innerHTML = `
+                <div class="form-details">
+                    <div class="mb-4">
+                        <h6 class="text-primary">${data.template.name}</h6>
+                        <p class="text-muted mb-2">${data.template.description}</p>
+                        <small class="text-muted">
+                            Contestado el: ${new Date(data.created_at).toLocaleString('es-ES')}
+                        </small>
+                    </div>
+
+                    <div class="border-top pt-3">
+                        <h6 class="mb-3">Respuestas del formulario:</h6>
+                        ${fieldsHtml}
+                    </div>
+                </div>
+            `;
+
+            // Actualizar el título del modal
+            document.getElementById('formDetailsModalLabel').textContent = `Detalles: ${data.template.name}`;
+        }
+
+        // Mejorar la experiencia de colapso e inicializar Select2
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar Select2 para Empresa si existe
+            if ($('#user_admin_edit_company').length) {
+                $('#user_admin_edit_company').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'Selecciona una empresa',
+                    allowClear: true,
+                    width: '100%',
+                    templateResult: function (option) {
+                        if (!option.id) return option.text;
+                        return $('<span><i class="fas fa-building me-2"></i>' + option.text + '</span>');
+                    },
+                    templateSelection: function (option) {
+                        if (!option.id) return option.text;
+                        return $('<span><i class="fas fa-building me-1"></i>' + option.text + '</span>');
+                    }
+                });
+            }
+
+            // Inicializar Select2 para Regiones si existe
+            if ($('#user_admin_edit_regions').length) {
+                $('#user_admin_edit_regions').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'Selecciona una o más regiones',
+                    allowClear: true,
+                    width: '100%',
+                    closeOnSelect: false,
+                    templateResult: function (option) {
+                        if (!option.id) return option.text;
+                        return $('<span><i class="fas fa-map-marker-alt me-2"></i>' + option.text + '</span>');
+                    },
+                    templateSelection: function (option) {
+                        if (!option.id) return option.text;
+                        return $('<span><i class="fas fa-map-marker-alt me-1"></i>' + option.text + '</span>');
+                    }
+                });
+            }
+
+            const collapseElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
+            collapseElements.forEach(element => {
+                element.addEventListener('click', function() {
+                    const icon = this.querySelector('.collapse-icon');
+                    if (icon) {
+                        icon.classList.toggle('collapsed');
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

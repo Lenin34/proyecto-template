@@ -1,0 +1,639 @@
+/* Support Page Styles */
+
+/* Header Section */
+.header-sntiasg-b {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b94 100%);
+    color: #ffffff;
+    padding: 2rem 0;
+    margin-top: 140px;
+}
+
+.title-sntiasg {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Support Contact Banner */
+.support-contact-banner {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    margin-bottom: 2rem;
+}
+
+/* Section Titles */
+.section-title {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 600;
+    color: #175E82;
+    margin-bottom: 2rem;
+}
+
+/* Contact Cards */
+.contact-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    border: 1px solid #e9ecef;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.contact-icon {
+    font-size: 3rem;
+    color: #175E82;
+    margin-bottom: 1rem;
+}
+
+.contact-card h4 {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 600;
+    color: #175E82;
+    margin-bottom: 0.5rem;
+}
+
+.contact-info {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 1.1rem;
+    margin: 1rem 0;
+}
+
+.contact-hours {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+/* FAQ Container */
+.faq-container {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Company Info */
+.company-info {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid #dee2e6;
+}
+
+.company-info h3 {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 600;
+    color: #175E82;
+    margin-bottom: 1rem;
+}
+
+.company-info h4 {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b94 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1a6b94 0%, #175E82 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(23, 94, 130, 0.3);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .title-sntiasg {
+        font-size: 2rem;
+    }
+    
+    .contact-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .support-contact-banner {
+        text-align: center;
+    }
+    
+    .support-contact-banner .col-md-4 {
+        margin-top: 1rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contact-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* WhatsApp specific styling */
+.fab.fa-whatsapp {
+    color: #25D366;
+}
+
+/* Icon colors */
+.fas.fa-envelope {
+    color: #dc3545;
+}
+
+.fas.fa-comments {
+    color: #6f42c1;
+}
+
+.fas.fa-life-ring {
+    color: #ffffff;
+}
+
+.fas.fa-headset {
+    color: #ffffff;
+}
+
+/* FAQ Accordion Styles */
+.faq-container .accordion {
+    border: none;
+}
+
+.faq-item {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.faq-item .accordion-header {
+    margin-bottom: 0;
+}
+
+.faq-item .accordion-button {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: none;
+    font-weight: 600;
+    color: #175E82;
+    padding: 1.25rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+.faq-item .accordion-button:not(.collapsed) {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b94 100%);
+    color: #ffffff;
+    box-shadow: none;
+}
+
+.faq-item .accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(23, 94, 130, 0.25);
+}
+
+.faq-item .accordion-body {
+    padding: 1.5rem;
+    background: #ffffff;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Quick Guides Styles */
+.guide-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    border: 1px solid #e9ecef;
+}
+
+.guide-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.guide-icon {
+    font-size: 3rem;
+    color: #175E82;
+    margin-bottom: 1rem;
+}
+
+.guide-card h4 {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 600;
+    color: #175E82;
+    margin-bottom: 0.5rem;
+}
+
+/* Guide Steps */
+.guide-steps {
+    margin-top: 1.5rem;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.step-number {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b94 100%);
+    color: #ffffff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.step-text {
+    font-size: 0.95rem;
+    color: #495057;
+}
+
+/* Troubleshoot List */
+.troubleshoot-list {
+    margin-top: 1.5rem;
+    text-align: left;
+}
+
+.trouble-item {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #175E82;
+}
+
+.trouble-item strong {
+    color: #175E82;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.trouble-item span {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Tips List */
+.tips-list {
+    margin-top: 1.5rem;
+    text-align: left;
+}
+
+.tip-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.tip-item i {
+    margin-right: 0.75rem;
+    margin-top: 0.25rem;
+    flex-shrink: 0;
+}
+
+.tip-item span {
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+/* Breadcrumb Custom */
+.breadcrumb-custom {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.breadcrumb-custom .breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+}
+
+.breadcrumb-custom .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-custom .breadcrumb-item a:hover {
+    color: #ffffff;
+}
+
+.breadcrumb-custom .breadcrumb-item.active {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Contact Form Styles */
+.contact-form {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+}
+
+.contact-form .form-label {
+    font-weight: 600;
+    color: #175E82;
+    margin-bottom: 0.5rem;
+}
+
+.contact-form .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.contact-form .form-control:focus {
+    border-color: #175E82;
+    box-shadow: 0 0 0 0.25rem rgba(23, 94, 130, 0.25);
+}
+
+.contact-form textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Additional responsive improvements */
+@media (max-width: 576px) {
+    .header-sntiasg-b {
+        margin-top: 80px;
+        padding: 1.5rem 0;
+    }
+
+    .title-sntiasg {
+        font-size: 1.8rem;
+    }
+
+    .contact-card {
+        padding: 1.5rem;
+    }
+
+    .guide-card {
+        padding: 1.5rem;
+    }
+
+    .support-contact-banner {
+        padding: 1.5rem;
+    }
+
+    .support-contact-banner .col-md-4 {
+        text-align: center;
+        margin-top: 1rem;
+    }
+}
+
+/* Fix for section titles consistency - TÍTULOS BLANCOS */
+.section-title,
+.title-sntiasg {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 600;
+    color: #ffffff !important; /* Títulos blancos */
+}
+
+/* Títulos en el header deben ser blancos */
+.header-sntiasg-b .title-sntiasg {
+    color: #ffffff !important;
+}
+
+/* Títulos de sección fuera del header también blancos */
+.container .title-sntiasg {
+    color: #ffffff !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure proper spacing for all sections */
+.container .row.mb-5:last-child {
+    margin-bottom: 3rem !important;
+}
+
+/* Quick Contact Cards (for contact page) */
+.quick-contact-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    border: 1px solid #e9ecef;
+}
+
+.quick-contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.quick-contact-card h4 {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 600;
+    color: #175E82;
+    margin-bottom: 0.5rem;
+}
+
+.quick-contact-card p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+/* Contact Form Container */
+.contact-form-container {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+.contact-form-container h3 {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 600;
+    color: #175E82;
+}
+
+/* Form validation styles */
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.valid-feedback {
+    color: #28a745;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Loading state for forms */
+.btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Download Section Styles - "¿Aún no tienes la aplicación?" */
+.download-section {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b94 100%);
+    border-radius: 15px;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    margin-top: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.download-section h4 {
+    font-family: "League Spartan", sans-serif;
+    font-weight: 600;
+    color: #ffffff !important;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.download-section p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.download-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.download-buttons .btn {
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-width: 160px;
+    justify-content: center;
+}
+
+.download-buttons .btn-dark {
+    background: linear-gradient(135deg, #343a40 0%, #495057 100%);
+    border: none;
+    color: #ffffff;
+}
+
+.download-buttons .btn-dark:hover {
+    background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 58, 64, 0.3);
+}
+
+.download-buttons .btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    color: #ffffff;
+}
+
+.download-buttons .btn-success:hover {
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+/* Responsive para download section */
+@media (max-width: 768px) {
+    .download-section {
+        padding: 2rem 1.5rem;
+    }
+
+    .download-section h4 {
+        font-size: 1.5rem;
+    }
+
+    .download-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .download-buttons .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}

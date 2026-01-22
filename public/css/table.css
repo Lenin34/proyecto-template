@@ -1,0 +1,33 @@
+
+
+.table-gradient-bg {
+    background: linear-gradient(to bottom right, #0875162a, #f30000);
+    padding: 2rem; 
+    border-radius: 1rem;
+  }
+  
+
+  .table-gradient-bg table {
+    background: transparent;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+  
+
+  .table-gradient-bg th {
+    background-color: rgba(197, 197, 197, 0.438);
+    text-align: center;
+    font-weight: bold;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: none;
+  }
+  
+
+
+  
+  }
+ 
+.box{
+  background: transparent;
+}

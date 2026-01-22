@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Empresas
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
+{% endblock %}
+
+{% block body %}
+	{# Unified Toolbar #}
+	<section class="user-toolbar">
+		<div class="container-fluid px-5">
+			<div
+				class="toolbar-content">
+				{# Left: Title #}
+				<div class="toolbar-left">
+					<h1 class="page-title">Empresas</h1>
+				</div>
+
+				{# Right: Actions #}
+				<div class="toolbar-right">
+					<button class="btn-action btn-action-success" data-bs-toggle="modal" data-bs-target="#modalNew" title="Nueva Empresa">
+						<i class="fas fa-plus"></i>
+						<span>Nueva</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	{# Main Content #}
+	<div class="container-fluid px-5 mt-4">
+		<div class="table-wrapper">
+			<table id="company-datatable" class="data-table" style="width:100%">
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 120px;">Acciones</th>
+						<th class="text-center">Nombre</th>
+						<th class="text-center">Región</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+
+	{# Modals #}
+	{% include 'company/_modal_new.html.twig' %}
+	{% include 'company/_modal_show.html.twig' %}
+	{% include 'company/_modal_edit.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		window.companyConfig = {
+dominio: '{{ dominio }}',
+datatableUrl: '{{ path('app_company_datatable', {'dominio': dominio}) }}',
+csrfToken: '{{ csrf_token_delete }}'
+};
+	</script>
+	<script src="{{ asset('js/company-index.js') }}"></script>
+{% endblock %}

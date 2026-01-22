@@ -1,0 +1,169 @@
+{% extends 'base.html.twig' %}
+{% set dominio = dominio|default(app.request.attributes.get('dominio')) %}
+
+{% block title %}Plantillas de Formularios
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/user-index.css') }}">
+	{{ encore_entry_link_tags('form-templates') }}
+{% endblock %}
+
+{% block body %}
+	{# Unified Toolbar - Clean and Professional #}
+	<section class="user-toolbar">
+		<div class="container-fluid px-5">
+			<div
+				class="toolbar-content">
+				{# Left: Title #}
+				<div class="toolbar-left">
+					<h1 class="page-title">Plantillas de Formularios</h1>
+				</div>
+
+				{# Center/Right: Actions #}
+				<div class="toolbar-right">
+					<button type="button" class="btn-unified btn-action-create" data-bs-toggle="modal" data-bs-target="#modalNewForm" title="Crear Formulario">
+						<i class="fas fa-plus"></i>
+						<span>Crear Formulario</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	{# Main Content - DataTables Implementation #}
+	<div class="container-fluid px-5 mt-4">
+
+		{% if form_templates is empty %}
+			<div class="card-dark card-dark--no-header">
+				<div class="empty-state-dark">
+					<div class="empty-icon">
+						<i class="fas fa-file-alt"></i>
+					</div>
+					<h4>¡Comienza creando tu primer formulario!</h4>
+					<p>
+						Los formularios te permiten recopilar información de manera estructurada y eficiente.
+						Crea campos personalizados según tus necesidades.
+					</p>
+					<button type="button" class="btn-unified btn-action-create" data-bs-toggle="modal" data-bs-target="#modalNewForm">
+						<i class="fas fa-plus-circle"></i>
+						Crear Mi Primer Formulario
+					</button>
+				</div>
+			</div>
+		{% else %}
+			{# Clean Table with DataTables #}
+			<div class="table-wrapper">
+				<form id="exportForm" action="{{ path('app_forms_export_multiple', {'dominio': dominio}) }}" method="POST">
+					<table id="forms-datatable" class="data-table" style="width:100%">
+						<thead>
+							<tr>
+								<th class="text-center">Nombre</th>
+								<th class="text-center">Descripción</th>
+								<th class="text-center">Campos</th>
+								<th class="text-center">Respuestas</th>
+								<th class="text-center">Fecha de Creación</th>
+								<th class="text-center">Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for form_template in form_templates %}
+								<tr>
+									<td class="text-center fw-bold">{{ form_template.name }}</td>
+									<td class="text-center">
+										<span class="text-truncate d-inline-block" style="max-width: 200px;" title="{{ form_template.description }}">
+											{{ form_template.description|slice(0, 50) }}
+											{% if form_template.description|length > 50 %}...
+											{% endif %}
+										</span>
+									</td>
+									<td class="text-center">
+										<span class="badge bg-info text-dark px-3 py-2">{{ form_template.fields_count }}
+											campos</span>
+									</td>
+									<td class="text-center">
+										<span class="badge bg-success text-white px-3 py-2">{{ form_template.responses_count ?? 0 }}
+											respuestas</span>
+									</td>
+									<td class="text-center">{{ form_template.created_at|date('d/m/Y') }}</td>
+									<td class="text-center">
+										<div class="action-btn-group">
+											<a href="{{ path('app_forms_show', {'id': form_template.id, 'dominio': dominio}) }}" class="action-btn action-btn--view" title="Ver formulario">
+												<i class="fas fa-eye"></i>
+											</a>
+											<a href="{{ path('app_forms_submissions', {'id': form_template.id, 'dominio': dominio}) }}" class="action-btn action-btn--submissions" title="Ver respuestas">
+												<i class="fas fa-inbox"></i>
+											</a>
+											<button type="button" class="action-btn action-btn--edit btn-edit-modal" data-id="{{ form_template.id }}" title="Editar formulario">
+												<i class="fas fa-edit"></i>
+											</button>
+											<button type="button" class="action-btn action-btn--delete btn-delete-form" data-id="{{ form_template.id }}" data-name="{{ form_template.name }}" title="Eliminar formulario">
+												<i class="fas fa-trash"></i>
+											</button>
+										</div>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</form>
+			</div>
+		{% endif %}
+	</div>
+
+	<!-- Modales -->
+	{% include 'form/_modal_new.html.twig' %}
+	{% include 'form/_modal_edit.html.twig' %}
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		window.formConfig = {
+dominio: '{{ dominio }}',
+urls: {
+new: '{{ path('app_forms_new', {'dominio': dominio}) }}',
+// La URL de edición se construirá dinámicamente en JS reemplazando '0' por el ID
+editBase: '{{ path('app_forms_edit', {'dominio': dominio, 'id': 0}) }}',
+// Necesitamos una ruta para obtener detalles (JSON) para el modal de edición
+// Usaremos la ruta 'show' si devuelve JSON o crearemos una nueva 'details'
+detailsBase: '{{ path('app_forms_show', {'dominio': dominio, 'id': 0}) }}'
+},
+csrfToken: '{{ csrf_token_delete }}'
+};
+// Pasar las empresas disponibles al JS para poblar los selectores
+window.availableCompanies = [{% if form is defined %}{% for choice in form.companies.vars.choices %}{
+id: {{ choice.value }},
+text: '{{ choice.label|e('js') }}'
+},{% endfor %}{% endif %}];
+	</script>
+	<script src="{{ asset('js/form-index.js') }}"></script>
+	{# Initialize DataTable if not empty #}
+	{% if form_templates is not empty %}
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+if ($.fn.DataTable) {
+$('#forms-datatable').DataTable({
+language: {
+url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+},
+responsive: true,
+dom: '<"d-flex justify-content-between align-items-center mb-3"f>t<"d-flex justify-content-between align-items-center mt-3"ip>',
+pageLength: 10,
+order: [
+[4, 'desc']
+], // Sort by creation date by default
+columnDefs: [
+{
+orderable: false,
+targets: 5
+} // Disable sorting on actions column
+]
+});
+}
+});
+		</script>
+	{% endif %}
+{% endblock %}

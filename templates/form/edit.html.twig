@@ -1,0 +1,389 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Editar Formulario: {{ form_template.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('form-templates') }}
+{% endblock %}
+
+{% block body %}
+<section class="header-sntiasg-b form-header-enhanced py-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <nav class="form-navigation mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{{ path('app_forms_index', {'dominio': dominio}) }}">
+                                <i class="fas fa-file-alt mr-1"></i> Formularios
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active">Editar: {{ form_template.name }}</li>
+                    </ol>
+                </nav>
+                <h1><i class="fas fa-edit mr-3"></i> Editar Formulario</h1>
+                <p class="subtitle">Modifica la información y configuración del formulario "{{ form_template.name }}
+                    "</p>
+            </div>
+            <div class="col-md-4 text-md-end text-center mt-3 mt-md-0">
+                <div class="d-flex gap-2 justify-content-md-end justify-content-center">
+                    <a href="{{ path('app_forms_show', {'id': form_template.id, 'dominio': dominio}) }}"
+                       class="btn-unified btn-info-dark">
+                        <i class="fas fa-eye"></i> Ver
+                    </a>
+                    <a href="{{ path('app_forms_index', {'dominio': dominio}) }}" class="btn-unified btn-nav-back">
+                        <i class="fas fa-arrow-left"></i> Regresar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card-dark">
+                <div class="card-dark-header">
+                    <div class="card-dark-header-icon">
+                        <i class="fas fa-edit"></i>
+                        <h5 class="card-title">Información del Formulario</h5>
+                    </div>
+                </div>
+                <div class="card-dark-body form-field-enhanced">
+                    <!-- Flash messages are handled by SweetAlert2 in base template -->
+
+                    {% if errors is defined and errors %}
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                SwalHelper.validationErrors({{ errors|json_encode|raw }});
+                            });
+                        </script>
+                    {% endif %}
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nombre del Formulario</label>
+                            <input type="text" id="name" name="name"
+                                   class="form-control {% if errors.name is defined %}is-invalid{% endif %}"
+                                   value="{{ app.request.request.get('name') ?: form_template.name }}" required>
+                            <small class="form-text text-muted">Nombre visible para los usuarios.</small>
+                            {% if errors.name is defined %}
+                                <div class="invalid-feedback">{{ errors.name }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descripción</label>
+                            <textarea id="description" name="description"
+                                      class="form-control {% if errors.description is defined %}is-invalid{% endif %}"
+                                      rows="4">{{ app.request.request.get('description') ?: form_template.description }}</textarea>
+                            <small class="form-text text-muted">Describe el propósito del formulario.</small>
+                            {% if errors.description is defined %}
+                                <div class="invalid-feedback">{{ errors.description }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="companyIds" class="form-label fw-bold">
+                                <i class="fas fa-building me-2 text-primary"></i>Empresas Autorizadas
+                            </label>
+                            {% if form is defined %}
+                                {{ form_widget(form.companies, {'id': 'companyIds', 'attr': {'class': 'form-select select2-multiple', 'data-placeholder': 'Seleccionar empresas (vacio = todas las empresas)'}}) }}
+                            {% else %}
+                                <select id="companyIds" name="companyIds[]"
+                                        class="form-select select2-multiple {% if errors.companyIds is defined %}is-invalid{% endif %}"
+                                        multiple="multiple"
+                                        data-placeholder="Seleccionar empresas (vacio = todas las empresas)">
+                                </select>
+                            {% endif %}
+                            <div class="companies-info">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-info-circle text-primary me-2"></i>
+                                        <small class="fw-bold text-dark">Configuracion de Acceso:</small>
+                                    </div>
+                                    <div class="d-flex gap-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-globe text-info me-1"></i>
+                                            <small class="text-dark"><strong>Vacio:</strong> Todas</small>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-lock text-warning me-1"></i>
+                                            <small class="text-dark"><strong>Seleccion:</strong> Especificas</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if errors.companyIds is defined %}
+                                <div class="invalid-feedback">{{ errors.companyIds }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <a href="{{ path('app_forms_show', {'id': form_template.id, 'dominio': dominio}) }}"
+                               class="btn-unified btn-danger-dark">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn-unified btn-success-dark">
+                                <i class="fas fa-save"></i> Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card-dark mt-4">
+                <div class="card-dark-header d-flex justify-content-between align-items-center">
+                    <div class="card-dark-header-icon">
+                        <i class="fas fa-list-alt"></i>
+                        <h5 class="card-title">Campos del Formulario</h5>
+                    </div>
+                    <a href="{{ path('app_forms_fields_new', {'id': form_template.id, 'dominio': dominio}) }}"
+                       class="btn-unified btn-action-create btn-sm">
+                        <i class="fas fa-plus"></i> Agregar Campo
+                    </a>
+                </div>
+
+                <div class="card-dark-body p-0">
+                    {% set activeFields = form_template.formTemplateFields|filter(f => f.status.value == '1') %}
+                    {% if activeFields|length > 0 %}
+                        <div class="form-table-responsive">
+                            <table id="formsTableEdit" class="table fields-table-show text-center align-middle mb-0">
+                                <thead>
+                                <tr>
+                                    <th class="py-2">Etiqueta</th>
+                                    <th class="py-2">Tipo</th>
+                                    <th class="py-2">Obligatorio</th>
+                                    <th class="py-2">Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for field in activeFields %}
+                                    <tr class="table-row-hover">
+                                        <td class="py-2 fw-bold field-label">{{ field.label }}</td>
+                                        <td class="py-2">
+                                            <span class="field-type-tag">{{ field.type|capitalize }}</span>
+                                        </td>
+                                        <td class="py-2">
+                                            {% if field.isRequired %}
+                                                <span class="field-required-tag required">
+                                                <i class="fas fa-check-circle me-1"></i>Sí
+                                            </span>
+                                            {% else %}
+                                                <span class="field-required-tag optional">
+                                                <i class="fas fa-minus-circle me-1"></i>No
+                                            </span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="py-2">
+                                            <div class="action-btn-group">
+                                                <a href="{{ path('app_forms_fields_edit', {'id': form_template.id, 'fieldId': field.id, 'dominio': dominio}) }}"
+                                                   class="action-btn action-btn--edit"
+                                                   title="Editar campo">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button"
+                                                        class="action-btn action-btn--delete btn-delete-field"
+                                                        data-field-id="{{ field.id }}"
+                                                        data-field-label="{{ field.label }}"
+                                                        data-delete-url="{{ path('app_forms_fields_delete', {'id': form_template.id, 'fieldId': field.id, 'dominio': dominio}) }}"
+                                                        data-csrf-token="{{ csrf_token('delete' ~ field.id) }}"
+                                                        title="Eliminar campo">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="empty-state-dark">
+                            <div class="empty-icon">
+                                <i class="fas fa-plus-square"></i>
+                            </div>
+                            <h4>¡Agrega tu primer campo!</h4>
+                            <p>Los campos definen qué información recopilarás en este formulario. Puedes agregar texto,
+                                fechas, archivos y más.</p>
+                            <a href="{{ path('app_forms_fields_new', {'id': form_template.id, 'dominio': dominio}) }}"
+                               class="btn-unified btn-action-create">
+                                <i class="fas fa-plus"></i> Agregar Primer Campo
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ parent() }}
+            <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+            <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+            <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+            <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Inicializar Select2 para el selector de empresas con configuracion mejorada
+                    $('#companyIds').select2({
+                        theme: 'bootstrap-5',
+                        placeholder: 'Seleccionar empresas (vacio = todas las empresas)',
+                        allowClear: true,
+                        width: '100%',
+                        closeOnSelect: false,
+                        tags: false,
+                        tokenSeparators: [','],
+                        escapeMarkup: function (markup) {
+                            return markup;
+                        },
+                        templateResult: function (option) {
+                            if (!option.id) return option.text;
+                            return $('<span><i class="fas fa-building me-2"></i>' + option.text + '</span>');
+                        },
+                        templateSelection: function (option) {
+                            if (!option.id) return option.text;
+                            return $('<span><i class="fas fa-building me-1"></i>' + option.text + '</span>');
+                        }
+                    });
+
+                    // Agregar evento para mostrar informacion cuando se selecciona/deselecciona
+                    $('#companyIds').on('select2:select select2:unselect', function (e) {
+                        const selectedCount = $(this).val() ? $(this).val().length : 0;
+                        const totalCompanies = $(this).find('option').length;
+
+                        if (selectedCount === 0) {
+                            console.log('Formulario disponible para TODAS las empresas');
+                        } else {
+                            console.log('Formulario restringido a ' + selectedCount + ' de ' + totalCompanies + ' empresas');
+                        }
+                    });
+
+                    // Handler para eliminar campos (usando delegación de eventos para compatibilidad con DataTables)
+                    document.body.addEventListener('click', function(e) {
+                        const btn = e.target.closest('.btn-delete-field');
+                        if (!btn) return;
+                        
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const fieldId = btn.dataset.fieldId;
+                        const fieldLabel = btn.dataset.fieldLabel;
+                        const deleteUrl = btn.dataset.deleteUrl;
+                        const csrfToken = btn.dataset.csrfToken;
+                        const fieldRow = btn.closest('tr');
+                        
+                        // Debug: verificar que tenemos el token
+                        console.log('Delete field:', { fieldId, fieldLabel, deleteUrl, csrfToken: csrfToken ? 'presente' : 'FALTA' });
+                        
+                        if (!csrfToken) {
+                            console.error('CSRF token no encontrado');
+                            Swal.fire('Error', 'Token de seguridad no encontrado. Recargue la página.', 'error');
+                            return;
+                        }
+                        
+                        Swal.fire({
+                            title: `¿Eliminar el campo "${fieldLabel}"?`,
+                            text: 'Esta acción no se puede deshacer',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: '<i class="fas fa-trash-alt me-1"></i> Sí, eliminar',
+                            cancelButtonText: '<i class="fas fa-times me-1"></i> Cancelar',
+                            confirmButtonColor: '#dc3545',
+                            reverseButtons: true,
+                            customClass: {
+                                popup: 'swal-dark-popup'
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Show loading state
+                                Swal.fire({
+                                    title: 'Eliminando...',
+                                    text: 'Por favor espere',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    showConfirmButton: false,
+                                    didOpen: () => Swal.showLoading()
+                                });
+                                
+                                // Prepare form data with CSRF token
+                                const formData = new FormData();
+                                formData.append('_token', csrfToken);
+                                
+                                // Perform async delete via Fetch
+                                fetch(deleteUrl, {
+                                    method: 'POST',
+                                    body: formData,
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        // Success - remove the row from the table
+                                        if (fieldRow) {
+                                            // If using DataTables, use its API to remove the row
+                                            try {
+                                                const table = $('#formsTableEdit').DataTable();
+                                                table.row(fieldRow).remove().draw();
+                                            } catch (err) {
+                                                fieldRow.remove();
+                                            }
+                                        }
+                                        
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '¡Eliminado!',
+                                            text: data.message || `El campo "${fieldLabel}" ha sido eliminado exitosamente.`,
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                    } else {
+                                        throw new Error(data.message || 'Error al eliminar el campo');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: error.message || 'No se pudo eliminar el campo. Por favor, intente nuevamente.',
+                                        confirmButtonText: 'Entendido'
+                                    });
+                                });
+                            }
+                        });
+                    });
+
+                    $('#formsTableEdit').DataTable({
+                        responsive: true,
+                        language: {
+                            "sProcessing": "Procesando...",
+                            "sLengthMenu": "Mostrar _MENU_ registros",
+                            "sZeroRecords": "No se encontraron resultados",
+                            "sEmptyTable": "Ningún dato disponible",
+                            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                            "sInfoEmpty": "Mostrando 0 a 0 de 0 registros",
+                            "sInfoFiltered": "(filtrado de _MAX_ registros en total)",
+                            "sSearch": "Buscar:",
+                            "oPaginate": {
+                                "sFirst": "Primero",
+                                "sLast": "Último",
+                                "sNext": "Siguiente",
+                                "sPrevious": "Anterior"
+                            }
+                        },
+                        order: [[0, 'asc']],
+                        pageLength: 10,
+                        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]]
+                    });
+                });
+            </script>
+        {% endblock %}

@@ -1,0 +1,172 @@
+security:
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\App\User:
+            algorithm: auto
+        App\Entity\Master\MasterUser:
+            algorithm: auto
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        app_user_provider:
+            id: App\Security\UserProvider
+        master_user_provider:
+            id: App\Security\MasterUserProvider
+    firewalls:
+        # Firewall para assets estáticos y herramientas de desarrollo
+        # CRÍTICO: El patrón NO debe terminar en / para capturar /favicon.ico correctamente
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js|bundles)(/|$)|^/favicon\.ico$
+            security: false
+            stateless: true
+        api:
+            pattern: ^/[^/]+/api
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
+
+        main:
+          lazy: true
+          provider: app_user_provider
+          custom_authenticator: App\Security\LoginAuthenticator
+          entry_point: App\Security\LoginAuthenticator
+          logout:
+            path: app_logout
+            target: app_login
+          remember_me:
+            secret: '%kernel.secret%'
+            lifetime: 604800
+            path: /
+            remember_me_parameter: _remember_me
+
+    role_hierarchy:
+        ROLE_ADMIN: [ ROLE_LIDER, ROLE_USER ]
+        ROLE_LIDER: [ ROLE_USER ]
+        ROLE_MASTER_ADMIN: [ ROLE_MASTER_USER ]
+
+    access_control:
+        # Favicon público
+        - { path: ^/favicon.ico, roles: PUBLIC_ACCESS }
+
+        # Rutas Master (requieren autenticación como MasterUser)
+        - { path: ^/Master/panel, roles: ROLE_MASTER_USER }
+        - { path: ^/Master/[^/]+/edit, roles: ROLE_MASTER_ADMIN }
+        - { path: ^/Master/new, roles: ROLE_MASTER_ADMIN }
+        - { path: ^/Master/[^/]+/delete, roles: ROLE_MASTER_ADMIN }
+
+        # Rutas públicas (no requieren autenticación)
+        - { path: ^/[^/]+/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/logout$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/reset-password, roles: PUBLIC_ACCESS }
+        
+        # API endpoints públicos (DEBEN IR ANTES DE LA REGLA GENERAL)
+        - { path: ^/[^/]+/api/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/google_login$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/google_login_check$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/debug/, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/debug-session, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/users/\d+/phone-verification$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/users/\d+/phone-verification/resend$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/users/\d+/email-verification/resend$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/users/\d+/email-verification$, roles: PUBLIC_ACCESS } #api_email_verification_confirm
+        - { path: ^/[^/]+/api/users/\d+/reset-password$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/users/\d+/password$, roles: PUBLIC_ACCESS } #api_change_password
+        - { path: ^/[^/]+/api/users/password-reset/phone$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/users/password-reset/email$, roles: PUBLIC_ACCESS }
+        # Nuevos endpoints de recuperación de contraseña
+        - { path: ^/[^/]+/api/password-reset/phone$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/password-reset/verify$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/password-reset/resend$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/password-reset/email$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/password-reset/email/verify$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/password-reset/email/resend$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/api/verify-phone$, roles: PUBLIC_ACCESS } #api_verify_phone
+        - { path: ^/[^/]+/api/confirm-phone$, roles: PUBLIC_ACCESS } #api_verify_phone
+        - { path: ^/[^/]+/api/verify-phone-number$, roles: PUBLIC_ACCESS } #api_verify_phone_number
+        - { path: ^/[^/]+/connect/google$, roles: PUBLIC_ACCESS } #auth_google_login
+        - { path: ^/[^/]+/connect/google/check$, roles: PUBLIC_ACCESS } #auth_google_check
+        
+        # Rutas protegidas (requieren autenticación)
+        - { path: ^/[^/]+/dashboard, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/[^/]+/profile, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/[^/]+$, roles: IS_AUTHENTICATED_FULLY }
+        
+        # API endpoints protegidos (REGLA GENERAL - DEBE IR DESPUÉS DE LAS ESPECÍFICAS)
+        - { path: ^/[^/]+/api/, roles: IS_AUTHENTICATED_FULLY }
+        
+        # Rutas admin
+        - { path: ^/[^/]+/admin, roles: ROLE_ADMIN }
+
+        # ROLE_USER (DESPUÉS DE PUBLIC_ACCESS - MÁS GENERAL)
+        - { path: ^/[^/]+/api/users/\d+/beneficiary, roles: ROLE_USER } #api_beneficiary => _, create, update, delete
+        - { path: ^/[^/]+/api/beneficiaries, roles: ROLE_USER } #api_beneficiaries => list, show, crate, update, delete
+        - { path: ^/[^/]+/api/benefits, roles: ROLE_USER } #api_benefits => _, list, show, crate, update, delete
+        - { path: ^/[^/]+/api/users/\d+, roles: ROLE_USER } #app_conversation => _, load, publish (REGLA GENERAL)
+        - { path: ^/[^/]+/api/credential/token$, roles: ROLE_USER } #app_credential_token => _, load, publish
+        - { path: ^/[^/]+/api/users/\d+/device-token, roles: ROLE_USER } #api_device_token
+        - { path: ^/[^/]+/api/device-token/\d, roles: ROLE_USER } #api_device_token_delete
+        - { path: ^/[^/]+/api/errors, roles: ROLE_USER } #api_errors => files, file_content, latest
+        - { path: ^/[^/]+/api/events$, roles: ROLE_USER } #api_events_list
+        - { path: ^/[^/]+/api/forms, roles: ROLE_USER } #api_forms => indes, show, submit, my_submission, available, submissions, submissions_show, submission_approve, submission_reject, stats, stats_show
+        - { path: ^/[^/]+/api/form-entries, roles: ROLE_USER } #api_form_entry_details, user_form_entries
+        - { path: ^/[^/]+/api/history, roles: ROLE_USER } #api_history => list, create
+        - { path: ^/[^/]+/api/users/\d+/history, roles: ROLE_USER } #api_history
+        - { path: ^/[^/]+/api/profile, roles: ROLE_USER } #api_profile, update
+        - { path: ^/[^/]+/api/social-media, roles: ROLE_USER } #api_social_media => list, show, create, update, delete
+
+        # ============================
+        # 📌 SECCIÓN: RUTAS NO /api
+        # ============================
+
+        # PUBLIC_ACCESS
+        - { path: ^/soporte, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/privacy-policy$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/forget-password$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/verify-code$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/load-verify-code-template$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/logout$, roles: PUBLIC_ACCESS }
+        - { path: ^/[^/]+/credential/check$, roles: PUBLIC_ACCESS }
+
+        # ROLE_USER
+        - { path: ^/[^/]+/profile, roles: ROLE_USER }
+
+        # ROLE_ADMIN, ROLE_LIDER
+        - { path: ^/[^/]+/beneficiary, roles: ROLE_LIDER } #app_beneficiary => index, new, show, edit, delete
+        - { path: ^/[^/]+/benefit, roles: ROLE_LIDER } #app_benefit => index, new, show, edit, delete
+        - { path: ^/[^/]+/company, roles: ROLE_LIDER } #app_company => index, new, show, edit, delete
+        - { path: ^/[^/]+/conversation, roles: ROLE_LIDER } #app_conversation => index, new, show, edit, delete
+        - { path: ^/[^/]+/admin/logs, roles: ROLE_LIDER } #app_error_logs
+        - { path: ^/[^/]+/event, roles: ROLE_LIDER } #app_event => index, new, show, edit, delete
+        - { path: ^/[^/]+/admin/forms, roles: ROLE_LIDER } #app_forms => index, new, show, edit, fields, delete, submissions, export, templates, preview, validate
+        - { path: ^/[^/]+/message$, roles: ROLE_LIDER } #app_message_create
+        - { path: ^/[^/]+/notification, roles: ROLE_LIDER } #app_notification => index, new, show, edit, delete, send
+        - { path: ^/[^/]+/region, roles: ROLE_LIDER } #app_notification => index, new, list, companies, edit, delete, by_company, show
+        - { path: ^/[^/]+/social-media, roles: ROLE_LIDER } #app_social_media => index, new, edit
+        - { path: ^/[^/]+/admin/user, roles: ROLE_LIDER } #app_user_admin => index, new, show, edit, delete, edit_complete
+        - { path: ^/[^/]+/user, roles: ROLE_LIDER } #app_user => index, new, show, edit, delete
+        - { path: ^/[^/]+/forms, roles: ROLE_LIDER } #app_user_forms => index, ty, show, edit, delete, my_submissions, my_show
+        - { path: ^/[^/]+/user/download-template, roles: ROLE_LIDER }
+        - { path: ^/[^/]+/user/bulk-upload, roles: ROLE_LIDER }
+        - { path: ^/[^/]+/dashboard$, roles: ROLE_USER }
+        - { path: ^/[^/]+/admin, roles: ROLE_LIDER }
+        - { path: ^/[^/]+/notification, roles: ROLE_LIDER }
+        - { path: ^/[^/]+$, roles: IS_AUTHENTICATED_FULLY } # Asegurar que app_default requiere autenticación completa
+
+
+
+
+when@test:
+    security:
+        password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon

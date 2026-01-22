@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Eventos
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/admin-theme.css') }}">
+{% endblock %}
+
+{% block body %}
+	{# Unified Toolbar #}
+	<section class="user-toolbar">
+		<div class="container-fluid px-5">
+			<div
+				class="toolbar-content">
+				{# Left: Title #}
+				<div class="toolbar-left">
+					<h1 class="page-title">Eventos</h1>
+				</div>
+
+				{# Right: Actions #}
+				<div class="toolbar-right">
+					<button class="btn-action btn-action-success" data-bs-toggle="modal" data-bs-target="#modalNew" title="Nuevo Evento">
+						<i class="fas fa-plus"></i>
+						<span>Nuevo</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	{# Main Content #}
+	<div class="container-fluid px-5 mt-4">
+		<div class="table-wrapper">
+			<table id="event-datatable" class="data-table" style="width:100%">
+				<thead>
+					<tr>
+						<th class="text-center" style="width: 120px;">Acciones</th>
+						<th class="text-center">Título</th>
+						<th class="text-center">Región</th>
+						<th class="text-center">Empresas</th>
+						<th class="text-center">Fecha</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+
+	{# Modals #}
+	{% include 'event/_modal_new.html.twig' %}
+	{% include 'event/_modal_show.html.twig' %}
+	{% include 'event/_modal_edit.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		window.eventConfig = {
+            dominio: '{{ dominio }}',
+            datatableUrl: '{{ path('app_event_datatable', {'dominio': dominio}) }}',
+            csrfTokenDelete: '{{ csrf_token_delete }}', // Usar la variable del controlador
+            calendarEvents: [{% for event in events %}{
+                id: '{{ event.id }}',
+                title: '{{ event.title|e('js') }}',
+                start: '{{ event.startDate ? event.startDate|date('Y-m-d') : '' }}',
+                end: '{{ event.endDate ? event.endDate|date_modify('+1 day')|date('Y-m-d') : '' }}'
+            },{% endfor %}]
+        };
+	</script>
+	<script src="{{ asset('js/event-index.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Crear Evento
+{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-center min-vh-100 py-5">
+		<div class="modal-modern">
+			<div class="modal-header-red">
+				<h1 class="modal-title-modern">CREAR EVENTO</h1>
+				<a href="{{ path('app_event_index', {'dominio': dominio}) }}" class="btn-close-modern">
+					<i class="fas fa-times"></i>
+				</a>
+			</div>
+
+			<div class="modal-body-modern">
+				{{ include('event/_form.html.twig', { form: form }) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+framework:
+    messenger:
+        failure_transport: failed
+
+        transports:
+            # Multi-tenant transports - cada tenant tiene su propia cola
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+
+            # Tenant: ts
+            async_ts:
+                dsn: 'doctrine://ts?queue_name=async'
+                options:
+                    use_notify: true
+                    check_delayed_interval: 60000
+                retry_strategy:
+                    max_retries: 3
+                    multiplier: 2
+
+            # Tenant: rs
+            async_rs:
+                dsn: 'doctrine://rs?queue_name=async'
+                options:
+                    use_notify: true
+                    check_delayed_interval: 60000
+                retry_strategy:
+                    max_retries: 3
+                    multiplier: 2
+
+            # Tenant: SNT
+            async_snt:
+                dsn: 'doctrine://SNT?queue_name=async'
+                options:
+                    use_notify: true
+                    check_delayed_interval: 60000
+                retry_strategy:
+                    max_retries: 3
+                    multiplier: 2
+
+            # Tenant: issemym
+            async_issemym:
+                dsn: 'doctrine://issemym?queue_name=async'
+                options:
+                    use_notify: true
+                    check_delayed_interval: 60000
+                retry_strategy:
+                    max_retries: 3
+                    multiplier: 2
+
+            # Failed transport (usa ts como default)
+            failed: 'doctrine://ts?queue_name=failed'
+
+            # Transporte por defecto (alias a ts para compatibilidad)
+            async:
+                dsn: 'doctrine://ts?queue_name=async'
+                options:
+                    use_notify: true
+                    check_delayed_interval: 60000
+                retry_strategy:
+                    max_retries: 3
+                    multiplier: 2
+
+        routing:
+            # El routing se maneja dinámicamente por el TenantAwareStamp
+            # pero mantenemos esta configuración por defecto
+            'App\Message\SendPushNotification': async

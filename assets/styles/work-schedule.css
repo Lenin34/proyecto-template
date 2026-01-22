@@ -1,0 +1,811 @@
+/* ========================================
+   WORK SCHEDULE STYLES
+   Sistema de Gestión de Horarios - SNTIASG
+   ======================================== */
+
+/* ========================================
+   HEADER PERSONALIZADO - Breadcrumbs y títulos
+   ======================================== */
+
+.header-sntiasg-b {
+    position: relative;
+}
+
+.header-sntiasg-b h1 {
+    color: #fff;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    font-size: 1.75rem;
+}
+
+.header-sntiasg-b .breadcrumb {
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-sntiasg-b .breadcrumb-item {
+    font-size: 0.9rem;
+}
+
+.header-sntiasg-b .breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+}
+
+.header-sntiasg-b .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.header-sntiasg-b .breadcrumb-item a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.header-sntiasg-b .breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+/* Responsive breadcrumb positioning */
+@media (max-width: 768px) {
+    .header-sntiasg-b .breadcrumb {
+        padding-left: 0 !important;
+        margin-top: 1rem;
+        text-align: center;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+    .header-sntiasg-b .breadcrumb {
+        padding-left: 20em !important;
+    }
+}
+
+@media (min-width: 1201px) {
+    .header-sntiasg-b .breadcrumb {
+        padding-left: 36em !important;
+    }
+}
+
+/* ========================================
+   DASHBOARD - Estadísticas y Cards
+   ======================================== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-left: 4px solid #007bff;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-card.blue { 
+    border-left-color: #007bff; 
+}
+
+.stat-card.green { 
+    border-left-color: #28a745; 
+}
+
+.stat-card.orange { 
+    border-left-color: #fd7e14; 
+}
+
+.stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    color: #6c757d;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #495057;
+    margin: 0;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* ========================================
+   RECENT SCHEDULES - Lista de horarios recientes
+   ======================================== */
+
+.recent-schedules {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.schedule-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    background: #f8f9fa;
+    border-left: 3px solid #007bff;
+    transition: background 0.2s ease;
+}
+
+.schedule-item:hover {
+    background: #e9ecef;
+}
+
+.schedule-info h6 {
+    margin: 0 0 0.25rem 0;
+    color: #495057;
+    font-weight: 600;
+}
+
+.schedule-info small {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.schedule-time {
+    color: #28a745;
+    font-weight: 600;
+}
+
+/* ========================================
+   SCHEDULE LIST - Grid de horarios
+   ======================================== */
+
+.schedules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.schedule-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-left: 4px solid #007bff;
+    transition: transform 0.2s ease;
+}
+
+.schedule-card:hover {
+    transform: translateY(-2px);
+}
+
+.schedule-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.schedule-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #495057;
+    margin: 0 0 0.5rem 0;
+}
+
+.schedule-company {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.schedule-status {
+    background: #28a745;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.schedule-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 3px solid #007bff;
+}
+
+.schedule-time-text {
+    font-weight: 600;
+    color: #495057;
+    font-size: 1.1rem;
+}
+
+.schedule-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.meta-item {
+    text-align: center;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.meta-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #28a745;
+    margin: 0;
+}
+
+.meta-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.schedule-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+.empty-state h3 {
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* ========================================
+   FORM - Formulario de creación/edición
+   ======================================== */
+
+/* Labels y texto */
+.text-dark {
+    color: #495057 !important;
+    font-weight: 500;
+}
+
+/* Inputs más pequeños */
+.form-control-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+}
+
+/* Grid de días */
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.day-checkbox {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background: #fff;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.day-checkbox:hover {
+    border-color: #007bff;
+    background: #f8f9fa;
+}
+
+.day-checkbox.checked {
+    border-color: #28a745;
+    background: #d4edda;
+}
+
+.day-checkbox .day-label {
+    margin-left: 0.5rem;
+    font-weight: 500;
+    color: #495057;
+}
+
+.day-checkbox.checked .day-label {
+    color: #155724;
+    font-weight: 600;
+}
+
+/* Contenedor de descansos */
+.breaks-container {
+    border: 2px dashed #dee2e6;
+    border-radius: 6px;
+    padding: 1rem;
+    background: #f8f9fa;
+    min-height: 60px;
+}
+
+.break-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto auto;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.break-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Mejorar checkboxes */
+.form-check-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Cards del formulario */
+.card-header h5 {
+    color: #495057;
+    font-weight: 600;
+}
+
+.card-body {
+    background: #fff;
+}
+
+/* ========================================
+   FORM VALIDATION & LOADING STATES
+   ======================================== */
+
+/* Estados de validación */
+.form-control.is-valid {
+    border-color: #28a745;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='m2.3 6.73.94-.94 1.88 1.88 3.06-3.06.94.94-4 4z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 4.6 1.4 1.4m0-1.4L5.8 6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+/* Estados de loading para botones */
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Feedback visual para días de trabajo */
+.day-checkbox.error {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+/* Animaciones suaves */
+.form-control {
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn {
+    transition: all 0.15s ease-in-out;
+}
+
+/* Mejoras para SweetAlert2 */
+.swal2-popup {
+    font-family: inherit;
+}
+
+.text-left {
+    text-align: left !important;
+    white-space: pre-line;
+}
+
+/* ========================================
+   SWEETALERT2 CUSTOM STYLES
+   ======================================== */
+
+/* Popup de error */
+.swal-error-popup {
+    border-left: 5px solid #dc3545;
+}
+
+.swal-error-title {
+    color: #dc3545 !important;
+}
+
+/* Popup de validación */
+.swal-validation-popup {
+    border-left: 5px solid #ffc107;
+}
+
+.swal-validation-content {
+    text-align: left !important;
+}
+
+.swal-validation-content ul {
+    margin: 0;
+    padding-left: 1rem;
+}
+
+/* Popup de eliminación */
+.swal-delete-popup {
+    border-left: 5px solid #dc3545;
+}
+
+.swal-delete-popup .swal2-icon.swal2-warning {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+/* Popup de información */
+.swal-info-popup {
+    border-left: 5px solid #007bff;
+}
+
+.swal-info-popup .swal2-icon.swal2-info {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+/* Popup de loading */
+.swal-loading-popup {
+    border-left: 5px solid #6c757d;
+}
+
+.swal-loading-popup .swal2-title {
+    color: #495057;
+}
+
+/* Toast notifications */
+.swal2-toast {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 8px;
+}
+
+.swal2-toast .swal2-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Botones personalizados */
+.swal2-popup .btn {
+    margin: 0 0.25rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    transition: all 0.15s ease-in-out;
+}
+
+.swal2-popup .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Spinner personalizado */
+.spinner-border {
+    width: 2rem;
+    height: 2rem;
+    border-width: 0.25em;
+}
+
+/* Alertas dentro de SweetAlert */
+.swal2-popup .alert {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.swal2-popup .alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+}
+
+/* Badges en SweetAlert */
+.swal2-popup .badge {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.swal2-popup .badge-success {
+    color: #fff;
+    background-color: #28a745;
+}
+
+.swal2-popup .badge-secondary {
+    color: #fff;
+    background-color: #6c757d;
+}
+
+/* Listas en SweetAlert */
+.swal2-popup .list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+
+.swal2-popup .list-unstyled li {
+    margin-bottom: 0.5rem;
+}
+
+/* Feedback visual mejorado */
+.form-feedback-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    animation: shake 0.5s ease-in-out;
+}
+
+.form-feedback-success {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Estados de botones mejorados */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1rem;
+    height: 1rem;
+    margin: -0.5rem 0 0 -0.5rem;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Alertas contextuales mejoradas */
+.swal2-popup .alert {
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+}
+
+.swal2-popup .alert-warning {
+    border-left: 4px solid #ffc107;
+}
+
+.swal2-popup .alert-danger {
+    border-left: 4px solid #dc3545;
+}
+
+.swal2-popup .alert-info {
+    border-left: 4px solid #17a2b8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .swal2-popup {
+        width: 95% !important;
+        margin: 0 auto;
+    }
+
+    .swal2-toast {
+        width: 90% !important;
+    }
+
+    .form-feedback-error,
+    .form-feedback-success {
+        box-shadow: none !important;
+    }
+}
+
+/* ========================================
+   SCHEDULE DETAIL - Vista de horario específico
+   ======================================== */
+
+.schedule-time-display {
+    text-align: center;
+    padding: 2rem;
+    background: #007bff;
+    border-radius: 8px;
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.time-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.time-label {
+    opacity: 0.9;
+    margin: 0.5rem 0 0 0;
+}
+
+.company-info {
+    padding: 1rem;
+    background: #d4edda;
+    border-radius: 6px;
+    border-left: 4px solid #28a745;
+}
+
+.company-name {
+    font-weight: 600;
+    color: #28a745;
+    margin: 0;
+}
+
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.day-item {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.day-item.working {
+    background: #28a745;
+    color: white;
+}
+
+.day-item.non-working {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.break-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #fff3cd;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    border-left: 4px solid #ffc107;
+}
+
+.break-info h6 {
+    margin: 0 0 0.25rem 0;
+    color: #856404;
+    font-weight: 600;
+}
+
+.break-time {
+    font-weight: 600;
+    color: #495057;
+}
+
+.break-badge {
+    background: #28a745;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.break-badge.unpaid {
+    background: #dc3545;
+}
+
+.assignment-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #007bff;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #007bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+}
+
+.user-info h6 {
+    margin: 0 0 0.25rem 0;
+    color: #495057;
+    font-weight: 600;
+}
+
+.user-info small {
+    color: #6c757d;
+    font-size: 0.85rem;
+}

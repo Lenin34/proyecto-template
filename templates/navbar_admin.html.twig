@@ -1,0 +1,138 @@
+{% set dominio = app.request.attributes.get('dominio') %}
+{% set route = app.request.attributes.get('_route') %}
+
+<nav class="navbar-glass fixed-top">
+	<div
+		class="nav-content-wrapper">
+		<!-- Mobile Toggle -->
+		<button class="mobile-toggle" id="mobileToggle">
+			<i class="fas fa-bars"></i>
+		</button>
+
+		<!-- Logo Section -->
+		<a class="nav-brand" href="{{ path('app_dashboard', {'dominio': dominio}) }}">
+			<img src="{{ current_tenant_logo() }}" alt="Logo" class="nav-logo">
+		</a>
+
+		<!-- Navigation Links -->
+		<ul class="nav-menu">
+			<li class="nav-item">
+				<a href="{{ path('app_user_index', {'dominio': dominio}) }}" class="nav-link-custom {{ route starts with 'app_user' and 'admin' not in route ? 'active' : '' }}">
+					AGREMIADOS
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{{ path('app_user_admin_index', {'dominio': dominio}) }}" class="nav-link-custom {{ route starts with 'app_user_admin' ? 'active' : '' }}">
+					USUARIOS
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{{ path('app_company_index', {'dominio': dominio}) }}" class="nav-link-custom {{ route starts with 'app_company' ? 'active' : '' }}">
+					EMPRESAS
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{{ path('app_region_index', {'dominio': dominio}) }}" class="nav-link-custom {{ route starts with 'app_region' ? 'active' : '' }}">
+					REGIONES
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a href="{{ path('app_notification_index', {'dominio': dominio}) }}" class="nav-link-custom {{ route starts with 'app_notification' ? 'active' : '' }}">
+					NOTIFICACIONES
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{{ path('app_event_index', {'dominio': dominio}) }}" class="nav-link-custom {{ route starts with 'app_event' ? 'active' : '' }}">
+					EVENTOS
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="{{ path('app_forms_index', {'dominio': dominio}) }}" class="nav-link-custom {{ route starts with 'app_forms' ? 'active' : '' }}">
+					FORMULARIOS
+				</a>
+			</li>
+		</ul>
+
+		<!-- User Actions -->
+		<div class="nav-actions">
+			{% if app.user %}
+				<a href="{{ path('app_notification_index', {'dominio': dominio}) }}" class="action-btn position-relative" title="Notificaciones" id="navNotificationBtn">
+					<i class="fas fa-bell action-icon" style="font-size: 1.2rem;"></i>
+					<span id="navNotificationBadge" class="notification-badge-navbar" style="display: none;">0</span>
+				</a>
+			{% endif %}
+
+			<a href="{{ path('app_dashboard', {'dominio': dominio}) }}" class="action-btn" title="Inicio">
+				<img src="{{ asset('images/home.svg') }}" alt="Inicio" class="home-icon">
+			</a>
+			<a href="{{ path('app_logout', {'dominio': dominio}) }}" class="action-btn" title="Cerrar Sesión">
+				<svg xmlns="http://www.w3.org/2000/svg" class="action-icon" viewbox="0 0 24 24">
+					<path d="M10 17l1.41-1.41L8.83 13H20v-2H8.83l2.58-2.59L10 7l-5 5 5 5z"/>
+					<path d="M19 3H5c-1.1 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+				</svg>
+			</a>
+		</div>
+	</div>
+</nav>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+const navbar = document.querySelector('.navbar-glass');
+const mobileToggle = document.getElementById('mobileToggle');
+const navMenu = document.querySelector('.nav-menu');
+
+if (mobileToggle) {
+mobileToggle.addEventListener('click', function () {
+navMenu.classList.toggle('mobile-active');
+});
+}
+
+
+// Initial check
+if (window.scrollY > 50) {
+navbar.classList.add('scrolled');
+}
+
+window.addEventListener('scroll', function () {
+if (window.scrollY > 50) {
+navbar.classList.add('scrolled');
+} else {
+navbar.classList.remove('scrolled');
+}
+});
+
+// Logic for Notification Badge
+const TENANT = '{{ dominio }}';
+const USER_ID = '{{ app.user ? app.user.id : "" }}';
+
+const updateNotificationCount = async () => {
+if (! USER_ID || ! TENANT) 
+return;
+
+
+try {
+const response = await fetch(`/${TENANT}/api/users/${USER_ID}/notifications/unread-count`);
+const data = await response.json();
+
+const badge = document.getElementById('navNotificationBadge');
+if (badge) {
+if (data.success && data.unread_count > 0) {
+badge.textContent = data.unread_count > 99 ? '99+' : data.unread_count;
+badge.style.display = 'flex';
+} else {
+badge.style.display = 'none';
+}
+}
+} catch (error) {
+console.error('Error updating notifications:', error);
+}
+};
+
+// Initial update and periodic refresh
+if (USER_ID) {
+updateNotificationCount();
+setInterval(updateNotificationCount, 30000); // Check every 30s
+}
+});
+</script>

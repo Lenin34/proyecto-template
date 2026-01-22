@@ -1,0 +1,36 @@
+{# Modal de Ver Empresa #}
+<div class="modal fade" id="modalShowCompany" tabindex="-1" aria-labelledby="modalShowCompanyLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content modal-form">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalShowCompanyLabel">
+					<i class="fas fa-building me-2"></i>
+					Detalles de la Empresa
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row g-3">
+					<div class="col-md-6">
+						<label class="form-label">Nombre</label>
+						<input type="text" id="showCompanyName" class="form-control form-control-dark" readonly>
+					</div>
+					<div class="col-md-6">
+						<label class="form-label">Región</label>
+						<input type="text" id="showCompanyRegion" class="form-control form-control-dark" readonly>
+					</div>
+					<div class="col-md-6">
+						<label class="form-label">Estado</label>
+						<input type="text" id="showCompanyStatus" class="form-control form-control-dark" readonly>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+					<i class="fas fa-times me-2"></i>
+					Cerrar
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

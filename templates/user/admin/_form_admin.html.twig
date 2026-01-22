@@ -1,0 +1,153 @@
+{% extends 'user/admin/_base_form_admin.html.twig' %}
+
+{% block form_content %}
+
+	<style>
+		.current-photo {
+			text-align: center;
+		}
+
+		.current-photo img {
+			border: 3px solid #1B283D;
+			border-radius: 10px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease;
+		}
+
+		.current-photo img:hover {
+			transform: scale(1.05);
+		}
+
+		.form-control[type="file"] {
+			border: 2px dashed #1B283D;
+			padding: 1rem;
+			background: rgba(27, 40, 61, 0.05);
+			border-radius: 8px;
+			transition: all 0.3s ease;
+		}
+
+		.form-control[type="file"]:hover {
+			background: rgba(27, 40, 61, 0.1);
+			border-color: #2c4a6b;
+		}
+
+		.form-control[type="file"]:focus {
+			box-shadow: 0 0 0 0.2rem rgba(27, 40, 61, 0.25);
+			border-color: #1B283D;
+		}
+	</style>
+
+	{{ form_start(form) }}
+	<div class="form-row-modern">
+		<div class="form-col-modern">
+			{{ form_row(form.name, {'label': 'Nombre', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+		</div>
+		<div class="form-col-modern">
+			{{ form_row(form.last_name, {'label': 'Apellidos', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+		</div>
+	</div>
+
+	<div class="form-row-modern">
+		<div class="form-col-modern">
+			{{ form_row(form.phone_number, {'label': 'Teléfono', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+		</div>
+
+		<div class="form-col-modern">
+			{{ form_label(form.email, 'Correo electrónico', {'label_attr': {'class': 'form-label-modern'}}) }}
+			{{ form_widget(form.email, {'attr': {'class': 'form-control-modern'}}) }}
+
+			{% for error in form.email.vars.errors %}
+				<small class="text-danger mt-1 d-block">
+					{{ error.message }}
+				</small>
+			{% endfor %}
+		</div>
+	</div>
+
+	<div class="form-row-modern">
+		<div class="form-col-modern">
+			{{ form_row(form.role, {'label': 'Rol', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+		</div>
+		<div class="form-col-modern">
+			{{ form_row(form.password, {'label': 'Contraseña', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+		</div>
+	</div>
+
+	<div class="row mb-4">
+		<div class="col-md-12">
+			{{ form_row(form.regions, {'label': 'Regiones', 'attr': {'class': 'form-control-modern'}, 'label_attr': {'class': 'form-label-modern'}}) }}
+		</div>
+	</div>
+
+	<div class="row mb-4">
+		<div class="col-md-12">
+			{{ form_label(form.photo, 'Foto de perfil', {'label_attr': {'class': 'form-label-modern'}}) }}
+
+			{% if form.vars.data.photo %}
+				<div class="current-photo mb-3 text-center">
+					<p class="form-label-modern mb-2 text-center">Foto actual:</p>
+					<img src="{{ image_full_url(form.vars.data.photo) }}" alt="Foto actual" class="img-thumbnail" style="max-width: 150px; max-height: 150px; object-fit: cover; border-radius: 10px;">
+				</div>
+			{% endif %}
+
+			<div class="file-upload-wrapper">
+				<i class="fas fa-camera file-upload-icon"></i>
+				<span class="file-upload-text">Sube una foto aquí</span>
+				{{ form_widget(form.photo, {'attr': {'class': 'file-upload-input'}}) }}
+			</div>
+
+			{% for error in form.photo.vars.errors %}
+				<small class="text-danger mt-1 d-block">
+					{{ error.message }}
+				</small>
+			{% endfor %}
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-center col-12 text-center mt-5">
+		<button class="btn-modern-submit">{{ button_label|default('CREAR') }}</button>
+	</div>
+	{{ form_end(form) }}
+
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+const container = document.querySelector('#user_admin_regions');
+const roleSelect = document.querySelector('#user_admin_role');
+
+if (container) {
+const inputs = container.querySelectorAll('input[type="checkbox"]');
+inputs.forEach(input => {
+const label = container.querySelector (`label[for="${
+input.id
+}"]`);
+if (label) {
+const wrapper = document.createElement('div');
+wrapper.classList.add('checkbox-pair');
+input.parentNode.insertBefore(wrapper, input);
+wrapper.appendChild(input);
+wrapper.appendChild(label);
+}
+});
+
+// Function to handle role selection change
+const handleRoleChange = () => {
+const selectedRole = roleSelect.options[roleSelect.selectedIndex].text;
+if (selectedRole === 'ROLE_ADMIN') { // Select all regions for ROLE_ADMIN
+inputs.forEach(input => {
+input.checked = true;
+});
+}
+};
+
+// Add event listener to role select
+if (roleSelect) {
+roleSelect.addEventListener('change', handleRoleChange);
+
+// Also check on page load in case ROLE_ADMIN is already selected
+handleRoleChange();
+}
+}
+});
+	</script>
+{% endblock %}
+{# Replace all path/url calls using dominio with app.request.attributes.get('dominio') #}

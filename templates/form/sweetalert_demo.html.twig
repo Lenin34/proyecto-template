@@ -1,0 +1,209 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demo SweetAlert2{% endblock %}
+
+{% block body %}
+
+    <section class="header-sntiasg-b py-3">
+        <div class="container text-center">
+            <h1 class="title-sntiasg mb-0">SweetAlerts2 SNAMX</h1>
+        </div>
+    </section>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fas fa-magic me-2"></i> Demo SweetAlert2</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-4">
+                            Prueba las diferentes funciones de SweetAlert2 implementadas en el sistema.
+                        </p>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <h6>Alertas Básicas</h6>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success" onclick="showSuccess('Operación completada exitosamente')">
+                                        <i class="fas fa-check me-2"></i> Éxito
+                                    </button>
+                                    <button class="btn btn-danger" onclick="showError('Ocurrió un error inesperado')">
+                                        <i class="fas fa-times me-2"></i> Error
+                                    </button>
+                                    <button class="btn btn-warning" onclick="showWarning('Esta acción requiere confirmación')">
+                                        <i class="fas fa-exclamation-triangle me-2"></i> Advertencia
+                                    </button>
+                                    <button class="btn btn-info" onclick="showInfo('Información importante para el usuario')">
+                                        <i class="fas fa-info-circle me-2"></i> Información
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <h6>Confirmaciones</h6>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary" onclick="testConfirm()">
+                                        <i class="fas fa-question-circle me-2"></i> Confirmación
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="testDelete()">
+                                        <i class="fas fa-trash me-2"></i> Confirmar Eliminación
+                                    </button>
+                                    <button class="btn btn-outline-secondary" onclick="testPrompt()">
+                                        <i class="fas fa-edit me-2"></i> Prompt
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="testLoading()">
+                                        <i class="fas fa-spinner me-2"></i> Loading
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <h6>Alertas Especializadas</h6>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-success" onclick="testExport()">
+                                        <i class="fas fa-download me-2"></i> Exportación
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="testImport()">
+                                        <i class="fas fa-upload me-2"></i> Importación
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="testValidation()">
+                                        <i class="fas fa-exclamation-triangle me-2"></i> Errores de Validación
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="testNetwork()">
+                                        <i class="fas fa-wifi me-2"></i> Error de Red
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <h6>Alertas de Sistema</h6>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-warning" onclick="testPermission()">
+                                        <i class="fas fa-lock me-2"></i> Sin Permisos
+                                    </button>
+                                    <button class="btn btn-outline-info" onclick="testSession()">
+                                        <i class="fas fa-clock me-2"></i> Sesión Expirada
+                                    </button>
+                                    <button class="btn btn-outline-secondary" onclick="testMaintenance()">
+                                        <i class="fas fa-tools me-2"></i> Mantenimiento
+                                    </button>
+                                    <button class="btn btn-outline-success" onclick="testFormSuccess()">
+                                        <i class="fas fa-check-circle me-2"></i> Formulario Exitoso
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-lightbulb me-2"></i> Funciones Disponibles</h6>
+                            <p class="mb-2">Las siguientes funciones están disponibles globalmente:</p>
+                            <ul class="mb-0">
+                                <li><code>showSuccess(message)</code> - Alerta de éxito</li>
+                                <li><code>showError(message)</code> - Alerta de error</li>
+                                <li><code>showWarning(message)</code> - Alerta de advertencia</li>
+                                <li><code>showInfo(message)</code> - Alerta de información</li>
+                                <li><code>confirmAction(options)</code> - Confirmación personalizada</li>
+                                <li><code>confirmDelete(itemName)</code> - Confirmación de eliminación</li>
+                                <li><code>showLoading(title)</code> - Mostrar loading</li>
+                                <li><code>hideLoading()</code> - Ocultar loading</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function testConfirm() {
+            confirmAction({
+                title: '¿Continuar con la operación?',
+                text: 'Esta acción modificará los datos',
+                confirmButtonText: 'Sí, continuar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showSuccess('Operación confirmada');
+                } else {
+                    showInfo('Operación cancelada');
+                }
+            });
+        }
+
+        function testDelete() {
+            confirmDelete('este elemento').then((result) => {
+                if (result.isConfirmed) {
+                    showSuccess('Elemento eliminado exitosamente');
+                } else {
+                    showInfo('Eliminación cancelada');
+                }
+            });
+        }
+
+        function testPrompt() {
+            SwalHelper.prompt({
+                title: 'Ingrese su nombre',
+                inputPlaceholder: 'Nombre completo...'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showSuccess(`Hola ${result.value}!`);
+                }
+            });
+        }
+
+        function testLoading() {
+            showLoading('Procesando datos...');
+            
+            setTimeout(() => {
+                hideLoading();
+                showSuccess('Proceso completado');
+            }, 3000);
+        }
+
+        function testExport() {
+            SwalHelper.exportSuccess('formulario_contacto.xlsx');
+        }
+
+        function testImport() {
+            SwalHelper.importSuccess(25);
+        }
+
+        function testValidation() {
+            const errors = {
+                'name': ['El nombre es obligatorio', 'Debe tener al menos 3 caracteres'],
+                'email': ['El email no es válido'],
+                'phone': ['El teléfono debe tener 10 dígitos']
+            };
+            SwalHelper.validationErrors(errors);
+        }
+
+        function testNetwork() {
+            SwalHelper.networkError();
+        }
+
+        function testPermission() {
+            SwalHelper.permissionDenied();
+        }
+
+        function testSession() {
+            // Comentado para no redirigir realmente
+            // SwalHelper.sessionExpired();
+            showWarning('Demo: Sesión expirada (sin redirección)');
+        }
+
+        function testMaintenance() {
+            SwalHelper.maintenance();
+        }
+
+        function testFormSuccess() {
+            SwalHelper.formSuccess('Formulario enviado correctamente', '#');
+        }
+    </script>
+{% endblock %}

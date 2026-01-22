@@ -1,0 +1,250 @@
+/**
+ * DataTables - Estilos Personalizados para app-ctm
+ * Mantiene el diseño elegante y moderno del sistema
+ */
+
+/* === RESET Y CONTENEDOR PRINCIPAL === */
+.table-wrapper {
+    width: 100%;
+    overflow: visible;
+    padding: 0;
+    margin: 0;
+}
+
+/* Eliminar doble contenedor que comprime la tabla */
+div.dataTables_wrapper {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+/* === TABLA PRINCIPAL === */
+table.dataTable {
+    width: 100% !important;
+    margin: 0 !important;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
+}
+
+/* Mantener diseño de celdas actual */
+table.dataTable thead th,
+table.dataTable thead td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+table.dataTable tbody td {
+    padding: 10px 15px;
+}
+
+/* Asegurar que las filas sean visibles */
+table.dataTable tbody tr {
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+table.dataTable.stripe tbody tr.odd,
+table.dataTable.display tbody tr.odd {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+table.dataTable.stripe tbody tr.odd:hover,
+table.dataTable.display tbody tr.odd:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* === CONTROLES DE DATATABLE === */
+
+/* Contenedor de controles superior */
+div.dataTables_wrapper div.dataTables_filter,
+div.dataTables_wrapper div.dataTables_length {
+    margin-bottom: 15px;
+}
+
+/* Input de búsqueda personalizado */
+div.dataTables_wrapper div.dataTables_filter input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+}
+
+div.dataTables_wrapper div.dataTables_filter input:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+div.dataTables_wrapper div.dataTables_filter input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Label del filtro */
+div.dataTables_wrapper div.dataTables_filter label,
+div.dataTables_wrapper div.dataTables_length label {
+    color: white;
+    font-weight: 400;
+}
+
+/* Select de "Mostrar X registros" */
+div.dataTables_wrapper div.dataTables_length select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    margin: 0 10px;
+}
+
+/* Espaciado en controles de DataTables */
+div.dataTables_wrapper div.dataTables_length label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0;
+    white-space: normal;
+    word-spacing: 0.25rem;
+}
+
+div.dataTables_wrapper div.dataTables_filter label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0;
+    white-space: normal;
+    word-spacing: 0.25rem;
+}
+
+/* === PAGINACIÓN === */
+div.dataTables_wrapper div.dataTables_paginate {
+    margin-top: 20px;
+    text-align: right;
+}
+
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+/* Bootstrap 5 DataTables pagination override */
+.dataTables_wrapper .dataTables_paginate .paginate_button,
+.dataTables_wrapper .dataTables_paginate .page-item .page-link {
+    color: #e8eaed !important;
+    background: rgba(42, 47, 58, 0.9) !important;
+    border: 1px solid rgba(74, 79, 92, 0.8) !important;
+    padding: 0.5rem 0.85rem;
+    margin: 0 2px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+.dataTables_wrapper .dataTables_paginate .page-item .page-link:hover {
+    background: rgba(74, 158, 255, 0.2) !important;
+    border-color: rgba(74, 158, 255, 0.5) !important;
+    color: #4a9eff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+    background: linear-gradient(135deg, #4a9eff 0%, #5db0ff 100%) !important;
+    border-color: #4a9eff !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .page-item.disabled .page-link {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(42, 47, 58, 0.5) !important;
+    color: rgba(232, 234, 237, 0.5) !important;
+}
+
+/* Previous/Next buttons specific styling */
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+.dataTables_wrapper .dataTables_paginate .paginate_button.next {
+    font-weight: 500;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous:not(.disabled):hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.next:not(.disabled):hover {
+    background: rgba(74, 158, 255, 0.3) !important;
+}
+
+/* === INFO === */
+div.dataTables_wrapper div.dataTables_info {
+    color: rgba(255, 255, 255, 0.7);
+    padding-top: 15px;
+    font-weight: 300;
+}
+
+/* === ORDENAMIENTO === */
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+    cursor: pointer;
+    position: relative;
+}
+
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* === RESPONSIVE === */
+@media screen and (max-width: 768px) {
+
+    div.dataTables_wrapper div.dataTables_filter,
+    div.dataTables_wrapper div.dataTables_info,
+    div.dataTables_wrapper div.dataTables_paginate {
+        text-align: center;
+    }
+
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+        justify-content: center;
+    }
+}
+
+/* === LOADING OVERLAY === */
+.dataTables_processing {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* === MANTENER CLASES EXISTENTES === */
+/* Asegurar compatibilidad con styled-table existente */
+.styled-table {
+    color: white;
+}
+
+.styled-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+/* === SIN REGISTROS === */
+table.dataTable tbody tr.odd>.dataTables_empty,
+table.dataTable tbody tr.even>.dataTables_empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    padding: 40px !important;
+}

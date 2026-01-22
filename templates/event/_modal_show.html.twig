@@ -1,0 +1,55 @@
+{# Modal de Ver Evento #}
+<div class="modal fade" id="modalShowEvent" tabindex="-1" aria-labelledby="modalShowEventLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content modal-form">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalShowEventLabel">
+					<i class="fas fa-calendar-alt me-2"></i>
+					Detalles del Evento
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row g-4">
+					<div class="col-md-4 text-center">
+						<img id="showEventImage" src="" alt="Imagen del evento" class="img-fluid rounded shadow-sm" style="max-height: 200px; object-fit: cover;">
+					</div>
+					<div class="col-md-8">
+						<div class="row g-3">
+							<div class="col-12">
+								<label class="form-label text-muted small">TÍTULO</label>
+								<div id="showEventTitle" class="fw-bold fs-5"></div>
+							</div>
+							<div class="col-12">
+								<label class="form-label text-muted small">REGIÓN</label>
+								<div id="showEventRegion" class="badge bg-primary fs-6"></div>
+							</div>
+							<div class="col-md-6">
+								<label class="form-label text-muted small">FECHA INICIO</label>
+								<div id="showEventStartDate"></div>
+							</div>
+							<div class="col-md-6">
+								<label class="form-label text-muted small">FECHA FIN</label>
+								<div id="showEventEndDate"></div>
+							</div>
+							<div class="col-12">
+								<label class="form-label text-muted small">DESCRIPCIÓN</label>
+								<div id="showEventDescription" class="text-break"></div>
+							</div>
+							<div class="col-12">
+								<label class="form-label text-muted small">EMPRESAS</label>
+								<div id="showEventCompanies" class="d-flex flex-wrap gap-2"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+					<i class="fas fa-times me-2"></i>
+					Cerrar
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

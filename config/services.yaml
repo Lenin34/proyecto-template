@@ -1,0 +1,252 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    uploads_directory: '%kernel.project_dir%/public/uploads'
+    social_media_images_directory: '%kernel.project_dir%/public/uploads/social_media'
+    app.cache_dir: '%kernel.cache_dir%/tenant_cache'
+    app.log_dir: '%kernel.logs_dir%/tenants'
+    app.url.dev: '%env(APP_URL_DEV)%'
+    app.url.prod: '%env(APP_URL_PROD)%'
+    app.env: '%env(APP_ENV)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        
+    # Custom CSRF Token Manager
+    App\Security\TenantAwareCsrfTokenManager:
+        arguments:
+            $tenantManager: '@App\Service\TenantManager'
+            $requestStack: '@request_stack'
+
+    # Alias for CSRF Token Manager Interface
+    Symfony\Component\Security\Csrf\CsrfTokenManagerInterface: '@App\Security\TenantAwareCsrfTokenManager'
+
+    # Session Service - Usar la configuración de framework.yaml
+    # NOTA: La configuración de sesión (cookie_secure, cookie_samesite, etc.)
+    # se define en config/packages/framework.yaml para evitar duplicación
+    Symfony\Component\HttpFoundation\Session\SessionInterface:
+        class: Symfony\Component\HttpFoundation\Session\Session
+
+    App\Service\AppUrlService:
+        arguments:
+            $env: '%app.env%'
+            $devUrl: '%app.url.dev%'
+            $prodUrl: '%app.url.prod%'
+        autowire: false
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    App\Twig\ImagePathExtension:
+        arguments:
+            $imagePathService: '@App\Service\ImagePathService'
+        tags: ['twig.extension']
+
+    # TenantManager Service
+    App\Service\TenantManager:
+        arguments:
+            $doctrine: '@doctrine'
+            $requestStack: '@request_stack'
+
+    # TenantLoggerSubscriber
+    App\EventSubscriber\TenantLoggerSubscriber:
+        arguments:
+            $tenantLogger: '@App\Service\TenantLoggerService'
+            $tenantManager: '@App\Service\TenantManager'
+        tags:
+            - { name: 'kernel.event_subscriber' }
+
+    App\Service\ErrorCodeMappingService: ~
+
+    App\Service\AuthAlertService:
+        arguments:
+            $logger: '@logger'
+            $errorMappingService: '@App\Service\ErrorCodeMappingService'
+
+    # TenantLogo Service
+    App\Service\TenantLogoService:
+        arguments:
+            $imageUploadService: '@App\Service\ImageUploadService'
+            $tenantManager: '@App\Service\TenantManager'
+            $imagePathService: '@App\Service\ImagePathService'
+            $applicationErrorService: '@App\Service\ApplicationErrorService'
+            $logger: '@logger'
+            $uploadsDirectory: '%uploads_directory%'
+
+    # TenantLogo Twig Extension
+    App\Twig\TenantLogoExtension:
+        arguments:
+            $tenantLogoService: '@App\Service\TenantLogoService'
+            $tenantManager: '@App\Service\TenantManager'
+            $logger: '@logger'
+        tags:
+            - { name: twig.extension }
+
+    # TenantLogger Service
+    App\Service\TenantLoggerService:
+        class: App\Service\TenantLoggerService
+        arguments:
+            $requestStack: '@request_stack'
+            $logDir: '%kernel.logs_dir%'
+        tags: ['monolog.logger']
+
+    # Validation Service
+    App\Service\ValidationService:
+        arguments:
+            $validator: '@validator'
+            $serializer: '@serializer'
+
+    # Form Template Service
+    App\Service\FormTemplateService:
+        arguments:
+            $tenantManager: '@App\Service\TenantManager'
+            # $tenantCache: '@App\Service\TenantCacheService' # Eliminado
+            $logger: '@App\Service\TenantLoggerService'
+
+    # Form Field Service
+    App\Service\FormFieldService:
+        arguments:
+            $logger: '@App\Service\TenantLoggerService'
+
+    # Form Export Service
+    App\Service\FormExportService:
+        arguments:
+            $formTemplateService: '@App\Service\FormTemplateService'
+            $formFieldService: '@App\Service\FormFieldService'
+            $logger: '@App\Service\TenantLoggerService'
+
+    # Form Template Library Service
+    App\Service\FormTemplateLibraryService:
+        arguments:
+            $tenantManager: '@App\Service\TenantManager'
+            $logger: '@App\Service\TenantLoggerService'
+
+    # Form Preview Service
+    App\Service\FormPreviewService:
+        arguments:
+            $formTemplateService: '@App\Service\FormTemplateService'
+            $formFieldService: '@App\Service\FormFieldService'
+
+    # Rate Limiter
+    App\Security\RateLimiter\TenantRateLimiter:
+        arguments:
+            $factory: '@limiter.tenant_limiter'
+            $tenantManager: '@App\Service\TenantManager'
+            $security: '@security.helper'
+
+    # JWT Event Listeners
+    App\EventListener\JWTCreatedListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'lexik_jwt_authentication.on_jwt_created', method: 'onJWTCreated' }
+
+    App\EventListener\JWTDecodedListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'lexik_jwt_authentication.on_jwt_decoded', method: 'onJWTDecoded' }
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    Symfony\Contracts\HttpClient\HttpClientInterface: '@http_client'
+
+    # Route all PSR logger usages to our tenant-aware logger
+    logger: '@App\Service\TenantLoggerService'
+    Psr\Log\LoggerInterface: '@App\Service\TenantLoggerService'
+
+    Kreait\Firebase\Messaging: '@kreait_firebase.messaging'
+
+    App\Service\TwilioWhatsAppService:
+        arguments:
+            $twilioAccountSid: '%env(TWILIO_ACCOUNT_SID)%'
+            $twilioAuthToken: '%env(TWILIO_AUTH_TOKEN)%'
+            $twilioWhatsAppNumber: '%env(TWILIO_WHATSAPP_NUMBER)%'
+            $twilioSMSNumber: '%env(TWILIO_PHONE_NUMBER)%'
+            $logger: '@logger'
+
+    App\Service\FallbackNotificationService:
+        arguments:
+            $logger: '@logger'
+
+    App\Service\ImageUploadService:
+        arguments:
+            $uploadsDirectory: '%uploads_directory%'
+
+    App\Service\FileUploadService:
+        arguments:
+            $uploadsDirectory: '%uploads_directory%'
+
+    App\Security\AuthenticationSuccessHandler:
+        tags:
+            - { name: 'kernel.event_listener', event: 'lexik_jwt_authentication.on_authentication_success', method: 'onAuthenticationSuccess' }
+
+    App\Service\ImagePathService:
+        arguments:
+            $requestStack: '@request_stack'
+            $applicationErrorService: '@App\Service\ApplicationErrorService'
+            $params: '@parameter_bag'
+
+    App\Service\PushNotificationService:
+        arguments:
+            $messaging: '@kreait_firebase.default.messaging'
+
+    App\Service\ExpoNotificationService:
+        arguments:
+            $expoAccessToken: '%env(EXPO_ACCESS_TOKEN)%'
+    # Error Handler Service
+    App\Service\ErrorHandlerService:
+        arguments:
+            $logger: '@logger'
+            $tenantManager: '@App\Service\TenantManager'
+
+    # Tenant Exception Subscriber
+    App\EventSubscriber\TenantExceptionSubscriber:
+        arguments:
+            $errorHandler: '@App\Service\ErrorHandlerService'
+        tags:
+            - { name: 'kernel.event_subscriber' }
+
+    # ErrorLogController
+    App\Controller\Api\ErrorLogController:
+        arguments:
+            $kernelProjectDir: '%kernel.project_dir%'
+
+    App\Service\Auth\CredentialJwtService:
+        arguments:
+            $secret: '%env(JWT_SECRET_KEY)%'
+            $ttl: '%env(int:CREDENTIAL_JWT_TTL)%'
+
+    App\Service\EmailVerificationService:
+        arguments:
+            $fromAddress: '%env(SMTP_USERNAME)%'
+
+    App\Form\UserAdminType:
+        tags: [ 'form.type' ]
+
+    # User Provider
+    App\Security\UserProvider:
+        arguments:
+            $tenantManager: '@App\Service\TenantManager'
+
+    #ajustar
+    App\Controller\Api\ConversationController:
+        arguments:
+            $mercurePublicUrl: '%env(MERCURE_PUBLIC_URL)%'
+
+    App\Service\Auth\MercureJwtGeneratorService:
+        arguments:
+            $mercureSecret: '%env(MERCURE_JWT_SECRET)%'
+
+    # Messenger Multi-Tenant Middleware
+    App\Messenger\Middleware\TenantAwareRoutingMiddleware:
+        tags:
+            - { name: 'messenger.middleware' }

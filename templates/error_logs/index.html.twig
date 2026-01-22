@@ -1,0 +1,422 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Logs de Errores{% endblock %}
+
+{% block body %}
+    <section class="header-sntiasg-b">
+        <div class="container-fluid container-header">
+            <h1 class="title-sntiasg">LOGS DE ERRORES</h1>
+        </div>
+    </section>
+
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <!-- Log Files Section -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Archivos de Log</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <button id="refreshFiles" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-sync-alt"></i> Actualizar
+                            </button>
+                        </div>
+                        <div class="list-group" id="logFilesList">
+                            <div class="text-center py-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Log Content Section -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0" id="currentLogTitle">Contenido del Log</h5>
+                        <div class="d-flex">
+                            <select id="logLevel" class="form-select form-select-sm me-2" style="width: auto;">
+                                <option value="">Todos los niveles</option>
+                                <option value="error">Error</option>
+                                <option value="warning">Warning</option>
+                                <option value="notice">Notice</option>
+                                <option value="info">Info</option>
+                                <option value="debug">Debug</option>
+                            </select>
+                            <input type="text" id="searchTerm" class="form-control form-control-sm me-2" placeholder="Buscar...">
+                            <button id="applyFilters" class="btn btn-sm btn-light">Filtrar</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="logContent" class="log-content">
+                            <div class="text-center py-5">
+                                <p class="text-muted">Seleccione un archivo de log para ver su contenido</p>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span id="logStats">0 líneas</span>
+                            </div>
+                            <div>
+                                <button id="prevPage" class="btn btn-sm btn-outline-primary me-1" disabled>Anterior</button>
+                                <button id="nextPage" class="btn btn-sm btn-outline-primary" disabled>Siguiente</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest Errors Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">Últimos Errores</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="latestErrors">
+                            <div class="text-center py-3">
+                                <div class="spinner-border text-danger" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .log-content {
+            max-height: 500px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .log-line {
+            padding: 3px 5px;
+            border-bottom: 1px solid #eee;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .log-line:hover {
+            background-color: #e9ecef;
+        }
+        
+        .log-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .log-warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        
+        .log-info {
+            color: #0d6efd;
+        }
+        
+        .log-debug {
+            color: #6c757d;
+        }
+        
+        .log-file-item {
+            cursor: pointer;
+        }
+        
+        .log-file-item.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .log-file-item .file-size {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .log-file-item.active .file-size {
+            color: #e9ecef;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables for pagination
+            let currentPage = 0;
+            let totalPages = 0;
+            let pageSize = 100;
+            let currentFile = null;
+            let currentLevel = '';
+            let currentSearch = '';
+            
+            // API base URL
+            const apiBaseUrl = '/{{ dominio }}/api/errors';
+            
+            // Elements
+            const logFilesList = document.getElementById('logFilesList');
+            const logContent = document.getElementById('logContent');
+            const currentLogTitle = document.getElementById('currentLogTitle');
+            const logStats = document.getElementById('logStats');
+            const prevPageBtn = document.getElementById('prevPage');
+            const nextPageBtn = document.getElementById('nextPage');
+            const refreshFilesBtn = document.getElementById('refreshFiles');
+            const logLevelSelect = document.getElementById('logLevel');
+            const searchTermInput = document.getElementById('searchTerm');
+            const applyFiltersBtn = document.getElementById('applyFilters');
+            const latestErrorsDiv = document.getElementById('latestErrors');
+            
+            // Load log files
+            function loadLogFiles() {
+                logFilesList.innerHTML = `
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                `;
+                
+                fetch(`${apiBaseUrl}/files`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            logFilesList.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                            return;
+                        }
+                        
+                        if (!data.files || data.files.length === 0) {
+                            logFilesList.innerHTML = `<div class="text-center py-3">No hay archivos de log disponibles</div>`;
+                            return;
+                        }
+                        
+                        let html = '';
+                        data.files.forEach(file => {
+                            const fileSize = formatFileSize(file.size);
+                            const date = new Date(file.modified * 1000).toLocaleString();
+                            
+                            html += `
+                                <a href="#" class="list-group-item list-group-item-action log-file-item" data-filename="${file.name}">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">${file.name}</h6>
+                                    </div>
+                                    <small class="file-size">${fileSize} - ${date}</small>
+                                </a>
+                            `;
+                        });
+                        
+                        logFilesList.innerHTML = html;
+                        
+                        // Add event listeners to log file items
+                        document.querySelectorAll('.log-file-item').forEach(item => {
+                            item.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                
+                                // Remove active class from all items
+                                document.querySelectorAll('.log-file-item').forEach(i => i.classList.remove('active'));
+                                
+                                // Add active class to clicked item
+                                this.classList.add('active');
+                                
+                                // Load log file content
+                                currentFile = this.dataset.filename;
+                                currentPage = 0;
+                                loadLogFileContent();
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error loading log files:', error);
+                        logFilesList.innerHTML = `<div class="alert alert-danger">Error al cargar los archivos de log</div>`;
+                    });
+            }
+            
+            // Load log file content
+            function loadLogFileContent() {
+                if (!currentFile) return;
+                
+                currentLogTitle.textContent = `Contenido: ${currentFile}`;
+                
+                logContent.innerHTML = `
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                `;
+                
+                const url = new URL(`${apiBaseUrl}/file/${currentFile}`, window.location.origin);
+                url.searchParams.append('offset', currentPage * pageSize);
+                url.searchParams.append('limit', pageSize);
+                
+                if (currentLevel) {
+                    url.searchParams.append('level', currentLevel);
+                }
+                
+                if (currentSearch) {
+                    url.searchParams.append('search', currentSearch);
+                }
+                
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            logContent.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                            return;
+                        }
+                        
+                        if (!data.lines || data.lines.length === 0) {
+                            logContent.innerHTML = `<div class="text-center py-3">No hay líneas que coincidan con los filtros</div>`;
+                            logStats.textContent = '0 líneas';
+                            prevPageBtn.disabled = true;
+                            nextPageBtn.disabled = true;
+                            return;
+                        }
+                        
+                        let html = '';
+                        data.lines.forEach(line => {
+                            let logClass = 'log-line';
+                            
+                            if (line.toLowerCase().includes('error')) {
+                                logClass += ' log-error';
+                            } else if (line.toLowerCase().includes('warning')) {
+                                logClass += ' log-warning';
+                            } else if (line.toLowerCase().includes('info')) {
+                                logClass += ' log-info';
+                            } else if (line.toLowerCase().includes('debug')) {
+                                logClass += ' log-debug';
+                            }
+                            
+                            html += `<div class="${logClass}">${escapeHtml(line)}</div>`;
+                        });
+                        
+                        logContent.innerHTML = html;
+                        
+                        // Update pagination
+                        totalPages = Math.ceil(data.total_lines / pageSize);
+                        logStats.textContent = `Mostrando ${data.lines.length} de ${data.total_lines} líneas`;
+                        
+                        prevPageBtn.disabled = currentPage === 0;
+                        nextPageBtn.disabled = currentPage >= totalPages - 1;
+                    })
+                    .catch(error => {
+                        console.error('Error loading log file content:', error);
+                        logContent.innerHTML = `<div class="alert alert-danger">Error al cargar el contenido del log</div>`;
+                    });
+            }
+            
+            // Load latest errors
+            function loadLatestErrors() {
+                latestErrorsDiv.innerHTML = `
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-danger" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                `;
+                
+                fetch(`${apiBaseUrl}/latest`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            latestErrorsDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                            return;
+                        }
+                        
+                        if (!data.errors || data.errors.length === 0) {
+                            latestErrorsDiv.innerHTML = `<div class="text-center py-3">No hay errores recientes</div>`;
+                            return;
+                        }
+                        
+                        let html = '<div class="list-group">';
+                        data.errors.forEach(error => {
+                            html += `
+                                <div class="list-group-item list-group-item-danger">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">${error.file}</h6>
+                                    </div>
+                                    <div class="log-line log-error">${escapeHtml(error.content)}</div>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                        
+                        latestErrorsDiv.innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Error loading latest errors:', error);
+                        latestErrorsDiv.innerHTML = `<div class="alert alert-danger">Error al cargar los últimos errores</div>`;
+                    });
+            }
+            
+            // Format file size
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Escape HTML
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            // Event listeners
+            refreshFilesBtn.addEventListener('click', loadLogFiles);
+            
+            prevPageBtn.addEventListener('click', function() {
+                if (currentPage > 0) {
+                    currentPage--;
+                    loadLogFileContent();
+                }
+            });
+            
+            nextPageBtn.addEventListener('click', function() {
+                if (currentPage < totalPages - 1) {
+                    currentPage++;
+                    loadLogFileContent();
+                }
+            });
+            
+            applyFiltersBtn.addEventListener('click', function() {
+                currentLevel = logLevelSelect.value;
+                currentSearch = searchTermInput.value;
+                currentPage = 0;
+                loadLogFileContent();
+            });
+            
+            // Initialize
+            loadLogFiles();
+            loadLatestErrors();
+            
+            // Refresh latest errors every 30 seconds
+            setInterval(loadLatestErrors, 30000);
+        });
+    </script>
+{% endblock %}

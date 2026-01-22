@@ -1,0 +1,42 @@
+{# Modal de Ver Notificación #}
+<div class="modal fade" id="modalShowNotification" tabindex="-1" aria-labelledby="modalShowNotificationLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content modal-form">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalShowNotificationLabel">
+					<i class="fas fa-bell me-2"></i>
+					Detalles de Notificación
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row g-4">
+					<div class="col-12">
+						<div class="row g-3">
+							<div class="col-12">
+								<label class="form-label text-muted small">TÍTULO</label>
+								<div id="showNotificationTitle" class="fw-bold fs-5"></div>
+							</div>
+							<div class="col-12">
+								<label class="form-label text-muted small">MENSAJE</label>
+								<div id="showNotificationMessage" class="text-break"></div>
+							</div>
+							<div class="col-12">
+								<label class="form-label text-muted small">REGIONES</label>
+								<div
+									id="showNotificationRegions" class="d-flex flex-wrap gap-2"><!-- Regions badges inserted here -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+					<i class="fas fa-times me-2"></i>
+					Cerrar
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

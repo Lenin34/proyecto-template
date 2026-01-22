@@ -1,0 +1,4 @@
+api_login_check:
+    path: /api/login_check
+    controller: lexik_jwt_authentication.controller.login
+    methods: [ POST ]

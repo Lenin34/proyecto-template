@@ -1,0 +1,1332 @@
+/* ========================================
+   FORM TEMPLATES STYLES
+   Sistema de Gestión de Formularios - SNTIASG
+   ======================================== */
+
+/* Force white text for all elements in this section */
+body,
+.form-control,
+.form-select,
+.table,
+.modal-content,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div,
+label {
+    color: #FFFFFF !important;
+}
+
+.text-muted {
+    color: #e8eaed !important;
+}
+
+/* ========================================
+   ESTADO VACÍO - Empty State
+   ======================================== */
+
+.empty-state-container {
+    padding: 3rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.empty-state-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* ========================================
+   TABLA MEJORADA - Enhanced Table
+   ======================================== */
+
+.table-row-hover {
+    transition: all 0.2s ease;
+}
+
+.table-row-hover:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table-footer {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.table-footer .text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* ========================================
+   BOTONES DE ACCIÓN - Action Buttons
+   ======================================== */
+
+.btn-group .btn {
+    margin: 0 2px;
+    border-radius: 6px !important;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.btn-group .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-outline-info {
+    color: #17a2b8 !important;
+    border-color: #17a2b8 !important;
+    background: rgba(23, 162, 184, 0.1);
+}
+
+.btn-outline-info:hover {
+    background-color: #17a2b8 !important;
+    color: #fff !important;
+}
+
+.btn-outline-warning {
+    color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    background: rgba(255, 193, 7, 0.1);
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.btn-outline-danger {
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+}
+
+/* ========================================
+   BADGES Y ELEMENTOS INFORMATIVOS
+   ======================================== */
+
+.badge.bg-info {
+    background-color: rgba(23, 162, 184, 0.2) !important;
+    color: #17a2b8 !important;
+    border: 1px solid rgba(23, 162, 184, 0.3);
+    font-weight: 500;
+}
+
+/* ========================================
+   HEADER MEJORADO - Enhanced Header
+   ======================================== */
+
+.header-sntiasg-b h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.header-sntiasg-b p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+/* ========================================
+   BOTÓN PRINCIPAL CTA
+   ======================================== */
+
+.btn-success.btn-lg {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-success.btn-lg:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+}
+
+.btn-success.btn-lg:active {
+    transform: translateY(0);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .empty-state-container {
+        padding: 2rem 1rem;
+    }
+
+    .empty-state-icon i {
+        font-size: 3rem !important;
+    }
+
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .btn-group .btn {
+        margin: 0;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .table-container {
+        margin: 0 -15px;
+        border-radius: 0;
+    }
+
+    .header-sntiasg-b h1 {
+        font-size: 1.5rem;
+    }
+
+    .header-sntiasg-b p {
+        font-size: 1rem;
+    }
+}
+
+/* ========================================
+   ANIMACIONES SUTILES
+   ======================================== */
+
+.table-container {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.empty-state-container {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   MEJORAS DE ACCESIBILIDAD
+   ======================================== */
+
+.btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    outline: none;
+}
+
+.table th {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: none;
+}
+
+/* Mejorar contraste para texto en tabla */
+.styled-table tbody td {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.styled-table thead th {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* ========================================
+   COMPONENTES REUTILIZABLES - Form System
+   ======================================== */
+
+/* Header Estandarizado para Formularios */
+.form-header-enhanced {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b91 100%);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-header-enhanced h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.form-header-enhanced .subtitle {
+    font-size: 1rem;
+    opacity: 0.85;
+    color: #fff;
+}
+
+.form-header-enhanced .breadcrumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-header-enhanced .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+}
+
+.form-header-enhanced .breadcrumb-item.active {
+    color: #fff;
+}
+
+/* Cards Modernas para Formularios */
+.form-card-modern {
+    background: var(--color-bg-secondary, #1a1f2e);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--color-border, #3a3c45);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.form-card-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.form-card-modern .card-header {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b91 100%);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    padding: 1rem 1.5rem;
+}
+
+.form-card-modern .card-header h4,
+.form-card-modern .card-header h5 {
+    color: #fff;
+    margin: 0;
+    font-weight: 600;
+}
+
+.form-card-modern .card-body {
+    padding: 1.5rem;
+    background-color: var(--color-bg-secondary, #1a1f2e);
+    color: var(--color-text-primary, #e8eaed);
+}
+
+/* Grupos de Acciones Mejorados */
+.form-actions-group {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.form-actions-group .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.form-actions-group .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.form-actions-group .btn-primary {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b91 100%);
+}
+
+.form-actions-group .btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.form-actions-group .btn-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    color: #212529;
+}
+
+.form-actions-group .btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+/* Campos de Formulario Mejorados */
+.form-field-enhanced .form-control,
+.form-field-enhanced .form-select {
+    border: 2px solid var(--color-border, #3a3c45);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: var(--input-bg, #2a2f3a);
+    color: var(--color-text-primary, #e8eaed);
+}
+
+.form-field-enhanced .form-control:focus,
+.form-field-enhanced .form-select:focus {
+    border-color: #175E82;
+    box-shadow: 0 0 0 0.25rem rgba(23, 94, 130, 0.15);
+    background: var(--input-bg-hover, #323745);
+    color: #fff;
+}
+
+.form-field-enhanced .form-label {
+    font-weight: 600;
+    color: var(--color-text-primary, #e8eaed);
+    margin-bottom: 0.5rem;
+}
+
+.form-field-enhanced .form-text {
+    color: var(--color-text-secondary, #9aa0a6);
+    font-size: 0.875rem;
+}
+
+/* Estados Vacíos Reutilizables */
+.form-empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--color-text-secondary, #9aa0a6);
+}
+
+.form-empty-state .empty-icon {
+    font-size: 3rem;
+    opacity: 0.5;
+    margin-bottom: 1rem;
+    color: #175E82;
+}
+
+.form-empty-state h3 {
+    color: var(--color-text-primary, #e8eaed);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.form-empty-state p {
+    color: var(--color-text-secondary, #9aa0a6);
+    margin-bottom: 1.5rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Tablas Responsivas Mejoradas */
+.form-table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: var(--color-bg-secondary, #1a1f2e);
+    backdrop-filter: blur(10px);
+}
+
+.form-table-responsive .table {
+    margin-bottom: 0;
+    background: transparent;
+    color: var(--color-text-primary, #e8eaed);
+}
+
+/* ========================================
+   TABLA DE CAMPOS - Fields Table
+   ======================================== */
+
+.fields-table {
+    font-size: 0.9rem;
+}
+
+.fields-table thead th {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b91 100%);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+    padding: 0.75rem 0.5rem;
+}
+
+.fields-table tbody td {
+    padding: 0.75rem 0.5rem;
+    vertical-align: middle;
+    border-top: 1px solid var(--color-border, #3a3c45);
+    color: var(--color-text-primary, #e8eaed);
+}
+
+.fields-table .field-label {
+    color: var(--color-text-primary, #e8eaed);
+    font-size: 0.9rem;
+}
+
+/* Etiquetas de Tipo de Campo */
+.field-type-tag {
+    display: inline-block;
+    background: rgba(21, 101, 192, 0.2);
+    color: #64b5f6;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    border: 1px solid rgba(21, 101, 192, 0.3);
+}
+
+/* Etiquetas de Campo Obligatorio */
+.field-required-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.field-required-tag.required {
+    background: rgba(46, 125, 50, 0.2);
+    color: #81c784;
+    border: 1px solid rgba(46, 125, 50, 0.3);
+}
+
+.field-required-tag.optional {
+    background: rgba(158, 158, 158, 0.2);
+    color: #b0bec5;
+    border: 1px solid rgba(158, 158, 158, 0.3);
+}
+
+/* Botones de Acción Mejorados */
+.field-actions {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-action {
+    padding: 0.375rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+    min-width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-edit {
+    background: #fd7e14;
+    color: #fff !important;
+    border-color: #fd7e14;
+}
+
+.btn-edit:hover {
+    background: #e8650e;
+    color: #fff !important;
+    border-color: #dc5f0d;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(253, 126, 20, 0.3);
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: #fff !important;
+    border-color: #dc3545;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+    color: #fff !important;
+    border-color: #bd2130;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+/* Hover de Filas Mejorado */
+.fields-table .table-row-hover:hover {
+    background-color: var(--color-surface-hover, #2a2c33) !important;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ========================================
+   TABLA DE CAMPOS SHOW - Estilo Sutil
+   ======================================== */
+
+.fields-table-show {
+    font-size: 0.9rem;
+}
+
+.fields-table-show thead th {
+    background: var(--color-bg-tertiary, #232833);
+    color: var(--color-text-secondary, #9aa0a6);
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-transform: none;
+    letter-spacing: 0.2px;
+    border: none;
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid var(--color-border, #3a3c45);
+}
+
+.fields-table-show tbody td {
+    padding: 0.6rem 0.5rem;
+    vertical-align: middle;
+    border-top: 1px solid var(--color-border, #3a3c45);
+    color: var(--color-text-primary, #e8eaed);
+}
+
+.fields-table-show .field-label {
+    color: var(--color-text-primary, #e8eaed);
+    font-size: 0.85rem;
+}
+
+/* Hover más sutil para tabla show */
+.fields-table-show .table-row-hover:hover {
+    background-color: var(--color-surface-hover, #2a2c33) !important;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Etiquetas más discretas para tabla show */
+.fields-table-show .field-type-tag {
+    background: var(--color-surface, #1e1f25);
+    color: var(--color-text-secondary, #9aa0a6);
+    border: 1px solid var(--color-border, #3a3c45);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.fields-table-show .field-required-tag {
+    padding: 0.2rem 0.4rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.fields-table-show .field-required-tag.required {
+    background: var(--color-surface, #1e1f25);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.fields-table-show .field-required-tag.optional {
+    background: var(--color-surface, #1e1f25);
+    color: var(--color-text-secondary, #9aa0a6);
+    border: 1px solid rgba(108, 117, 125, 0.2);
+}
+
+/* Botones más discretos para tabla show */
+.fields-table-show .btn-action {
+    padding: 0.3rem 0.4rem;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-size: 0.7rem;
+    transition: all 0.15s ease;
+    min-width: 28px;
+    height: 28px;
+    background: transparent;
+}
+
+.fields-table-show .btn-action:hover {
+    transform: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.fields-table-show .btn-edit {
+    background: #fd7e14;
+    color: #fff !important;
+    border-color: #fd7e14;
+}
+
+.fields-table-show .btn-edit:hover {
+    background: #e8650e;
+    color: #fff !important;
+    border-color: #dc5f0d;
+    box-shadow: 0 1px 3px rgba(253, 126, 20, 0.3);
+}
+
+.fields-table-show .btn-delete {
+    background: #dc3545;
+    color: #fff !important;
+    border-color: #dc3545;
+}
+
+.fields-table-show .btn-delete:hover {
+    background: #c82333;
+    color: #fff !important;
+    border-color: #bd2130;
+    box-shadow: 0 1px 3px rgba(220, 53, 69, 0.3);
+}
+
+/* Responsive para Tabla de Campos */
+@media (max-width: 768px) {
+    .field-actions {
+        flex-direction: column;
+        gap: 0.125rem;
+    }
+
+    .btn-action {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.375rem;
+        min-width: 28px;
+        height: 28px;
+    }
+
+    .field-type-tag,
+    .field-required-tag {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .fields-table,
+    .fields-table-show {
+        font-size: 0.8rem;
+    }
+}
+
+.form-table-responsive .table.fields-table thead th {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b91 100%);
+    color: #fff;
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0.5px;
+}
+
+.form-table-responsive .table.fields-table-show thead th {
+    background: var(--color-bg-tertiary, #232833) !important;
+    color: var(--color-text-secondary, #9aa0a6) !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    text-transform: none !important;
+    letter-spacing: 0.2px !important;
+    border: none !important;
+    padding: 1rem 0.75rem !important;
+    border-bottom: 1px solid var(--color-border, #3a3c45) !important;
+}
+
+/* ========================================
+   ESTILOS PARA PREVIEW - Preview Styles
+   ======================================== */
+
+.field-type-tag-preview {
+    background: var(--color-surface, #1e1f25);
+    color: var(--color-text-secondary, #9aa0a6);
+    border: 1px solid var(--color-border, #3a3c45);
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 400;
+    text-transform: capitalize;
+}
+
+.field-required-tag-preview {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.field-required-tag-preview.required {
+    background: var(--color-surface, #1e1f25);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.field-required-tag-preview.optional {
+    background: var(--color-surface, #1e1f25);
+    color: var(--color-text-secondary, #9aa0a6);
+    border: 1px solid rgba(108, 117, 125, 0.2);
+}
+
+/* ========================================
+   BOTONES ESTANDARIZADOS - Standardized Buttons
+   ======================================== */
+
+/* Botón Regresar/Volver - Azul */
+.btn-back {
+    background: #0d6efd;
+    color: #fff !important;
+    border: 1px solid #0d6efd;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background: #0b5ed7;
+    border-color: #0a58ca;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+}
+
+/* Botón Cancelar - Rojo */
+.btn-cancel {
+    background: #dc3545;
+    color: #fff !important;
+    border: 1px solid #dc3545;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background: #c82333;
+    border-color: #bd2130;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+/* Botón Editar - Amarillo/Naranja */
+.btn-edit-std {
+    background: #fd7e14;
+    color: #fff !important;
+    border: 1px solid #fd7e14;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-edit-std:hover {
+    background: #e8650e;
+    border-color: #dc5f0d;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(253, 126, 20, 0.3);
+}
+
+/* Botón Ver - Info */
+.btn-view {
+    background: #17a2b8;
+    color: #fff !important;
+    border: 1px solid #17a2b8;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-view:hover {
+    background: #138496;
+    border-color: #117a8b;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(23, 162, 184, 0.3);
+}
+
+/* Botón Secundario - Gris */
+.btn-secondary-std {
+    background: #6c757d;
+    color: #fff !important;
+    border: 1px solid #6c757d;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary-std:hover {
+    background: #5a6268;
+    border-color: #545b62;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+/* Versiones outline para fondos claros */
+.btn-back-outline {
+    background: transparent;
+    color: #0d6efd !important;
+    border: 1px solid #0d6efd;
+}
+
+.btn-back-outline:hover {
+    background: #0d6efd;
+    color: #fff !important;
+}
+
+.btn-cancel-outline {
+    background: transparent;
+    color: #dc3545 !important;
+    border: 1px solid #dc3545;
+}
+
+.btn-cancel-outline:hover {
+    background: #dc3545;
+    color: #fff !important;
+}
+
+.btn-edit-outline {
+    background: transparent;
+    color: #fd7e14 !important;
+    border: 1px solid #fd7e14;
+}
+
+.btn-edit-outline:hover {
+    background: #fd7e14;
+    color: #fff !important;
+}
+
+.form-table-responsive .table tbody td {
+    padding: 0.75rem 1rem;
+    border-color: rgba(0, 0, 0, 0.05);
+    vertical-align: middle;
+}
+
+.form-table-responsive .table tbody tr:hover {
+    background-color: rgba(23, 94, 130, 0.05);
+}
+
+/* Navegación y Breadcrumbs */
+.form-navigation {
+    margin-bottom: 1rem;
+}
+
+.form-navigation .breadcrumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    margin: 0;
+}
+
+.form-navigation .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+}
+
+.form-navigation .breadcrumb-item.active {
+    color: #fff;
+}
+
+/* ========================================
+   TABLA MODERNA OSCURA - Dark Modern Table
+   ======================================== */
+.table-dark-modern {
+    background: var(--color-bg-secondary, #1a1f2e);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--color-border, #3a3c45);
+}
+
+.table-dark-modern .table {
+    margin-bottom: 0;
+    color: var(--color-text-primary, #e8eaed);
+}
+
+.table-dark-modern thead {
+    background: linear-gradient(135deg, #175E82 0%, #1a6b91 100%);
+}
+
+.table-dark-modern thead th {
+    color: #fff !important;
+    font-weight: 600;
+    padding: 1rem;
+    border: none;
+    font-size: 0.875rem;
+    text-transform: none;
+    letter-spacing: 0.3px;
+}
+
+.table-dark-modern tbody {
+    background: var(--color-bg-secondary, #1a1f2e);
+}
+
+.table-dark-modern tbody td {
+    padding: 0.875rem 1rem;
+    border-color: var(--color-border, #3a3c45);
+    color: var(--color-text-primary, #e8eaed);
+    vertical-align: middle;
+}
+
+/* Estilos para th en tbody (tablas de detalles sin header) */
+.table-dark-modern tbody th {
+    padding: 0.875rem 1.25rem;
+    border-color: var(--color-border, #3a3c45);
+    color: var(--color-text-secondary, #9aa0a6);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-align: left;
+    width: 35%;
+    background: var(--color-surface, #1e1f25);
+    vertical-align: middle;
+}
+
+.table-dark-modern tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table-dark-modern tbody tr:hover {
+    background: var(--color-surface-hover, #2a2c33);
+}
+
+/* Variante: Header sutil (sin gradiente) */
+.table-dark-modern--subtle thead {
+    background: var(--color-bg-tertiary, #232833);
+}
+
+.table-dark-modern--subtle thead th {
+    color: var(--color-text-secondary, #9aa0a6) !important;
+    font-weight: 500;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ========================================
+   BADGES PARA TABLAS
+   ======================================== */
+.badge-dark {
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge-dark--active {
+    background: rgba(61, 121, 30, 0.2);
+    color: #81c784;
+    border: 1px solid rgba(61, 121, 30, 0.3);
+}
+
+.badge-dark--inactive {
+    background: rgba(108, 117, 125, 0.2);
+    color: #9aa0a6;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.badge-dark--pending {
+    background: rgba(253, 126, 20, 0.2);
+    color: #fd7e14;
+    border: 1px solid rgba(253, 126, 20, 0.3);
+}
+
+.badge-dark--info {
+    background: rgba(23, 162, 184, 0.2);
+    color: #17a2b8;
+    border: 1px solid rgba(23, 162, 184, 0.3);
+}
+
+/* ========================================
+   ESTADO VACÍO MEJORADO
+   ======================================== */
+.empty-state-dark {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--color-text-secondary, #9aa0a6);
+}
+
+.empty-state-dark .empty-icon {
+    font-size: 3.5rem;
+    color: var(--color-text-muted, #5f6368);
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+
+.empty-state-dark h4 {
+    color: var(--color-text-primary, #e8eaed);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-dark p {
+    color: var(--color-text-secondary, #9aa0a6);
+    max-width: 400px;
+    margin: 0 auto 1.5rem;
+}
+
+/* ========================================
+   RESPONSIVE TABLAS
+   ======================================== */
+@media (max-width: 768px) {
+
+    .table-dark-modern thead th,
+    .table-dark-modern tbody td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8125rem;
+    }
+}
+
+/* ========================================
+   COMPANIES INFO BOX (Dark Theme)
+   ======================================== */
+.companies-info {
+    background: var(--color-surface, #1e1f25);
+    border: 1px solid var(--color-border, #3a3c45);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 8px;
+}
+
+.companies-info small {
+    color: var(--color-text-secondary, #9aa0a6) !important;
+}
+
+.companies-info .fw-bold {
+    color: var(--color-text-primary, #e8eaed) !important;
+}
+
+/* ========================================
+   LIST GROUP DARK
+   ======================================== */
+.list-group-dark {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.list-group-dark-item {
+    background: var(--color-surface, #1e1f25);
+    border: 1px solid var(--color-border, #3a3c45);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--color-text-primary, #e8eaed);
+    transition: all 0.2s ease;
+}
+
+.list-group-dark-item:hover {
+    background: var(--color-bg-secondary, #1a1f2e);
+    border-color: var(--color-primary, #4a90d9);
+}
+
+/* ========================================
+   MODAL DARK THEME
+   ======================================== */
+.modal-dark {
+    background: var(--color-bg-secondary, #1a1f2e);
+    border: 1px solid var(--color-border, #3a3c45);
+    border-radius: 12px;
+    color: var(--color-text-primary, #e8eaed);
+}
+
+.modal-dark-header {
+    background: var(--color-surface, #1e1f25);
+    border-bottom: 1px solid var(--color-border, #3a3c45);
+    padding: 1rem 1.25rem;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-dark-header--danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+
+.modal-dark-header--warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    color: #212529;
+}
+
+.modal-dark-header--info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+}
+
+.modal-dark-header .modal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.modal-dark-body {
+    background: var(--color-bg-secondary, #1a1f2e);
+    padding: 1.5rem 1.25rem;
+    color: var(--color-text-primary, #e8eaed);
+}
+
+.modal-dark-footer {
+    background: var(--color-surface, #1e1f25);
+    border-top: 1px solid var(--color-border, #3a3c45);
+    padding: 1rem 1.25rem;
+    border-radius: 0 0 12px 12px;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+/* ========================================
+   CARD HEADER ACTION BUTTONS
+   ======================================== */
+.card-header-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.card-header-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border, #3a3c45);
+    background: var(--color-surface, #1e1f25);
+    color: var(--color-text-primary, #e8eaed);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-header-action-btn:hover {
+    background: var(--color-primary, #175E82);
+    border-color: var(--color-primary, #175E82);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(23, 94, 130, 0.3);
+}
+
+.card-header-action-btn:active {
+    transform: translateY(0);
+}
+
+.card-header-action-btn i {
+    font-size: 0.875rem;
+}
+
+/* ========================================
+   INLINE EDIT STYLES
+   ======================================== */
+.inline-edit-input,
+.inline-edit-select {
+    background: var(--input-bg, #2a2f3a);
+    border: 2px solid var(--color-border, #3a3c45);
+    border-radius: 6px;
+    color: var(--color-text-primary, #e8eaed);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.inline-edit-input:focus,
+.inline-edit-select:focus {
+    border-color: var(--color-primary, #175E82);
+    box-shadow: 0 0 0 0.2rem rgba(23, 94, 130, 0.25);
+    background: var(--input-bg-hover, #323745);
+    outline: none;
+}
+
+.inline-edit-input::placeholder {
+    color: var(--color-text-muted, #5f6368);
+}
+
+textarea.inline-edit-input {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.inline-edit-actions {
+    background: var(--color-surface, #1e1f25);
+    border-color: var(--color-border, #3a3c45) !important;
+}
+
+/* ========================================
+   FIX BUTTON ACTION CREATE TEXT COLOR
+   ======================================== */
+.btn-action-create,
+.btn-action-create:hover,
+.btn-action-create:focus,
+.btn-action-create:active {
+    color: #fff !important;
+}
+
+/* ========================================
+   FIELD MODALS - Form Input Styles
+   (Edit and Add Field Modals)
+   ======================================== */
+#editFieldModal .form-control,
+#editFieldModal .form-select,
+#editFieldModal textarea,
+#addFieldModal .form-control,
+#addFieldModal .form-select,
+#addFieldModal textarea {
+    color: #000 !important;
+    background-color: #fff !important;
+    border-color: #ced4da !important;
+}
+
+#editFieldModal .form-control::placeholder,
+#addFieldModal .form-control::placeholder,
+#editFieldModal textarea::placeholder,
+#addFieldModal textarea::placeholder {
+    color: #6c757d !important;
+}
+
+#editFieldModal .form-control:focus,
+#editFieldModal .form-select:focus,
+#editFieldModal textarea:focus,
+#addFieldModal .form-control:focus,
+#addFieldModal .form-select:focus,
+#addFieldModal textarea:focus {
+    color: #000 !important;
+    background-color: #fff !important;
+    border-color: #86b7fe !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+#editFieldModal .form-check-label,
+#addFieldModal .form-check-label {
+    color: #e8eaed !important;
+}

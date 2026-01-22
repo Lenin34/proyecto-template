@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% set dominio = app.request.attributes.get('dominio') %}
+
+{% block title %}Editar Empresa
+{% endblock %}
+
+{% block body %}
+	<div class="d-flex justify-content-center min-vh-100 py-5">
+		<div class="modal-modern">
+			<div class="modal-header-modern">
+				<h1 class="modal-title-modern">EDITAR EMPRESA</h1>
+				<a href="{{ path('app_company_index', {'dominio': dominio}) }}" class="btn-close-modern">
+					<i class="fas fa-times"></i>
+				</a>
+			</div>
+
+			<div class="modal-body-modern">
+				{{ include('company/_form.html.twig', {'button_label': 'ACTUALIZAR'}) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}
